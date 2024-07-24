@@ -1,0 +1,116 @@
+[connection]
+baudrate = 115200
+bytesize = 8
+parity = "N"
+stopbits = 1
+
+
+[[parameters]]
+register = 2101
+reg_count = 1
+name = "HP inlet temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2102
+reg_count = 1
+name = "DHW temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2103
+reg_count = 1
+name = "Outside temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2104
+reg_count = 1
+name = "HP outlet temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+
+[[parameters]]
+register = 2105
+reg_count = 1
+name = "Evaporating temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2106
+reg_count = 1
+name = "Compressor temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2107
+reg_count = 1
+name = "Alternative source temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2109
+reg_count = 1
+name = "Pool temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2130
+reg_count = 1
+name = "Loop 1 temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2110
+reg_count = 1
+name = "Loop 2 temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+
+[[parameters]]
+register = 2160
+reg_count = 1
+name = "Loop 1 thermostat temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
+
+[[parameters]]
+register = 2161
+reg_count = 1
+name = "Loop 2 thermostat temperature"
+class = "temperature"
+state_class = "measurement"
+uom = "°C"
+scale = 0.1
