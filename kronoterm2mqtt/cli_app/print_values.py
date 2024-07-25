@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 def probe_one_port(heat_pump, definitions, verbosity):
     client = get_modbus_client(heat_pump, definitions, verbosity)
 
-    parameters = definitions['parameters']
+    parameters = definitions['Sensor']
     if verbosity > 1:
         pprint(parameters)
 
@@ -95,7 +95,7 @@ def print_values(verbosity: int):
 
     client = get_modbus_client(heat_pump, definitions, verbosity)
 
-    parameters = definitions['parameters']
+    parameters = definitions['Sensor']
     if verbosity > 1:
         pprint(parameters)
 

@@ -5,7 +5,7 @@ parity = "N"
 stopbits = 1
 
 
-[[parameters]]
+[[Sensor]]
 register = 2101
 name = "HP inlet temperature"
 component = "Sensor"
@@ -14,7 +14,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2102
 name = "DHW temperature"
 component = "Sensor"
@@ -23,7 +23,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2103
 name = "Outside temperature"
 component = "Sensor"
@@ -32,7 +32,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2104
 name = "HP outlet temperature"
 component = "Sensor"
@@ -42,7 +42,7 @@ unit_of_measure = "°C"
 scale = 0.1
 
 
-[[parameters]]
+[[Sensor]]
 register = 2105
 name = "Evaporating temperature"
 component = "Sensor"
@@ -51,7 +51,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2106
 name = "Compressor temperature"
 component = "Sensor"
@@ -60,7 +60,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2107
 name = "Alternative source temperature"
 component = "Sensor"
@@ -69,7 +69,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2109
 name = "Pool temperature"
 component = "Sensor"
@@ -78,7 +78,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2130
 name = "Loop 1 temperature"
 component = "Sensor"
@@ -87,7 +87,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2110
 name = "Loop 2 temperature"
 component = "Sensor"
@@ -97,7 +97,7 @@ unit_of_measure = "°C"
 scale = 0.1
 
 
-[[parameters]]
+[[Sensor]]
 register = 2160
 name = "Loop 1 thermostat temperature"
 component = "Sensor"
@@ -106,7 +106,7 @@ state_class = "measurement"
 unit_of_measure = "°C"
 scale = 0.1
 
-[[parameters]]
+[[Sensor]]
 register = 2161
 name = "Loop 2 thermostat temperature"
 component = "Sensor"

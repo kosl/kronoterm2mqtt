@@ -1,4 +1,5 @@
 import logging
+import time
 
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.device import MainMqttDevice, MqttDevice
@@ -23,17 +24,18 @@ class KronotermMqttHandler:
 
     def init_device(self):
         self.main_device = MainMqttDevice(
-            name='KRONOTERM 2 MQTT',
+            name=self.device_name,
             uid=self.device_name,
-            manufacturer='kronoterm2mqtt',
+            manufacturer='KRONOTERM',
+            model='ETERA',
             sw_version=kronoterm2mqtt.__version__,
             config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
         )
         self.mqtt_device = MqttDevice(
             main_device=self.main_device,
-            name="Kronoterm subdevice",
-            uid="kronoterm_sub",
-            manufacturer='Kronoterm',
+            name="Custom expander",
+            uid="expander",
+            manufacturer='DIY',
             sw_version=kronoterm2mqtt.__version__,
             config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
         )
@@ -42,7 +44,7 @@ class KronotermMqttHandler:
 
 
         self.temperature = Sensor(
-            device=self.mqtt_device,
+            device=self.main_device,
             name='Temperature',
             uid='temperature',
             state_class='measurement',
@@ -54,16 +56,23 @@ class KronotermMqttHandler:
     def publish(self, user_settings: UserSettings, verbosity: int):
 
         logger.info(f'Publishing for {self.device_name}')
-        
+
         if self.main_device is None:
             self.init_device()
 
-        self.main_device.poll_and_publish(self.mqtt_client)
+        while True:
+            self.main_device.poll_and_publish(self.mqtt_client)
 
-        #################################################################################
+            
+            self.temperature.set_state(12.34)
+            self.temperature.publish(self.mqtt_client)
 
-        self.temperature.set_state(12.34)
-        self.temperature.publish(self.mqtt_client)
+            print('\n', flush=True)
+            print('Wait', end='...')
+            for i in range(10, 1, -1):
+                time.sleep(0.5)
+                print(i, end='...', flush=True)
+
 
 
     def __call__(self, user_settings: UserSettings, verbosity: int):

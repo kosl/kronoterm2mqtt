@@ -27,11 +27,11 @@ class HeatPump:
     """
 
     name: str = 'kronoterm_ksm'
-    verbose_name: str = 'Kronoterm System Module'
-    mqtt_payload_prefix: str = 'kronoterm'  # FIXME: Use serial number?!?
+    model: str = 'ETERA' # Just for MQTT device model info
+    mqtt_payload_prefix: str = 'kronoterm'
 
     port: str = '/dev/ttyUSB0'
-    slave_id: int = 20  # Modbus address
+    slave_id: int = 20  # Kronoterm System Module Modbus address
 
     timeout: float = 0.5
     retry_on_empty: bool = True
@@ -50,18 +50,38 @@ class HeatPump:
 @dataclasses.dataclass
 class CustomEteraExpander:
     """
-    Custom IO Expander with 1-wire thermometers
-    for controlling additional loops and solar pumps 
+    Custom IO Expander with DS18S20 1-wire thermometers
+    for controlling additional loops and solar pumps
+    See CustomEteraExpander class for more info.
     """
 
-    name: str = 'etera_expander_module'
-    verbose_name: str = 'Custom ETERA Expander Module'
-    mqtt_payload_prefix: str = 'kronoterm'
+    module_enabled: bool = False
+    uid: str = 'etera_expander_module'
+    name: str = 'Custom ETERA Expander Module'
+    model: str = 'DIY' # Just for MQTT sub-device model info
+    mqtt_payload_prefix: str = 'expander'
+
 
     port: str = '/dev/ttyUSB1'
     port_speed: int = 115200  
 
     timeout: float = 0.5
+
+    loop_operation: list = dataclasses.field(default_factory=lambda:[1,1,1,0])
+
+    loop_operation: list = dataclasses.field(default_factory=lambda:[1, 1, 1, 0]) # Same as MA_2042
+    loop_sensors: list = dataclasses.field(default_factory=lambda:[0, 1, 2, 3]) # ID order in get_sensors() list
+    loop_temperatue: list = dataclasses.field(default_factory=lambda:[24.0, 24.0, 24.0, 24.0]) # At 0°C
+    heating_curve_coefficient: float = 0.2 #: loop/outside temp °C
+
+    solar_pump_operation: int = 1 #: 0 = disabled, 1 = enabled
+    solar_pump_difference_on: float = 8.0 #: °C On(solar collector - pre-tank bottom)
+    solar_pump_difference_off: float = 3.0 #: °C Off(solar collector - pre-tank bottom) 
+    intra_tank_circulation_operation: int = 1 # 0 = disabled, 1 = enabled
+    intra_tank_circulation_difference_on: float = 8.0 #: °C On > (pre-tank top - Hydro B DHW)
+    intra_tank_circulation_difference_off: float = 5.0 #: °C Off < (pre-tank top - Hydro B DHW)
+    solar_sensors: list = dataclasses.field(default_factory=lambda:[5, 6, 7, 8]) #: id od pre-tank (top, bottom), Etera DHW, solar collector
+
 
     def get_definitions(self, verbosity) -> dict:
         definition_file_path = BASE_PATH / 'definitions' / f'{self.name}.toml'
