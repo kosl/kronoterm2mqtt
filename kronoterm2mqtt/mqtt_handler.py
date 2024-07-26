@@ -8,6 +8,7 @@ from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from kronoterm2mqtt.api import get_modbus_client
 
 import kronoterm2mqtt
+from kronoterm2mqtt.constants import BASE_PATH
 from kronoterm2mqtt.user_settings import UserSettings, HeatPump
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
@@ -20,8 +21,8 @@ logger = logging.getLogger(__name__)
 class KronotermMqttHandler:
     def __init__(self, user_settings: UserSettings, verbosity: int):
         self.user_settings = user_settings
-        self.device_name = user_settings.device_name
         self.heat_pump = self.user_settings.heat_pump
+        self.device_name = self.heat_pump.device_name
         self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
         self.mqtt_client.loop_start()
         self.main_device = None
@@ -34,10 +35,10 @@ class KronotermMqttHandler:
         update in publish process.
         """
         self.main_device = MqttDevice(
-            name=self.device_name,
-            uid=self.device_name,
-            manufacturer='KRONOTERM',
-            model='ETERA',
+            name=self.heat_pump.device_name,
+            uid=self.user_settings.mqtt.main_uid,
+            manufacturer=DEFAULT_DEVICE_MANUFACURER,
+            model=self.heat_pump.model,
             sw_version=kronoterm2mqtt.__version__,
             config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
         )
@@ -86,7 +87,7 @@ class KronotermMqttHandler:
         client = get_modbus_client(self.heat_pump, definitions, verbosity)
         slave_id = self.heat_pump.slave_id
 
-        logger.info(f'Publishing for {self.device_name}')
+        logger.info(f'Publishing Home Assistant MQTT discovery for {self.device_name}')
 
         if self.main_device is None:
             self.init_device(verbosity)

@@ -10,7 +10,7 @@ from rich import print  # noqa
 
 
 
-from kronoterm2mqtt.constants import DEFAULT_DEVICE_NAME, BASE_PATH
+from kronoterm2mqtt.constants import BASE_PATH
 
 try:
     import tomllib  # New in Python 3.11
@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 @dataclasses.dataclass
 class HeatPump:
     """
-    The "name" is the prefix of "kronoterm2mqtt/definitions/*.toml" files!
+    The "definitions_name" is the prefix of "kronoterm2mqtt/definitions/*.toml" files!    
     """
-
-    name: str = 'kronoterm_ksm'
+    definitions_name: str = 'kronoterm_ksm'
+    device_name: str = 'Kronoterm Heat Pump' # Appearing in MQTT as Device
     model: str = 'ETERA' # Just for MQTT device model info
     mqtt_payload_prefix: str = 'kronoterm'
 
@@ -37,7 +37,7 @@ class HeatPump:
     retry_on_empty: bool = True
 
     def get_definitions(self, verbosity) -> dict:
-        definition_file_path = BASE_PATH / 'definitions' / f'{self.name}.toml'
+        definition_file_path = BASE_PATH / 'definitions' / f'{self.definitions_name}.toml'
         assert_is_file(definition_file_path)
         content = definition_file_path.read_text(encoding='UTF-8')
         definitions = tomllib.loads(content)
@@ -66,6 +66,7 @@ class CustomEteraExpander:
     port_speed: int = 115200  
 
     timeout: float = 0.5
+    number_of_thermometers: int = 10 # To check initially if settings are OK
 
     loop_operation: list = dataclasses.field(default_factory=lambda:[1,1,1,0])
 
@@ -84,7 +85,7 @@ class CustomEteraExpander:
 
 
     def get_definitions(self, verbosity) -> dict:
-        definition_file_path = BASE_PATH / 'definitions' / f'{self.name}.toml'
+        definition_file_path = BASE_PATH / 'definitions' / f'{self.definitions_name}.toml'
         assert_is_file(definition_file_path)
         content = definition_file_path.read_text(encoding='UTF-8')
         definitions = tomllib.loads(content)
@@ -120,13 +121,12 @@ class UserSettings:
     """
     KRONOTERM -> MQTT - settings
 
-    device_name: will appear as a name in Home Assistant
-
     See README for more information.
+
+    At least you should specify MQTT settingsi to connect to mosquito server.
+    main_uid defaults to hostname
     """
 
-    device_name: str = DEFAULT_DEVICE_NAME
-    
 
     # Information about the MQTT server:
     mqtt: dataclasses = dataclasses.field(default_factory=MqttSettings)
