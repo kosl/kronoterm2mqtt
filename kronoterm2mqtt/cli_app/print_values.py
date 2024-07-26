@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 def probe_one_port(heat_pump, definitions, verbosity):
     client = get_modbus_client(heat_pump, definitions, verbosity)
 
-    parameters = definitions['Sensor']
+    parameters = definitions['sensor']
     if verbosity > 1:
         pprint(parameters)
 
@@ -45,7 +45,7 @@ def probe_usb_ports(verbosity: int, max_port: int, port_template: str):
     setup_logging(verbosity=verbosity)
 
     systemd_settings = get_user_settings(verbosity)
-    heat_pump: EnergyMeter = systemd_settings.heat_pump
+    heat_pump: HeatPump = systemd_settings.heat_pump
     definitions = heat_pump.get_definitions(verbosity)
 
     for port_number in range(0, max_port):
@@ -62,22 +62,21 @@ def probe_usb_ports(verbosity: int, max_port: int, port_template: str):
 def print_parameter_values(client, parameters, slave_id, verbosity):
     for parameter in parameters:
         print(f'{parameter["name"]:>30}', end=' ')
-        address = parameter['register'] - 1
-        count = parameter.get('count', 1)
+        address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
         if verbosity:
-            print(f'(Register dec: {address:02} hex: {address:04x}, {count=})', end=' ')
-        response = client.read_holding_registers(address=address, count=count, slave=slave_id)
+            print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
+        response = client.read_holding_registers(address=address, count=1, slave=slave_id)
         if isinstance(response, (ExceptionResponse, ModbusIOException)):
             print('Error:', response)
         else:
             assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
             value = response.registers[0]
-            if count > 1:
-                value += response.registers[1] * 65536
+            #if count > 1:
+            #    value += response.registers[1] * 65536
 
             scale = Decimal(str(parameter['scale']))
             value = value * scale
-            print(f'{value} [blue]{parameter.get("uom", "")}')
+            print(f'{value} [blue]{parameter.get("unit_of_measurement", "")}')
     print('\n')
 
             
@@ -89,13 +88,13 @@ def print_values(verbosity: int):
     """
     setup_logging(verbosity=verbosity)
 
-    systemd_settings = get_user_settings(verbosity)
-    heat_pump: EnergyMeter = systemd_settings.heat_pump
+    user_settings = get_user_settings(verbosity)
+    heat_pump: HeatPump = user_settings.heat_pump
     definitions = heat_pump.get_definitions(verbosity)
 
     client = get_modbus_client(heat_pump, definitions, verbosity)
 
-    parameters = definitions['Sensor']
+    parameters = definitions['sensor']
     if verbosity > 1:
         pprint(parameters)
 
@@ -113,13 +112,13 @@ def print_registers(verbosity: int):
     """
     setup_logging(verbosity=verbosity)
 
-    systemd_settings = get_user_settings(verbosity)
-    heat_pump: HeatPump = systemd_settings.heat_pump
+    user_settings = get_user_settings(verbosity)
+    heat_pump: HeatPump = user_settings.heat_pump
     definitions = heat_pump.get_definitions(verbosity)
 
     client = get_modbus_client(heat_pump, definitions, verbosity)
 
-    parameters = definitions['parameters']
+    parameters = definitions['sensor']
     if verbosity > 1:
         pprint(parameters)
 

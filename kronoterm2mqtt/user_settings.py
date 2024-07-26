@@ -135,7 +135,7 @@ class UserSettings:
 
     heat_pump: dataclasses = dataclasses.field(default_factory=HeatPump)
 
-    etera_expander: dataclasses = dataclasses.field(default_factory=CustomEteraExpander)
+    custom_expander: dataclasses = dataclasses.field(default_factory=CustomEteraExpander)
 
 def get_toml_settings() -> TomlSettings:
     return TomlSettings(

@@ -5,112 +5,121 @@ parity = "N"
 stopbits = 1
 
 
-[[Sensor]]
+[[sensor]]
 register = 2101
 name = "HP inlet temperature"
-component = "Sensor"
+uid = "hp_inlet_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2102
 name = "DHW temperature"
-component = "Sensor"
+uid = "dhw_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2103
 name = "Outside temperature"
-component = "Sensor"
+uid = "outside_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2104
 name = "HP outlet temperature"
-component = "Sensor"
+uid = "hp_outlet_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
 
-[[Sensor]]
+[[sensor]]
 register = 2105
 name = "Evaporating temperature"
-component = "Sensor"
+uid = "evaporating_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2106
 name = "Compressor temperature"
-component = "Sensor"
+uid = "compressor_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2107
 name = "Alternative source temperature"
-component = "Sensor"
+uid = "alternative_source_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2109
 name = "Pool temperature"
-component = "Sensor"
+uid = "pool_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2130
 name = "Loop 1 temperature"
-component = "Sensor"
+uid = "loop_1_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2110
 name = "Loop 2 temperature"
-component = "Sensor"
+uid = "loop_2_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
 
-[[Sensor]]
+[[sensor]]
 register = 2160
 name = "Loop 1 thermostat temperature"
-component = "Sensor"
+uid = "loop_1_thermostat_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
 scale = 0.1
 
-[[Sensor]]
+[[sensor]]
 register = 2161
 name = "Loop 2 thermostat temperature"
-component = "Sensor"
+uid = "loop_2_thermostat_temperature"
 device_class = "temperature"
 state_class = "measurement"
-unit_of_measure = "°C"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2326
+name = "Heating system pressure"
+uid = "heating_system_pressure"
+device_class = "pressure"
+state_class = "measurement"
+unit_of_measurement = "bar"
 scale = 0.1

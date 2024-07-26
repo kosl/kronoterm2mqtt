@@ -51,6 +51,8 @@ dev = [
 
 [project.urls]
 Documentation = "https://github.com/jedie/kronoterm2mqtt"
+
+
 Source = "https://github.com/jedie/kronoterm2mqtt"
 
 [project.scripts]
@@ -159,3 +161,6 @@ package_url = "https://github.com/jedie/kronoterm2mqtt"
 issues_url = "https://github.com/jedie/kronoterm2mqtt/issues"
 license = "GPL-3.0-or-later"
 _template = "https://github.com/jedie/cookiecutter_templates/"
+
+[tool.cli_base]
+        version_module_name = "kronoterm2mqtt"
