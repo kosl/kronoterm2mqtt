@@ -107,6 +107,15 @@ state_class = "measurement"
 unit_of_measurement = "°C"
 scale = 0.1
 
+[[sensor_disabled]]
+register = 2150
+name = "Heat pump controller version"
+device_class = ""
+state_class = "measurement"
+unit_of_measurement = ""
+scale = 0.001
+
+
 
 [[sensor_disabled]]
 register = 2160
@@ -124,7 +133,7 @@ state_class = "measurement"
 unit_of_measurement = "°C"
 scale = 0.1
 
-[[sensor]]
+[[sensor_disabled]]
 register = 2325
 name = "Setting of the pressure of the heating system"
 device_class = "pressure"
@@ -141,7 +150,7 @@ state_class = "measurement"
 unit_of_measurement = "bar"
 scale = 0.1
 
-[[sensor]]
+[[sensor_disabled]]
 register = 2347
 name = "Setting pressure of the heating source"
 device_class = "pressure"
