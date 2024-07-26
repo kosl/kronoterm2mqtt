@@ -3,7 +3,7 @@ import time
 
 from decimal import Decimal
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
-from ha_services.mqtt4homeassistant.device import MainMqttDevice, MqttDevice
+from ha_services.mqtt4homeassistant.device import  MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from kronoterm2mqtt.api import get_modbus_client
 
@@ -68,6 +68,7 @@ class KronotermMqttHandler:
                     device=self.main_device,
                     name=parameter['name'],
                     uid=parameter['uid'],
+                    device_class=parameter['device_class'],
                     state_class=parameter['state_class'],
                     unit_of_measurement=parameter['unit_of_measurement'],
                     suggested_display_precision= 1,

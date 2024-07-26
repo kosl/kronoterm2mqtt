@@ -26,9 +26,8 @@ class HeatPump:
     The "definitions_name" is the prefix of "kronoterm2mqtt/definitions/*.toml" files!    
     """
     definitions_name: str = 'kronoterm_ksm'
-    device_name: str = 'Kronoterm Heat Pump' # Appearing in MQTT as Device
-    model: str = 'ETERA' # Just for MQTT device model info
-    mqtt_payload_prefix: str = 'kronoterm'
+    device_name: str = 'Heat Pump' # Appearing in MQTT as Device
+    model: str = 'ETERA' # Just for MQTT device Model info
 
     port: str = '/dev/ttyUSB0'
     slave_id: int = 20  # Kronoterm System Module Modbus address
