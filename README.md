@@ -50,9 +50,7 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 
 ### Home Assistant
 
+![Home Assistant](screenshots/ha-sensors.png)
 
 
-### print data
-
-test print data in terminal looks like:
 
