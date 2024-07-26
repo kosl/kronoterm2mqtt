@@ -8,7 +8,7 @@ from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from kronoterm2mqtt.api import get_modbus_client
 
 import kronoterm2mqtt
-from kronoterm2mqtt.constants import BASE_PATH
+from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER
 from kronoterm2mqtt.user_settings import UserSettings, HeatPump
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
@@ -37,7 +37,7 @@ class KronotermMqttHandler:
         self.main_device = MqttDevice(
             name=self.heat_pump.device_name,
             uid=self.user_settings.mqtt.main_uid,
-            manufacturer=DEFAULT_DEVICE_MANUFACURER,
+            manufacturer=DEFAULT_DEVICE_MANUFACTURER,
             model=self.heat_pump.model,
             sw_version=kronoterm2mqtt.__version__,
             config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
