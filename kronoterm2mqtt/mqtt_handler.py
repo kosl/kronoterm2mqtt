@@ -5,6 +5,8 @@ from decimal import Decimal
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.device import  MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
+from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
+
 from kronoterm2mqtt.api import get_modbus_client
 
 import kronoterm2mqtt
@@ -67,9 +69,9 @@ class KronotermMqttHandler:
                 Sensor(
                     device=self.main_device,
                     name=parameter['name'],
-                    uid=parameter['uid'],
+                    uid=slugify(parameter['name'], '_').lower(),
                     device_class=parameter['device_class'],
-                    state_class=parameter['state_class'],
+                    state_class=parameter['state_class'] if len(parameter['state_class']) else None,
                     unit_of_measurement=parameter['unit_of_measurement'],
                     suggested_display_precision= 1,
                 ),
