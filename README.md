@@ -1,6 +1,5 @@
 # kronoterm2mqtt
 
-[![tests](https://github.com/kosl/kronoterm2mqtt/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/kosl/kronoterm2mqtt/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/github/kosl/kronoterm2mqtt/branch/main/graph/badge.svg)](https://app.codecov.io/github/kosl/kronoterm2mqtt)
 [![kronoterm2mqtt @ PyPi](https://img.shields.io/pypi/v/kronoterm2mqtt?label=kronoterm2mqtt%20%40%20PyPi)](https://pypi.org/project/kronoterm2mqtt/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/kronoterm2mqtt)](https://github.com/kosl/kronoterm2mqtt/blob/main/pyproject.toml)
@@ -8,7 +7,13 @@
 
 Get information from the Kronoterm heat pump connected to Modbus TEX interface
 
-Send MQTT events from KRONOTERM heat_pump
+Send MQTT discovery events from KRONOTERM heat_pump to Home Assistant.
+
+Optionally, the MQTT loop can also control custom (DIY) IO expander to
+be added to heat pump controlling additional heating loops and pumps
+for solar DHW pre-heat boiler. More info on hardware and forfware under
+[etera-uart-bridge/README.md](etera-uart-bridge/README.md)
+
 
 
 ## Bootstrap kronoterm2mqtt
