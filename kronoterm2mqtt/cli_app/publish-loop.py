@@ -17,7 +17,6 @@ from ha_services.mqtt4homeassistant.device import MainMqttDevice, MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 
 import kronoterm2mqtt
-#from kronoterm2mqtt.data_classes import KRONOTERMPollData
 from kronoterm2mqtt.user_settings import UserSettings
 
 
@@ -50,18 +49,13 @@ def publish_loop(verbosity: int):
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
 
-    kronoterm_mqtt_handler: KronotermMqttHandler = KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity)
+    kronoterm_mqtt_handler = KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity)
 
     while True:
         try:
-            #asyncio.run(
-            #    poll(
-            #        device_name=user_settings.device_name,
-            #        poll_callback=mqtt_handler,
-            #    )
-            #)
-            #logging.info(mqtt_handler.publish)
-            kronoterm_mqtt_handler.publish(user_settings=user_settings, verbosity=verbosity)
+            asyncio.run(
+                kronoterm_mqtt_handler.publish_loop()
+            )
         except TimeoutError:
             print('Timeout... Retrying in 1 second...')
             time.sleep(1)

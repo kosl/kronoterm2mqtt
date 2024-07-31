@@ -1,5 +1,6 @@
 import logging
 import time
+import asyncio
 
 from decimal import Decimal
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
@@ -81,42 +82,41 @@ class KronotermMqttHandler:
                                      
 
         
-    def publish(self, user_settings: UserSettings, verbosity: int):
+    async def publish_loop(self):
 
         #setup_logging(verbosity=verbosity)
 
-        definitions = self.heat_pump.get_definitions(verbosity)
+        definitions = self.heat_pump.get_definitions(self.verbosity)
 
-        client = get_modbus_client(self.heat_pump, definitions, verbosity)
+        client = get_modbus_client(self.heat_pump, definitions, self.verbosity)
         slave_id = self.heat_pump.slave_id
 
         logger.info(f'Publishing Home Assistant MQTT discovery for {self.device_name}')
 
         if self.main_device is None:
-            self.init_device(verbosity)
+            self.init_device(self.verbosity)
 
-        while True:
+        async def update_sensors():
+            while True:
+                for address in self.sensors:
+                    sensor, scale = self.sensors[address]
 
-            for address in self.sensors:
-                sensor, scale = self.sensors[address]
-
-                response = client.read_holding_registers(address=address, count=1, slave=slave_id)
-                if isinstance(response, (ExceptionResponse, ModbusIOException)):
-                    print('Error:', response)
-                else:
-                    assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
-                    value = response.registers[0]
-
-                    value = float(value * scale)
-
-                sensor.set_state(value)
-                sensor.publish(self.mqtt_client)
+                    response = client.read_holding_registers(address=address, count=1, slave=slave_id)
+                    if isinstance(response, (ExceptionResponse, ModbusIOException)):
+                        print('Error:', response)
+                    else:
+                        assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
+                        value = response.registers[0]
+                        value = float(value * scale)
+                        sensor.set_state(value)
+                        sensor.publish(self.mqtt_client)
             
-            print('\n', flush=True)
-            print('Wait', end='...')
-            for i in range(10, 0, -1):
-                time.sleep(0.5)
-                print(i, end='...', flush=True)
+                        print('\n', flush=True)
+                        print('Wait', end='...')
+                        for i in range(10, 0, -1):
+                            await asyncio.sleep(0.5)
+                            print(i, end='...', flush=True)
 
-
-
+        await asyncio.gather(
+            update_sensors(),
+        )
