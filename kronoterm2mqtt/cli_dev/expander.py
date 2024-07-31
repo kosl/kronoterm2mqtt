@@ -5,7 +5,7 @@ from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
 from rich import print  as rprint # noqa
 
 import kronoterm2mqtt
-from kronoterm2mqtt.cli_app import cli
+from kronoterm2mqtt.cli_dev import cli
 from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
 from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
 
