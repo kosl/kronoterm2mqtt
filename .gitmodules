@@ -1,0 +1,3 @@
+[submodule "etera-uart-bridge"]
+	path = etera-uart-bridge
+	url = https://github.com/Lenart12/etera-uart-bridge.git
