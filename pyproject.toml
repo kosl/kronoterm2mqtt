@@ -35,6 +35,7 @@ dev = [
     "mypy",  # https://github.com/python/mypy
     "twine",  # https://github.com/pypa/twine
     "typeguard",  # https://github.com/agronholm/typeguard/
+    "platformio", # https://github.com/platformio/platformio-core
 
     # https://github.com/akaihola/darker
     # https://github.com/ikamensh/flynt

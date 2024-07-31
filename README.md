@@ -14,17 +14,20 @@ automatically.
 
 Optionally, the MQTT loop can also control custom (DIY) IO expander to
 be added to heat pump controlling additional heating loops and pumps
-for solar DHW pre-heat boiler. More info on hardware and forfware under
-[etera-uart-bridge/README.md](etera-uart-bridge/README.md)
-
-
+for solar DHW pre-heat boiler. This expander board is using Arduino
+nano MCU to provide serial (UART) interface for Raspberry Pi
+control. See [Etera UART GPIO expander
+project](https://github.com/Lenart12/etera-uart-bridge) for help on
+protocol and interface. By default, this module functionality is
+disabled so that only Kronoterm Heat Pump MQTT can still be used
+without having this hardware module.
 
 ## Bootstrap kronoterm2mqtt
 
 Clone the sources and just call the CLI to create a Python Virtualenv, e.g.:
 
 ```bash
-~$ git clone https://github.com/kosl/kronoterm2mqtt.git
+~$ git clone --recursive https://github.com/kosl/kronoterm2mqtt.git
 ~$ cd kronoterm2mqtt
 ~/kronoterm2mqtt$ ./cli.py --help
 ```
