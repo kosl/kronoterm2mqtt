@@ -51,10 +51,10 @@ dev = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/jedie/kronoterm2mqtt"
+Documentation = "https://github.com/kosl/kronoterm2mqtt"
 
 
-Source = "https://github.com/jedie/kronoterm2mqtt"
+Source = "https://github.com/kosl/kronoterm2mqtt"
 
 [project.scripts]
 kronoterm2mqtt_app = "kronoterm2mqtt.__main__:main"
@@ -156,12 +156,12 @@ full_name = "Leon Kos"
 github_username = "kosl"
 author_email = "leon.kos@lecad.fs.uni-lj.si"
 package_name = "kronoterm2mqtt"
-package_version = "0.0.1"
+package_version = "0.1.1"
 package_description = "Sends MQTT events from KRONOTERM device"
-package_url = "https://github.com/jedie/kronoterm2mqtt"
-issues_url = "https://github.com/jedie/kronoterm2mqtt/issues"
+package_url = "https://github.com/kosl/kronoterm2mqtt"
+issues_url = "https://github.com/kosl/kronoterm2mqtt/issues"
 license = "GPL-3.0-or-later"
-_template = "https://github.com/jedie/cookiecutter_templates/"
+_template = "https://github.com/kosl/cookiecutter_templates/"
 
 [tool.cli_base]
         version_module_name = "kronoterm2mqtt"
