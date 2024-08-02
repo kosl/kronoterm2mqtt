@@ -53,7 +53,7 @@ class CustomEteraExpander:
     See CustomEteraExpander class for more info.
     """
 
-    module_enabled: bool = False
+    module_enabled: int = 0
     uid: str = 'etera_expander_module'
     name: str = 'Custom ETERA Expander Module'
     model: str = 'DIY' # Just for MQTT sub-device model info
