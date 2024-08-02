@@ -7,7 +7,9 @@ from rich import print  as rprint # noqa
 import kronoterm2mqtt
 from kronoterm2mqtt.cli_dev import cli
 from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
+import kronoterm2mqtt.pyetera_uart_bridge
 from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
+
 
 #import logging
 #logger = logging.getLogger(__name__)
@@ -45,4 +47,86 @@ def expander_temperatures(verbosity: int):
         loop.cancel()
         
     asyncio.run(temp())
+
+
+OPTION_ARGS_DEFAULT_TRUE = dict(is_flag=True, show_default=True, default=True)
         
+@cli.command()
+@click.option('-o', '--opening/--closing', **OPTION_ARGS_DEFAULT_TRUE)
+@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
+def expander_motors(opening, verbosity: int):
+    """Rotates all 4 motors by closing (counterclockwise) or opening (clockwise) for 120 seconds"""
+    setup_logging(verbosity=verbosity)
+    user_settings: UserSettings = get_user_settings(verbosity=verbosity)
+
+    port = user_settings.custom_expander.port
+
+    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler)
+
+    duration = 120
+
+    print(f'Moving all motors for {duration} seconds at custom expander')
+
+
+    async def move_motors(opening, duration: int):
+
+        await etera.ready()
+        #await etera.move_motor(1, EteraUartBridge.Direction.CLOCKWISE, 120 * 1000) # clockwise for 120 seconds
+
+        try:
+            moves = []
+            for i in range(4):
+                moves.append(etera.move_motor(i, EteraUartBridge.Direction.CLOCKWISE if opening
+                                              else EteraUartBridge.Direction.COUNTER_CLOCKWISE, duration*1000))
+            await asyncio.gather(*moves)
+        except EteraUartBridge.DeviceException as e:
+            print('Motor move error', e)
+            await asyncio.sleep(1)
+
+    async def go():
+        loop = asyncio.create_task(etera.run_forever())
+        await move_motors(opening, duration)
+        loop.cancel()
+    
+    asyncio.run(go())
+
+option_kwargs_relay = dict(
+    required=True,
+    type=click.IntRange(0, 7),
+    help='Relay number',
+    default=0,
+    show_default=True,
+)
+
+@cli.command()
+@click.option('-r', '--relay', **option_kwargs_relay)
+@click.option('-o', '--on/--off', **OPTION_ARGS_DEFAULT_TRUE)
+@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
+def expander_relay(relay: int, on: bool, verbosity: int):
+    """Switches on or off selected relay"""
+    setup_logging(verbosity=verbosity)
+    user_settings: UserSettings = get_user_settings(verbosity=verbosity)
+
+    port = user_settings.custom_expander.port
+
+    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler)
+
+    print(f'Switching relay {relay} to {on}')
+
+    async def switch_relay(relay, on: bool):
+
+        await etera.ready()
+
+        try:
+            await etera.set_relay(relay, on)
+            await asyncio.sleep(3)
+        except EteraUartBridge.DeviceException as e:
+            print('Relay switch error', e)
+
+
+    async def go():
+        loop = asyncio.create_task(etera.run_forever())
+        await switch_relay(relay, on)
+        loop.cancel()
+    
+    asyncio.run(go())

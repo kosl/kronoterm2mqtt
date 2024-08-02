@@ -9,7 +9,7 @@ from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
 
 @cli.command()
-def compile_firmware():
+def firmware_compile():
     """
     Compiles firmware for Etera GPIO expander with PlatformIO compiler
     """
@@ -20,9 +20,9 @@ def compile_firmware():
 
 @cli.command()
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def flash_firmware(verbosity: int):
+def firmware_flash(verbosity: int):
     """
-    Flashes compiled firmware
+    Flashes compiled firmware to Etera GPIO expander
     """
 
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)

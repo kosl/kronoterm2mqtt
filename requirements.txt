@@ -18,10 +18,10 @@ bx-py-utils==93 \
     # via
     #   cli-base-utilities
     #   kronoterm2mqtt (pyproject.toml)
-cli-base-utilities==0.9.0 \
-    --hash=sha256:46ca68d5d18e7598900a01a06198ce1c580d3153ee90b9c450a9b3a26abea920 \
-    --hash=sha256:982464aa7b6fb6fc3d05daddb4c6cee12cbe50b6da98fcc4b9a8c9f0a6fe658c \
-    --hash=sha256:e23cf474ba8916123985d92f71a411eb090785acbcdd679881b3da25e8623061
+cli-base-utilities==0.10.1 \
+    --hash=sha256:75813e387e8b09a08db985ea27c93a856cd9585b0922a9df26b794cd0280346b \
+    --hash=sha256:9fd0cc0f4a6c8ee41fb9ffb2757005397d44f85425ca38851ff8e5976100a479 \
+    --hash=sha256:efff0654faf2226404c499cba71e39bcb4a14f3e1207f0ddd7dfb8276993c93e
     # via
     #   ha-services
     #   kronoterm2mqtt (pyproject.toml)
@@ -161,15 +161,20 @@ pygments==2.18.0 \
     --hash=sha256:786ff802f32e91311bff3889f6e9a86e81505fe99f2735bb6d60ae0c5004f199 \
     --hash=sha256:b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a
     # via rich
-pymodbus[serial]==3.6.9 \
-    --hash=sha256:91dea79f157ca2d26c137190de76dce5a6c99c0ea514d2d1bf3980acbbdaf29c \
-    --hash=sha256:d95fa18c905205e76c1f348346473f35b54f1b176e71f2c1da7ff7089c4f9e31 \
-    --hash=sha256:f4223b72c20cd00a2cf25f6ddb31ecb2c0587309111a55283b2f4a1ac115e4cc
+pymodbus[serial]==3.7.0 \
+    --hash=sha256:4d4caedea604e294d9a39248dcac05e903e6143e5adfe49aa7edb79d461527e1 \
+    --hash=sha256:5c772babaa61a65ff908293faa668aedcd9d9e10f4bcf5c77a8fe51a6fd9ed47 \
+    --hash=sha256:b75d53c6f08bf6a46ebb00a15d106dd9d5d66e03f79cdbb23625dc683e6fed33
     # via kronoterm2mqtt (pyproject.toml)
 pyserial==3.5 \
     --hash=sha256:3c77e014170dfffbd816e6ffc205e9842efb10be9f58ec16d3e8675b4925cddb \
     --hash=sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0
     # via pymodbus
+python-dateutil==2.9.0.post0 \
+    --hash=sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3 \
+    --hash=sha256:5d23f9d7e398684c7dac22b46a93fb71de568cfdcd004512f7072819e41ef54c \
+    --hash=sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
+    # via cli-base-utilities
 rich==13.7.1 \
     --hash=sha256:4edbae314f59eb482f54e9e30bf00d33350aaa94f4bfcd4e9e3110e64d0d7222 \
     --hash=sha256:9be308cb1fe2f1f57d67ce99e95af38a1e2bc71ad9813b0e247cf7ffbcc3a432 \
@@ -187,6 +192,10 @@ rich-click==1.8.3 \
     #   cli-base-utilities
     #   ha-services
     #   kronoterm2mqtt (pyproject.toml)
+six==1.16.0 \
+    --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
+    --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
+    # via python-dateutil
 tomli==2.0.1 \
     --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
     --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f

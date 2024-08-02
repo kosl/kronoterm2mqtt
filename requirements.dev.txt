@@ -270,10 +270,10 @@ charset-normalizer==3.3.2 \
     --hash=sha256:fd1abc0d89e30cc4e02e4064dc67fcc51bd941eb395c502aac3ec19fab46b519 \
     --hash=sha256:ff8fa367d09b717b2a17a052544193ad76cd49979c805768879cb63d9ca50561
     # via requests
-cli-base-utilities==0.9.0 \
-    --hash=sha256:46ca68d5d18e7598900a01a06198ce1c580d3153ee90b9c450a9b3a26abea920 \
-    --hash=sha256:982464aa7b6fb6fc3d05daddb4c6cee12cbe50b6da98fcc4b9a8c9f0a6fe658c \
-    --hash=sha256:e23cf474ba8916123985d92f71a411eb090785acbcdd679881b3da25e8623061
+cli-base-utilities==0.10.1 \
+    --hash=sha256:75813e387e8b09a08db985ea27c93a856cd9585b0922a9df26b794cd0280346b \
+    --hash=sha256:9fd0cc0f4a6c8ee41fb9ffb2757005397d44f85425ca38851ff8e5976100a479 \
+    --hash=sha256:efff0654faf2226404c499cba71e39bcb4a14f3e1207f0ddd7dfb8276993c93e
     # via
     #   ha-services
     #   kronoterm2mqtt (pyproject.toml)
@@ -546,10 +546,10 @@ jaraco-context==5.3.0 \
     --hash=sha256:3e16388f7da43d384a1a7cd3452e72e14732ac9fe459678773a3608a812bf266 \
     --hash=sha256:c2f67165ce1f9be20f32f650f25d8edfc1646a8aeee48ae06fb35f90763576d2
     # via keyring
-jaraco-functools==4.0.1 \
-    --hash=sha256:3b24ccb921d6b593bdceb56ce14799204f473976e2a9d4b15b04d0f2c2326664 \
-    --hash=sha256:94b2ee828e76253a78ee002a58fbff06ac3f5b9c3b01dd0e989ea1a992fc4dba \
-    --hash=sha256:d33fa765374c0611b52f8b3a795f8900869aa88c84769d4d1746cd68fb28c3e8
+jaraco-functools==4.0.2 \
+    --hash=sha256:089319bf84b20bc74cc019b25619b203f0cedec1a1942e50851709a307d4e20b \
+    --hash=sha256:3460c74cd0d32bf82b9576bbb3527c4364d5b27a21f5158a62aed6c4b42e23f5 \
+    --hash=sha256:c9d16a3ed4ccb5a889ad8e0b7a343401ee5b2a71cee6ed192d3f68bc351e94e3
     # via keyring
 jeepney==0.8.0 \
     --hash=sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806 \
@@ -968,10 +968,10 @@ pygments==2.18.0 \
     #   darker
     #   readme-renderer
     #   rich
-pymodbus[serial]==3.6.9 \
-    --hash=sha256:91dea79f157ca2d26c137190de76dce5a6c99c0ea514d2d1bf3980acbbdaf29c \
-    --hash=sha256:d95fa18c905205e76c1f348346473f35b54f1b176e71f2c1da7ff7089c4f9e31 \
-    --hash=sha256:f4223b72c20cd00a2cf25f6ddb31ecb2c0587309111a55283b2f4a1ac115e4cc
+pymodbus[serial]==3.7.0 \
+    --hash=sha256:4d4caedea604e294d9a39248dcac05e903e6143e5adfe49aa7edb79d461527e1 \
+    --hash=sha256:5c772babaa61a65ff908293faa668aedcd9d9e10f4bcf5c77a8fe51a6fd9ed47 \
+    --hash=sha256:b75d53c6f08bf6a46ebb00a15d106dd9d5d66e03f79cdbb23625dc683e6fed33
     # via kronoterm2mqtt (pyproject.toml)
 pyproject-api==1.7.1 \
     --hash=sha256:2dc1654062c2b27733d8fd4cdda672b22fe8741ef1dde8e3a998a9547b071eeb \
@@ -993,7 +993,9 @@ python-dateutil==2.9.0.post0 \
     --hash=sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3 \
     --hash=sha256:5d23f9d7e398684c7dac22b46a93fb71de568cfdcd004512f7072819e41ef54c \
     --hash=sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
-    # via arrow
+    # via
+    #   arrow
+    #   cli-base-utilities
 python-slugify==8.0.4 \
     --hash=sha256:276540b79961052b66b7d116620b36518847f52d5fd9e3a70164fc8c50faa6b8 \
     --hash=sha256:59202371d1d05b54a9e7720c5e038f928f45daaffe41dd10822f3907b937c856 \
