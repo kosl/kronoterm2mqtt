@@ -15,7 +15,7 @@ from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER
 from kronoterm2mqtt.user_settings import UserSettings, HeatPump
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
-from pymodbus.register_read_message import ReadHoldingRegistersResponse
+from pymodbus.pdu.register_read_message import ReadHoldingRegistersResponse
 
 
 logger = logging.getLogger(__name__)

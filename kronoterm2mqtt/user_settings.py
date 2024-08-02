@@ -33,7 +33,6 @@ class HeatPump:
     slave_id: int = 20  # Kronoterm System Module Modbus address
 
     timeout: float = 0.5
-    retry_on_empty: bool = True
 
     def get_definitions(self, verbosity) -> dict:
         definition_file_path = BASE_PATH / 'definitions' / f'{self.definitions_name}.toml'
@@ -70,7 +69,7 @@ class CustomEteraExpander:
     loop_operation: list = dataclasses.field(default_factory=lambda:[1,1,1,0])
 
     loop_operation: list = dataclasses.field(default_factory=lambda:[1, 1, 1, 0]) # Same as MA_2042
-    loop_sensors: list = dataclasses.field(default_factory=lambda:[0, 1, 2, 3]) # ID order in get_sensors() list
+    loop_sensors: list = dataclasses.field(default_factory=lambda:[0, 1, 5, 6]) # ID order in get_sensors() list
     loop_temperatue: list = dataclasses.field(default_factory=lambda:[24.0, 24.0, 24.0, 24.0]) # At 0°C
     heating_curve_coefficient: float = 0.2 #: loop/outside temp °C
 
@@ -80,7 +79,10 @@ class CustomEteraExpander:
     intra_tank_circulation_operation: int = 1 # 0 = disabled, 1 = enabled
     intra_tank_circulation_difference_on: float = 8.0 #: °C On > (pre-tank top - Hydro B DHW)
     intra_tank_circulation_difference_off: float = 5.0 #: °C Off < (pre-tank top - Hydro B DHW)
-    solar_sensors: list = dataclasses.field(default_factory=lambda:[5, 6, 7, 8]) #: id od pre-tank (top, bottom), Etera DHW, solar collector
+    solar_sensors: list = dataclasses.field(default_factory=lambda:[4, 3, 2, 8, 7]) #: id of solar collector, pre-tank (top, bottom), Etera DHW, DHW Circulator return
+    # Relays with id [0 to 3] are for loop circulation pumps
+    solar_pump_relay_id: int = 4
+    inter_tank_pump_relay_id: int = 5
 
 
     def get_definitions(self, verbosity) -> dict:

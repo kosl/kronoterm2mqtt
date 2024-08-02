@@ -16,9 +16,8 @@ from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 
 from pymodbus.client import ModbusSerialClient
 from pymodbus.exceptions import ModbusException
-from pymodbus.framer.rtu_framer import ModbusRtuFramer
 from pymodbus.pdu import ExceptionResponse
-from pymodbus.register_read_message import ReadHoldingRegistersResponse
+from pymodbus.pdu.register_read_message import ReadHoldingRegistersResponse
 from rich.pretty import pprint
 
 from kronoterm2mqtt.user_settings import HeatPump
@@ -37,13 +36,12 @@ def get_modbus_client(heat_pump: HeatPump, definitions: dict, verbosity: int) ->
         parity=conn_settings['parity'],
         stopbits=conn_settings['stopbits'],
         timeout=heat_pump.timeout,
-        retry_on_empty=heat_pump.retry_on_empty,
     )
     if verbosity:
         print('Connection arguments:')
         pprint(conn_kwargs)
 
-    client = ModbusSerialClient(heat_pump.port, framer=ModbusRtuFramer, broadcast_enable=False, **conn_kwargs)
+    client = ModbusSerialClient(heat_pump.port, **conn_kwargs)
     if verbosity > 1:
         print('connected:', client.connect())
         print(client)
