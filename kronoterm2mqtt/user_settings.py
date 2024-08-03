@@ -79,10 +79,13 @@ class CustomEteraExpander:
     intra_tank_circulation_operation: int = 1 # 0 = disabled, 1 = enabled
     intra_tank_circulation_difference_on: float = 8.0 #: °C On > (pre-tank top - Hydro B DHW)
     intra_tank_circulation_difference_off: float = 5.0 #: °C Off < (pre-tank top - Hydro B DHW)
-    solar_sensors: list = dataclasses.field(default_factory=lambda:[4, 3, 2, 8, 7]) #: id of solar collector, pre-tank (top, bottom), Etera DHW, DHW Circulator return
+    solar_sensors: list = dataclasses.field(default_factory=lambda:[4, 3, 2, 8, 7]) #: id of solar collector, solar tank (top, bottom), Etera DHW, DHW Circulator return
     # Relays with id [0 to 3] are for loop circulation pumps
     solar_pump_relay_id: int = 4
     inter_tank_pump_relay_id: int = 5
+    sensor_names: list = dataclasses.field(default_factory=lambda:["Spalnice", "Mansarda", "Nadgaražje", "Pritličje",
+                                                                   "Kolektorji", "Solarni zgoraj", "Solarni spodaj",
+                                                                   "Bojler", "Cirkulacija"])
 
 
     def get_definitions(self, verbosity) -> dict:
