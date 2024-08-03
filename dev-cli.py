@@ -110,6 +110,8 @@ def main(argv):
         verbose_check_call(PROJECT_SHELL_SCRIPT, *argv[1:])
     except subprocess.CalledProcessError as err:
         sys.exit(err.returncode)
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':
