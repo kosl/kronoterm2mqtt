@@ -74,18 +74,22 @@ class CustomEteraExpander:
     heating_curve_coefficient: float = 0.2 #: loop/outside temp °C
 
     solar_pump_operation: int = 1 #: 0 = disabled, 1 = enabled
-    solar_pump_difference_on: float = 8.0 #: °C On(solar collector - pre-tank bottom)
-    solar_pump_difference_off: float = 3.0 #: °C Off(solar collector - pre-tank bottom) 
-    intra_tank_circulation_operation: int = 1 # 0 = disabled, 1 = enabled
-    intra_tank_circulation_difference_on: float = 8.0 #: °C On > (pre-tank top - Hydro B DHW)
-    intra_tank_circulation_difference_off: float = 5.0 #: °C Off < (pre-tank top - Hydro B DHW)
-    solar_sensors: list = dataclasses.field(default_factory=lambda:[4, 3, 2, 8, 7]) #: id of solar collector, solar tank (top, bottom), Etera DHW, DHW Circulator return
+    solar_pump_difference_on: float = 8.0 #: °C On(solar collector - solar tank bottom)
+    solar_pump_difference_off: float = 3.0 #: °C Off(solar collector - solart tank bottom)
+    intra_tank_circulation_operation: int = 0 # 0 = disabled, 1 = enabled
+    intra_tank_circulation_difference_on: float = 8.0 #: °C On > (solar tank top - Hydro B DHW)
+    intra_tank_circulation_difference_off: float = 5.0 #: °C Off < (solar tank top - Hydro B DHW)
+    #: id of solar collector, solar tank (top, bottom), Etera Hydro B DHW, DHW Circulator return
+    solar_sensors: list = dataclasses.field(default_factory=lambda:[4, 3, 2, 8, 7])
     # Relays with id [0 to 3] are for loop circulation pumps
     solar_pump_relay_id: int = 4
     inter_tank_pump_relay_id: int = 5
     sensor_names: list = dataclasses.field(default_factory=lambda:["Spalnice", "Mansarda", "Nadgaražje", "Pritličje",
                                                                    "Kolektorji", "Solarni zgoraj", "Solarni spodaj",
                                                                    "Bojler", "Cirkulacija"])
+    # empty string means relay is unused
+    relay_names: list =  dataclasses.field(default_factory=lambda:["Črpalka spalnic", "Črpalka mansarde", "Črpalka nadgaražja", "",
+                                                                   "Črpalka kolektorjev", "Cirkulacija med bojlerjema", "", ""])
 
 
     def get_definitions(self, verbosity) -> dict:

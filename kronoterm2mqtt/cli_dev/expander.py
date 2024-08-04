@@ -137,12 +137,14 @@ def expander_loop(verbosity: int):
     """Runs Custom expander control of a solar pump"""
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
-    expander: CustomEteraExpander = user_settings.custom_expander
-    relay = expander.solar_pump_relay_id
+    relay = user_settings.custom_expander.solar_pump_relay_id
     port = user_settings.custom_expander.port
-
     etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler)
     
+    #from kronoterm2mqtt.api import get_modbus_client
+    #definitions = user_settings.heat_pump.get_definitions(verbosity)
+    #client = get_modbus_client(user_settings.heat_pump, definitions, verbosity)
+        
     print('Starting manual control of a solar pump')
     
     async def temperature_loop():
@@ -151,13 +153,13 @@ def expander_loop(verbosity: int):
             try:
                 temps = await etera.get_temperatures()
                 
-                collector_temperature = temps[expander.solar_sensors[0]]
-                tank_temperature = temps[expander.solar_sensors[2]]
+                collector_temperature = temps[user_settings.custom_expander.solar_sensors[0]]
+                tank_temperature = temps[user_settings.custom_expander.solar_sensors[2]]
                 difference = collector_temperature - tank_temperature
-                if difference > expander.solar_pump_difference_on:
+                if difference > user_settings.custom_expander.solar_pump_difference_on:
                     await etera.set_relay(relay, True)
                     state = 'switch ON'
-                elif difference < expander.solar_pump_difference_off:
+                elif difference < user_settings.custom_expander.solar_pump_difference_off:
                     await etera.set_relay(relay, False)
                     state = 'switch OFF'
                 else:
@@ -169,7 +171,6 @@ def expander_loop(verbosity: int):
             finally:
                 await asyncio.sleep(60)
             
-
     async def loop():
         await asyncio.gather(etera.run_forever(),
                              temperature_loop()

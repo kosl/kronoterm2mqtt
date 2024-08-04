@@ -13,6 +13,7 @@ from kronoterm2mqtt.api import get_modbus_client
 import kronoterm2mqtt
 from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER
 from kronoterm2mqtt.user_settings import UserSettings, HeatPump
+from kronoterm2mqtt.expander import ExpanderMqttHandler
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
 from pymodbus.pdu.register_read_message import ReadHoldingRegistersResponse
@@ -28,6 +29,7 @@ class KronotermMqttHandler:
         self.device_name = self.heat_pump.device_name
         self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
         self.mqtt_client.loop_start()
+        self.expander = ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity) if self.user_settings.custom_expander.module_enabled else None
         self.main_device = None
         self.verbosity = verbosity
         self.sensors = dict()
@@ -45,16 +47,9 @@ class KronotermMqttHandler:
             sw_version=kronoterm2mqtt.__version__,
             config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
         )
-        if self.user_settings.custom_expander.module_enabled:
-            self.mqtt_device = MqttDevice(
-                main_device=self.main_device,
-                name="Custom expander",
-                uid="expander",
-                manufacturer='DIY',
-                sw_version=kronoterm2mqtt.__version__,
-                config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
-            )
-
+        
+        if self.expander is not None:
+            self.expander.init_device(self.main_device, verbosity)
 
         definitions = self.heat_pump.get_definitions(verbosity)
         
@@ -110,11 +105,13 @@ class KronotermMqttHandler:
                         value = float(value * scale)
                         sensor.set_state(value)
                         sensor.publish(self.mqtt_client)
+                        if self.expander is not None:
+                            await self.expander.update_sensors()
             
                         print('\n', flush=True)
                         print('Wait', end='...')
                         for i in range(10, 0, -1):
-                            await asyncio.sleep(0.5)
+                            await asyncio.sleep(1)
                             print(i, end='...', flush=True)
 
         await asyncio.gather(
