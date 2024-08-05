@@ -228,7 +228,7 @@ class EteraUartBridge:
 
                         command.finished.set()
 
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.05)
 
     def set_device_reset_handler(self, handler: callable):
         if inspect.iscoroutinefunction(handler) or handler is None:

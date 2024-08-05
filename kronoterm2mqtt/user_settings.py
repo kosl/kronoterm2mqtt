@@ -7,7 +7,7 @@ from cli_base.systemd.data_classes import BaseSystemdServiceInfo, BaseSystemdSer
 from cli_base.toml_settings.api import TomlSettings
 from ha_services.mqtt4homeassistant.data_classes import MqttSettings
 from rich import print  # noqa
-
+from rich.pretty import pprint
 
 
 from kronoterm2mqtt.constants import BASE_PATH
@@ -53,7 +53,7 @@ class CustomEteraExpander:
     See CustomEteraExpander class for more info.
     """
 
-    module_enabled: int = 0
+    module_enabled: bool = False
     uid: str = 'etera_expander_module'
     name: str = 'Custom ETERA Expander Module'
     model: str = 'DIY' # Just for MQTT sub-device model info

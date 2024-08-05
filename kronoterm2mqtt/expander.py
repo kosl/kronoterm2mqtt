@@ -27,6 +27,7 @@ class ExpanderMqttHandler:
         self.mqtt_device: MqttDevice | None = None
         self.sensors = list()
         self.relays = list()
+        self.relay_state = list()
         self.etera = None
 
 
@@ -44,8 +45,9 @@ class ExpanderMqttHandler:
                 main_device=main_device,
                 name="ETERA expander",
                 uid="expander",
-                manufacturer='DIY by Wigaun',
-                sw_version=kronoterm2mqtt.__version__,
+                manufacturer='Wigaun DIY',
+                model='Arduino nano',
+                sw_version='1.0.8',
                 config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
             )
         for name in self.user_settings.custom_expander.sensor_names:
@@ -59,26 +61,49 @@ class ExpanderMqttHandler:
                 suggested_display_precision= 1,
             ))
         for name in self.user_settings.custom_expander.relay_names:
-            self.relays.append((BinarySensor(
+            self.relays.append(BinarySensor(
                     device=self.mqtt_device,
                     name=name,
                     uid=slugify(name, '_').lower(),
                     device_class='running',
-            ) if len(name) else None, False)) # relay in use?
+            ) if len(name) else None) # relay in use?
+            self.relay_state.append(False)
 
-    async def update_sensors(self):
-        await self.etera.ready()
-        temperatures = await self.etera.get_temperatures()
-        settings = self.user_settings.custom_expander
-        ids = settings.loop_sensors + settings.solar_sensors
-        for i, sensor in enumerate(self.sensors):
-            value = temperatures[ids[i]]
-            sensor.set_state(value)
-            sensor.publish(self.mqtt_client)
-        relay_names = self.user_settings.custom_expander.relay_names
-        for relay, value in self.relays:
+    async def update_sensors(self, verbosity: int):
+        try:
+            await self.etera.ready()
+            temperatures = await self.etera.get_temperatures()
+            settings = self.user_settings.custom_expander
+            ids = settings.loop_sensors + settings.solar_sensors
+            solar_pump_relay_id = settings.solar_pump_relay_id
+
+            for i, sensor in enumerate(self.sensors):
+                value = temperatures[ids[i]]
+                sensor.set_state(value)
+                sensor.publish(self.mqtt_client)    
+            #### Expander control start
+            collector_temperature = temperatures[settings.solar_sensors[0]]
+            tank_temperature = temperatures[settings.solar_sensors[2]]
+            difference = collector_temperature - tank_temperature
+            if difference > settings.solar_pump_difference_on:
+                await self.etera.set_relay(solar_pump_relay_id, True)
+                self.relay_state[solar_pump_relay_id] = True
+                state = 'switch ON'
+            elif difference < settings.solar_pump_difference_off:
+                await self.etera.set_relay(solar_pump_relay_id, False)
+                state = 'switch OFF'
+                self.relay_state[solar_pump_relay_id] = False
+            else:
+                state = 'switch unchanged'
+            if verbosity:
+                print(f'Temperatures {temperatures} Difference {difference} -> {state}')
+            #### Expander control end
+        except EteraUartBridge.DeviceException as e:
+                print('Get temperatures error', e)
+        relay_names = settings.relay_names
+        for i, relay in enumerate(self.relays):
             if relay is not None:
-                relay.set_state(relay.ON if value else relay.OFF)
+                relay.set_state(relay.ON if self.relay_state[i] else relay.OFF)
                 relay.publish(self.mqtt_client)
 
     

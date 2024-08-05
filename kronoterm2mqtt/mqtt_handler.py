@@ -56,7 +56,7 @@ class KronotermMqttHandler:
         parameters = definitions['sensor']
 
         for parameter in parameters:
-            if verbosity:
+            if verbosity > 1:
                 print(f'Creating sensor {parameter}')
 
             address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
@@ -105,14 +105,14 @@ class KronotermMqttHandler:
                         value = float(value * scale)
                         sensor.set_state(value)
                         sensor.publish(self.mqtt_client)
-                        if self.expander is not None:
-                            await self.expander.update_sensors()
+                if self.expander is not None:
+                    await self.expander.update_sensors(self.verbosity)
             
-                        print('\n', flush=True)
-                        print('Wait', end='...')
-                        for i in range(10, 0, -1):
-                            await asyncio.sleep(1)
-                            print(i, end='...', flush=True)
+                print('\n', flush=True)
+                print('Wait', end='...')
+                for i in range(10, 0, -1):
+                    await asyncio.sleep(1)
+                    print(i, end='...', flush=True)
 
         await asyncio.gather(
             update_sensors(),

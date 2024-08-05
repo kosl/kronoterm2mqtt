@@ -18,10 +18,10 @@ bx-py-utils==93 \
     # via
     #   cli-base-utilities
     #   kronoterm2mqtt (pyproject.toml)
-cli-base-utilities==0.10.1 \
-    --hash=sha256:75813e387e8b09a08db985ea27c93a856cd9585b0922a9df26b794cd0280346b \
-    --hash=sha256:9fd0cc0f4a6c8ee41fb9ffb2757005397d44f85425ca38851ff8e5976100a479 \
-    --hash=sha256:efff0654faf2226404c499cba71e39bcb4a14f3e1207f0ddd7dfb8276993c93e
+cli-base-utilities==0.10.3 \
+    --hash=sha256:5c54cdd5e5122abf6a86aa6926b4b2dbc6632c113885692c8d95f531bb2b181b \
+    --hash=sha256:95b1119d9f4bb335974faf655e853f58bdd04af0bac99d22005b6fb79b9e4b14 \
+    --hash=sha256:b987cea398c2675b05fcab1bd845f95688aeb8161d5ea9dad103f1c728b16dac
     # via
     #   ha-services
     #   kronoterm2mqtt (pyproject.toml)
