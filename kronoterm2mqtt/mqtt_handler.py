@@ -107,12 +107,15 @@ class KronotermMqttHandler:
                         sensor.publish(self.mqtt_client)
                 if self.expander is not None:
                     await self.expander.update_sensors(self.verbosity)
-            
-                print('\n', flush=True)
-                print('Wait', end='...')
-                for i in range(10, 0, -1):
-                    await asyncio.sleep(1)
-                    print(i, end='...', flush=True)
+
+                if self.verbosity:
+                    print('\n', flush=True)
+                    print('Wait', end='...')
+                    for i in range(10, 0, -1):
+                        await asyncio.sleep(1)
+                        print(i, end='...', flush=True)
+                else:
+                    await asyncio.sleep(10)
 
         await asyncio.gather(
             update_sensors(),
