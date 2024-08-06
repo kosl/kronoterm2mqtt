@@ -17,7 +17,10 @@ from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
 
 
 async def etera_reset_handler():
-    print('Device just reset...')
+    print('Custom ETERA expander just reset...')
+
+async def etera_message_handler(message: bytes):
+    print(message.decode())
 
 
 class ExpanderMqttHandler:
@@ -38,7 +41,8 @@ class ExpanderMqttHandler:
         port = self.user_settings.custom_expander.port
         print(f"Custom expander is using port {port}")
 
-        self.etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler)
+        self.etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
+                                     on_device_message_handler=etera_message_handler)
         loop = asyncio.create_task(self.etera.run_forever())
 
         self.mqtt_device = MqttDevice(

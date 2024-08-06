@@ -92,6 +92,7 @@ class KronotermMqttHandler:
             self.init_device(self.verbosity)
 
         async def update_sensors():
+            print("Kronoterm to MQTT publish loop started...")
             while True:
                 for address in self.sensors:
                     sensor, scale = self.sensors[address]

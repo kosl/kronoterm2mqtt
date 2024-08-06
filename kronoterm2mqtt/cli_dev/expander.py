@@ -17,6 +17,9 @@ from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
 async def etera_reset_handler():
     print('Device just reset...')
 
+async def etera_message_handler(message: bytes):
+    print(message.decode())
+
 
 @cli.command()
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
@@ -27,7 +30,8 @@ def expander_temperatures(verbosity: int):
 
     port = user_settings.custom_expander.port
 
-    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler)
+    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
+                            on_device_message_handler=etera_message_handler)
 
     print('Starting temperature read from custom expander')
     
@@ -61,7 +65,8 @@ def expander_motors(opening, verbosity: int):
 
     port = user_settings.custom_expander.port
 
-    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler)
+    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
+                            on_device_message_handler=etera_message_handler)
 
     duration = 120
 
@@ -109,7 +114,8 @@ def expander_relay(relay: int, on: bool, verbosity: int):
 
     port = user_settings.custom_expander.port
 
-    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler)
+    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
+                            on_device_message_handler=etera_message_handler)
 
     print(f'Switching relay {relay} to {on}')
 
@@ -139,12 +145,9 @@ def expander_loop(verbosity: int):
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
     relay = user_settings.custom_expander.solar_pump_relay_id
     port = user_settings.custom_expander.port
-    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler)
+    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
+                            on_device_message_handler=etera_message_handler)
     
-    #from kronoterm2mqtt.api import get_modbus_client
-    #definitions = user_settings.heat_pump.get_definitions(verbosity)
-    #client = get_modbus_client(user_settings.heat_pump, definitions, verbosity)
-        
     print('Starting manual control of a solar pump')
     
     async def temperature_loop():
