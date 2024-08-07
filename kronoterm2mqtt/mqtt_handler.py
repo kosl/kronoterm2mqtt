@@ -1,9 +1,11 @@
 import logging
 import time
 import asyncio
+import itertools
 
 from decimal import Decimal
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
+from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.device import  MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
@@ -33,6 +35,8 @@ class KronotermMqttHandler:
         self.main_device = None
         self.verbosity = verbosity
         self.sensors = dict()
+        self.binary_sensors = dict()
+        self.enum_sensors = dict()
 
     def init_device(self, verbosity: int):
         """
@@ -73,8 +77,34 @@ class KronotermMqttHandler:
                 ),
                 Decimal(str(parameter['scale'])),
             )
-                
-                                     
+
+        binary_sensor_definitions = definitions['binary_sensor']
+        for parameter in binary_sensor_definitions:
+            address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation! 
+            self.binary_sensors[address] = BinarySensor(
+                device=self.main_device,
+                name=parameter['name'],
+                uid=slugify(parameter['name'], '_').lower(),
+                device_class=parameter['device_class'] if len(parameter['device_class']) else None,
+            )
+        enum_sensor_definitions = definitions['enum_sensor']
+        for parameter in enum_sensor_definitions:
+            address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
+            self.enum_sensors[address] = (
+                Sensor(
+                    device=self.main_device,
+                    name=parameter['name'],
+                    uid=slugify(parameter['name'], '_').lower(),
+                    device_class='enum',
+                    state_class=None,
+                ),
+                *parameter['options'],
+            )
+
+    def address_ranges(self, i):
+        for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+            b = list(b)
+            yield b[0][1], b[-1][1]
 
         
     async def publish_loop(self):
@@ -91,12 +121,17 @@ class KronotermMqttHandler:
         if self.main_device is None:
             self.init_device(self.verbosity)
 
+        addresses = set(self.sensors.keys())
+        addresses.union(set(self.binary_sensors.keys()))
+        addresses.union(set(self.enum_sensors.keys()))
+        print(f"Addresses: {len(list(addresses))}")
+        print(f"Ranges: {len(list(self.address_ranges(list(addresses))))}")
+        
         async def update_sensors():
             print("Kronoterm to MQTT publish loop started...")
             while True:
                 for address in self.sensors:
                     sensor, scale = self.sensors[address]
-
                     response = client.read_holding_registers(address=address, count=1, slave=slave_id)
                     if isinstance(response, (ExceptionResponse, ModbusIOException)):
                         print('Error:', response)
@@ -106,6 +141,32 @@ class KronotermMqttHandler:
                         value = float(value * scale)
                         sensor.set_state(value)
                         sensor.publish(self.mqtt_client)
+                for address in self.binary_sensors:
+                    response = client.read_holding_registers(address=address, count=1, slave=slave_id)
+                    if isinstance(response, (ExceptionResponse, ModbusIOException)):
+                        print('Error:', response)
+                    else:
+                        assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
+                        sensor = self.binary_sensors[address]
+                        value = response.registers[0]
+                        sensor.set_state(sensor.ON if value else sensor.OFF)
+                        sensor.publish(self.mqtt_client)
+
+                for address in self.enum_sensors:
+                    response = client.read_holding_registers(address=address, count=1, slave=slave_id)
+                    if isinstance(response, (ExceptionResponse, ModbusIOException)):
+                        print('Error:', response)
+                    else:
+                        assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
+                        sensor, options = self.enum_sensors[address]
+                        value = response.registers[0]
+                        for index, key in enumerate(options['keys']):
+                            if value == key:
+                                break
+                        sensor.set_state(options['values'][index])
+                        sensor.publish(self.mqtt_client)
+
+                        
                 if self.expander is not None:
                     await self.expander.update_sensors(self.verbosity)
 

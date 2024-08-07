@@ -4,16 +4,6 @@ bytesize = 8
 parity = "N"
 stopbits = 1
 
-[[sensor]]
-register = 2000
-name = "System operation"
-device_class = "enum"
-state_class = ""
-unit_of_measurement = ""
-scale = 1
-[[sensor.options]]
-keys = [0, 1]
-values = ["OFF", "ON"]
 
 
 [[sensor]]
@@ -170,15 +160,41 @@ scale = 0.1
 [[sensor]]
 register = 2371
 name = "COP"
-device_class = ""
+device_class = "aqi"
 state_class = "measurement"
-unit_of_measurement = ""
+unit_of_measurement = "/"
 scale = 0.01
 
 [[sensor]]
 register = 2372
 name = "SCOP"
-device_class = ""
+device_class = "aqi"
 state_class = "measurement"
-unit_of_measurement = ""
+unit_of_measurement = "/"
 scale = 0.01
+
+
+[[enum_sensor]]
+register = 2001
+name = "Working function"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3, 4, 5, 7]
+values = ["heating", "DHW", "cooling", "pool heating", "thermal disinfection", "standby", "remote deactivation"]
+
+
+
+[[binary_sensor]]
+register = 2000
+name = "System operation"
+device_class = ""
+
+[[binary_sensor]]
+register = 2045
+name = "Loop 1 circulation pump status"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2055
+name = "Loop 2 circulation pump status"
+device_class = "running"
+

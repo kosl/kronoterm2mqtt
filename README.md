@@ -109,6 +109,18 @@ slave_id=20
                           SCOP 0.00 
 ```
 
+## Using PyPi repository
+
+*kronoterm2mqtt* is released under PyPi so that it is easier to
+install it in a virtual environment such as:
+
+```sh
+python -m venv venv
+venv/bin/pip install kronoterm2mqtt
+venv/bin/kronoterm2mqtt_app edit-settings
+venv/bin/kronoterm2mqtt_app print-values
+```
+
 ## Images
 ### Modbus RTU connection within a Kronoterm ETERA heat pump from Raspberry Pi3B to TEX interface
 ![](images/etera.jpeg)
@@ -123,7 +135,7 @@ Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
 
 ## TODO
 
-- [ ] `enum` sensor to convert status registers to more meaningfull text readings instead of float sensor
+- [*] `enum_sensor` to convert status registers to more meaningfull text readings instead of float sensor
 - [ ] `switch` to turn on at least DHW circulation pump manually in Home Assistant and then programatically since 6 transitions provided by the heat pump is too limited
 - [ ] `binary_sensor` to show some two-state states
 - [ ] `status_sensor` to decode binary statuses in `enum` like manner combined. For example error messages.
