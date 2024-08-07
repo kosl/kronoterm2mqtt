@@ -68,8 +68,8 @@ class CustomEteraExpander:
 
     loop_operation: list = dataclasses.field(default_factory=lambda:[1,1,1,0])
 
-    loop_operation: list = dataclasses.field(default_factory=lambda:[1, 1, 1, 0]) # Same as MA_2042
-    loop_sensors: list = dataclasses.field(default_factory=lambda:[0, 1, 5, 6]) # ID order in get_sensors() list
+    loop_operation: list = dataclasses.field(default_factory=lambda:[1, 1, 1, 0]) 
+    loop_sensors: list = dataclasses.field(default_factory=lambda:[1, 6, 5, 0])
     loop_temperatue: list = dataclasses.field(default_factory=lambda:[24.0, 24.0, 24.0, 24.0]) # At 0°C
     heating_curve_coefficient: float = 0.2 #: loop/outside temp °C
 
