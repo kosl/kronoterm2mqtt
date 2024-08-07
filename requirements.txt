@@ -11,10 +11,9 @@ async-timeout==4.0.3 \
     --hash=sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028 \
     --hash=sha256:fd893e4cb1d9dff66d0e0576cc6376a23eacbbcd43b6607e4d3ecfae1ab15367
     # via cli-base-utilities
-bx-py-utils==93 \
-    --hash=sha256:003cc4c66950949020f1d3b8bb6b32bba42878462ea853b759f3750e920a0cc9 \
-    --hash=sha256:6d9211f0d01a51bb83cc260b4a5293b8364ce539d60a59975fc6d95e103e9041 \
-    --hash=sha256:d603449d5e481035ae1186b34e57465f9e5f8235c4f7f1a73b98899a475b2b28
+bx-py-utils==94 \
+    --hash=sha256:24b26873e66a1ef61e0f2b709f9a1a2b90a44bf29e86ad72be193c1dd49b17fe \
+    --hash=sha256:cb8c1f32d67d152fa5fd355503a3f69ddc5a6b5d79fee1acc16f9d55a5605130
     # via
     #   cli-base-utilities
     #   kronoterm2mqtt (pyproject.toml)

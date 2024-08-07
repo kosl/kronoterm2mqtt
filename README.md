@@ -18,7 +18,7 @@ for solar DHW pre-heat boiler. This expander board is using Arduino
 nano MCU to provide serial (UART) interface for Raspberry Pi
 control. See [Etera UART GPIO expander
 project](https://github.com/Lenart12/etera-uart-bridge) for help on
-protocol and interface. By default, this module functionality is
+the protocol and interface. By default, this module functionality is
 disabled so that only Kronoterm Heat Pump MQTT can still be used
 without having this hardware module.
 
@@ -33,25 +33,35 @@ Clone the sources and just call the CLI to create a Python Virtualenv, e.g.:
 ```
 The output of `./cli.py --help` looks like:
 
-```
-Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...      
-                                             
-╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ edit-settings              Edit the settings file. On first call: Create the default one.                    │
-│ print-registers            Print RAW modbus register data                                                    │
-│ print-settings             Display (anonymized) MQTT server username and password                            │
-│ print-values               Print all values from the definition                                              │
-│ probe-usb-ports            Probe through the USB ports and print the values from definition                  │
-│ publish-loop               Publish KRONOTERM registers to Home Assistant MQTT                                │
-│ systemd-debug              Print Systemd service template + context + rendered file content.                 │
-│ systemd-remove             Remove Systemd service file. (May need sudo)                                      │
-│ systemd-setup              Write Systemd service file, enable it and (re-)start the service. (May need sud   │
-│ systemd-status             Display status of systemd service. (May need sudo)                                │
-│ systemd-stop               Stops the systemd service. (May need sudo)                                        │
-│ test-mqtt-connection       Test connection to MQTT Server                                                    │
-│ version                    Print version and exit                                                            │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────
-```
+```sh
+kronoterm2mqtt v0.1.3 bed9746 (/home/leon/kronoterm2mqtt)
+                                                                                            
+ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...                                                
+                                                                                            
+╭─ Options ────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────────────────╮
+│ edit-settings         Edit the settings file. On first call: Create the default one.     │
+│ print-registers       Print RAW modbus register data                                     │
+│ print-settings        Display (anonymized) MQTT server username and password             │
+│ print-values          Print all values from the definition                               │
+│ probe-usb-ports       Probe through the USB ports and print the values from definition   │
+│ publish-loop          Publish KRONOTERM registers to Home Assistant MQTT                 │
+│ systemd-debug         Print Systemd service template + context + rendered file content.  │
+│ systemd-remove        Remove Systemd service file. (May need sudo)                       │
+│ systemd-setup         Write Systemd service file, enable it and (re-)start the service.  │
+│                       (May need sudo)                                                    │
+│ systemd-status        Display status of systemd service. (May need sudo)                 │
+│ systemd-stop          Stops the systemd service. (May need sudo)                         │
+│ test-mqtt-connection  Test connection to MQTT Server                                     │
+│ version               Print version and exit                                             │
+╰──────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                            
+ Project Homepage: https://github.com/kosl/kronoterm2mqtt
+ ```
+
+## Setup
 
 Once having hardware (Modbus wiring) correctly installed the steps to get running are:
 
@@ -71,12 +81,43 @@ it will be skipped during definitions scan. There are quite some
 number of disabled sensors that can be shown and the TOML file can get
 more sensors if required.
 
-## Images
+### print-values
+```sh
+$ ./cli.py print-values
 
-![Modbus RTU connection within Kronoterm ETERA heat pump from Raspberry Pi 3B to TEX interface](images/etera.jpeg)
++ /home/leon/kronoterm2mqtt/.venv-app/bin/kronoterm2mqtt_app print-values
+
+kronoterm2mqtt v0.1.3 bed9746 (/home/leon/kronoterm2mqtt)
+                                        (Set log level 0: ERROR)
+Connect to /dev/ttyUSB0...
+slave_id=20
+              System operation 1 
+          HP inlet temperature 29.7 °C
+               DHW temperature 46.4 °C
+           Outside temperature 28.4 °C
+         HP outlet temperature 29.3 °C
+       Evaporating temperature 30.4 °C
+        Compressor temperature 30.1 °C
+     Current power consumption 0.0 W
+            Loop 1 temperature 29.6 °C
+            Loop 2 temperature 27.3 °C
+ Loop 2 thermostat temperature 25.0 °C
+       Heating system pressure 1.4 bar
+               Source pressure 1.9 bar
+                           COP 0.00 
+                          SCOP 0.00 
+```
+
+## Images
+### Modbus RTU connection within a Kronoterm ETERA heat pump from Raspberry Pi3B to TEX interface
+![](images/etera.jpeg)
+
+Raspberry Pi3B (running Home Assistant) and a small 5-port ethernet
+switch below are powered by a buckle step down (12->5V) converters.
 
 ### Home Assistant
 
+Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
 ![Home Assistant](images/ha-sensors.png)
 
 ## TODO
