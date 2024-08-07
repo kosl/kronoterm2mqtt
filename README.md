@@ -33,7 +33,7 @@ Clone the sources and just call the CLI to create a Python Virtualenv, e.g.:
 ```
 The output of `./cli.py --help` looks like:
 
-~~~
+```
 Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...      
                                              
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────────────────╮
@@ -51,7 +51,7 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ test-mqtt-connection       Test connection to MQTT Server                                                    │
 │ version                    Print version and exit                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────
-~~~
+```
 
 Once having hardware (Modbus wiring) correctly installed the steps to get running are:
 
@@ -61,12 +61,12 @@ Once having hardware (Modbus wiring) correctly installed the steps to get runnin
 3. Install and configure MQTT integration in Home assistant
 4. `./cli-app.py publish-loop` to see the heat pump under Home Assistant -> Settings -> Devices & Services -> MQTT.
 5. `sudo ./cli-app.py systemd-setup` to create permanent service, and
-6. `sudo ./cli-app.py systemd-start to start the `publish-loop` service
+6. `sudo ./cli-app.py systemd-start` to start the `publish-loop` service
 
 There are some other useful commands to debug (`-v` switch) and
 develop it further. Unwanted registers can be commented out by
 changing `kronoterm2mqtt/definitions/kronoterm_ksm.toml` individual
-`[[sensor]]`` entries to something like `[[sensor_disabled]]` so that
+`[[sensor]]` entries to something like `[[sensor_disabled]]` so that
 it will be skipped during definitions scan. There are quite some
 number of disabled sensors that can be shown and the TOML file can get
 more sensors if required.

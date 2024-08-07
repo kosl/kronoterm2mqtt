@@ -7,7 +7,7 @@ readme = "README.md"
 authors = [
     {name = 'Leon Kos', email = 'leon.kos@lecad.fs.uni-lj.si'}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "ha-services>=2.5.0",  # https://github.com/jedie/ha-services
     "cli-base-utilities>=0.8.0",  # https://github.com/jedie/cli-base-utilities
@@ -73,7 +73,7 @@ version = {attr = "kronoterm2mqtt.__version__"}
 
 
 [tool.darker]
-src = ['.']
+src = ['kronoterm2mqtt']
 revision = "origin/main..."
 line_length = 119
 color = true
