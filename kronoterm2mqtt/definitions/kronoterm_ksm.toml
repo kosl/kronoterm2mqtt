@@ -181,6 +181,12 @@ name = "Working function"
 keys = [0, 1, 2, 3, 4, 5, 7]
 values = ["heating", "DHW", "cooling", "pool heating", "thermal disinfection", "standby", "remote deactivation"]
 
+[[enum_sensor]]
+register = 2028
+name = "DHW Circulation pumps status"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3]
+values = ["OFF", "running", "DHW running", "both running"]
 
 
 [[binary_sensor]]

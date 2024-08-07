@@ -37,6 +37,8 @@ class KronotermMqttHandler:
         self.sensors = dict()
         self.binary_sensors = dict()
         self.enum_sensors = dict()
+        self.address_ranges = list()
+        self.registers  = dict()
 
     def init_device(self, verbosity: int):
         """
@@ -101,10 +103,42 @@ class KronotermMqttHandler:
                 *parameter['options'],
             )
 
-    def address_ranges(self, i):
+
+        # Prepare ranges of registers for faster reads in blocks
+        addresses = set(self.sensors.keys())
+        addresses = addresses.union(set(self.binary_sensors.keys()))
+        addresses = sorted(addresses.union(set(self.enum_sensors.keys())))
+        self.address_ranges = list(self.ranges(list(addresses)))
+        if self.verbosity:
+            print(f"Addresses: {len(addresses)} Ranges: {len(self.address_ranges)}")
+
+
+
+    def ranges(self, i: list) -> list:
+        """Prepare intervals of modbus addresses for fetching register groups
+        See https://stackoverflow.com/questions/4628333
+        """
         for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
             b = list(b)
             yield b[0][1], b[-1][1]
+
+    def read_heat_pump_register_blocks(self, modbus_client, slave_id):
+        """In order to minimize Modbus communication the register
+        values are fetched in ranges that are computed initially from
+        definitions and then read in blocks (ranges)
+        """
+        for address_start, address_end in self.address_ranges:
+            count = address_end - address_start + 1
+            response = modbus_client.read_holding_registers(address=address_start, count=count, slave=slave_id)
+            if isinstance(response, (ExceptionResponse, ModbusIOException)):
+                print('Error:', response)
+            else:
+                assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
+                for i in range(count):
+                    value = response.registers[i]
+                    self.registers[address_start+i] = value
+        if self.verbosity:
+            print(f"Registers: {self.registers}")
 
         
     async def publish_loop(self):
@@ -120,51 +154,30 @@ class KronotermMqttHandler:
 
         if self.main_device is None:
             self.init_device(self.verbosity)
-
-        addresses = set(self.sensors.keys())
-        addresses.union(set(self.binary_sensors.keys()))
-        addresses.union(set(self.enum_sensors.keys()))
-        print(f"Addresses: {len(list(addresses))}")
-        print(f"Ranges: {len(list(self.address_ranges(list(addresses))))}")
         
         async def update_sensors():
             print("Kronoterm to MQTT publish loop started...")
             while True:
+                self.read_heat_pump_register_blocks(client, slave_id)
                 for address in self.sensors:
                     sensor, scale = self.sensors[address]
-                    response = client.read_holding_registers(address=address, count=1, slave=slave_id)
-                    if isinstance(response, (ExceptionResponse, ModbusIOException)):
-                        print('Error:', response)
-                    else:
-                        assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
-                        value = response.registers[0]
-                        value = float(value * scale)
-                        sensor.set_state(value)
-                        sensor.publish(self.mqtt_client)
+                    value = self.registers[address]
+                    value = float(value * scale)
+                    sensor.set_state(value)
+                    sensor.publish(self.mqtt_client)
                 for address in self.binary_sensors:
-                    response = client.read_holding_registers(address=address, count=1, slave=slave_id)
-                    if isinstance(response, (ExceptionResponse, ModbusIOException)):
-                        print('Error:', response)
-                    else:
-                        assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
-                        sensor = self.binary_sensors[address]
-                        value = response.registers[0]
-                        sensor.set_state(sensor.ON if value else sensor.OFF)
-                        sensor.publish(self.mqtt_client)
-
+                    sensor = self.binary_sensors[address]
+                    value = self.registers[address]
+                    sensor.set_state(sensor.ON if value else sensor.OFF)
+                    sensor.publish(self.mqtt_client)
                 for address in self.enum_sensors:
-                    response = client.read_holding_registers(address=address, count=1, slave=slave_id)
-                    if isinstance(response, (ExceptionResponse, ModbusIOException)):
-                        print('Error:', response)
-                    else:
-                        assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
-                        sensor, options = self.enum_sensors[address]
-                        value = response.registers[0]
-                        for index, key in enumerate(options['keys']):
-                            if value == key:
-                                break
-                        sensor.set_state(options['values'][index])
-                        sensor.publish(self.mqtt_client)
+                    sensor, options = self.enum_sensors[address]
+                    value = self.registers[address]
+                    for index, key in enumerate(options['keys']):
+                        if value == key:
+                            break
+                    sensor.set_state(options['values'][index])
+                    sensor.publish(self.mqtt_client)
 
                         
                 if self.expander is not None:
