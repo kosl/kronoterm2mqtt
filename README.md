@@ -1,5 +1,6 @@
 # kronoterm2mqtt
 
+[![tests](https://github.com/kosl/kronoterm2mqtt/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/kosl/kronoterm2mqtt/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/github/kosl/kronoterm2mqtt/branch/main/graph/badge.svg)](https://app.codecov.io/github/kosl/kronoterm2mqtt)
 [![kronoterm2mqtt @ PyPi](https://img.shields.io/pypi/v/kronoterm2mqtt?label=kronoterm2mqtt%20%40%20PyPi)](https://pypi.org/project/kronoterm2mqtt/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/kronoterm2mqtt)](https://github.com/kosl/kronoterm2mqtt/blob/main/pyproject.toml)
