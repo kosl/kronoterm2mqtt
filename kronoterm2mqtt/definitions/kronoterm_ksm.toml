@@ -204,3 +204,15 @@ device_class = "running"
 register = 2055
 name = "Loop 2 circulation pump status"
 device_class = "running"
+
+[[binary_sensor]]
+register = 2002
+name = "Activation of additional source"
+device_class = "power"
+bit = 0
+
+[[binary_sensor]]
+register = 2002
+name = "Aditional source 1 is active"
+device_class = "running"
+bit = 4

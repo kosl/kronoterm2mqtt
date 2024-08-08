@@ -136,7 +136,7 @@ Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
 - [x] `enum_sensor` to convert status registers to more meaningfull text readings instead of float sensor
 - [x] `switch` to turn on at least DHW circulation pump manually in Home Assistant and then programatically since 6 transitions provided by the heat pump is too limited
 - [x] `binary_sensor` to show some two-state states
-- [ ] `status_sensor` to decode binary statuses in `enum` like manner combined. For example error messages.
+- [x] `binary_sensor` to decode binary statuses in `enum` like manner combined. For example error messages or "additional activations".
 - [ ] Upgrade [ha-services](https://github.com/jedie/ha-services) with `number` component allowing change of some numeric parameters (set temperatures, etc.).
 
 ## References

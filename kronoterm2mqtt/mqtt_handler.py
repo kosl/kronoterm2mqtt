@@ -88,12 +88,15 @@ class KronotermMqttHandler:
 
         binary_sensor_definitions = definitions['binary_sensor']
         for parameter in binary_sensor_definitions:
-            address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation! 
-            self.binary_sensors[address] = BinarySensor(
-                device=self.main_device,
-                name=parameter['name'],
-                uid=slugify(parameter['name'], '_').lower(),
-                device_class=parameter['device_class'] if len(parameter['device_class']) else None,
+            address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
+            self.binary_sensors[address] = (
+                BinarySensor(
+                    device=self.main_device,
+                    name=parameter['name'],
+                    uid=slugify(parameter['name'], '_').lower(),
+                    device_class=parameter['device_class'] if len(parameter['device_class']) else None,
+                ),
+                parameter.get('bit'),
             )
         enum_sensor_definitions = definitions['enum_sensor']
         for parameter in enum_sensor_definitions:
@@ -219,8 +222,10 @@ class KronotermMqttHandler:
                     sensor.set_state(value)
                     sensor.publish(self.mqtt_client)
                 for address in self.binary_sensors:
-                    sensor = self.binary_sensors[address]
+                    sensor, bit = self.binary_sensors[address]
                     value = self.registers[address]
+                    if bit is not None:
+                        value &= 1 << bit
                     sensor.set_state(sensor.ON if value else sensor.OFF)
                     sensor.publish(self.mqtt_client)
                 for address in self.enum_sensors:
