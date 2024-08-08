@@ -28,10 +28,7 @@ class HeatPump:
     definitions_name: str = 'kronoterm_ksm'
     device_name: str = 'Heat Pump' # Appearing in MQTT as Device
     model: str = 'ETERA' # Just for MQTT device Model info
-
     port: str = '/dev/ttyUSB0'
-    slave_id: int = 20  # Kronoterm System Module Modbus address
-
     timeout: float = 0.5
 
     def get_definitions(self, verbosity) -> dict:

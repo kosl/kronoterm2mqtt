@@ -6,6 +6,7 @@ stopbits = 1
 
 
 
+
 [[sensor]]
 register = 2101
 name = "HP inlet temperature"
@@ -160,17 +161,17 @@ scale = 0.1
 [[sensor]]
 register = 2371
 name = "COP"
-device_class = "aqi"
+device_class = "power_factor"
 state_class = "measurement"
-unit_of_measurement = "/"
+unit_of_measurement = ""
 scale = 0.01
 
 [[sensor]]
 register = 2372
 name = "SCOP"
-device_class = "aqi"
+device_class = "power_factor"
 state_class = "measurement"
-unit_of_measurement = "/"
+unit_of_measurement = ""
 scale = 0.01
 
 
@@ -203,4 +204,3 @@ device_class = "running"
 register = 2055
 name = "Loop 2 circulation pump status"
 device_class = "running"
-

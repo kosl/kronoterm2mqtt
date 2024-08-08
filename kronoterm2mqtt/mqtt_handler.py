@@ -6,19 +6,22 @@ import itertools
 from decimal import Decimal
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
+from ha_services.mqtt4homeassistant.components.switch import Switch
 from ha_services.mqtt4homeassistant.device import  MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
+from paho.mqtt.client import Client
 
 from kronoterm2mqtt.api import get_modbus_client
 
 import kronoterm2mqtt
-from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER
+from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER, MODBUS_SLAVE_ID
 from kronoterm2mqtt.user_settings import UserSettings, HeatPump
 from kronoterm2mqtt.expander import ExpanderMqttHandler
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
 from pymodbus.pdu.register_read_message import ReadHoldingRegistersResponse
+from pymodbus.pdu.register_write_message import WriteSingleRegisterResponse
 
 
 logger = logging.getLogger(__name__)
@@ -31,6 +34,7 @@ class KronotermMqttHandler:
         self.device_name = self.heat_pump.device_name
         self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
         self.mqtt_client.loop_start()
+        self.modbus_client = None
         self.expander = ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity) if self.user_settings.custom_expander.module_enabled else None
         self.main_device = None
         self.verbosity = verbosity
@@ -39,6 +43,7 @@ class KronotermMqttHandler:
         self.enum_sensors = dict()
         self.address_ranges = list()
         self.registers  = dict()
+        self.dhw_circulation_switch: Switch = None
 
     def init_device(self, verbosity: int):
         """
@@ -104,14 +109,38 @@ class KronotermMqttHandler:
             )
 
 
+
+        self.dhw_circulation_switch = Switch(
+            device=self.main_device,
+            name='Circulation of sanitary water',
+            uid='dhw_circulation_switch',
+            callback=self.dhw_circulation_callback,
+            )
+
         # Prepare ranges of registers for faster reads in blocks
         addresses = set(self.sensors.keys())
         addresses = addresses.union(set(self.binary_sensors.keys()))
+        addresses.add(2327) # DHW circulation switch
         addresses = sorted(addresses.union(set(self.enum_sensors.keys())))
         self.address_ranges = list(self.ranges(list(addresses)))
         if self.verbosity:
             print(f"Addresses: {len(addresses)} Ranges: {len(self.address_ranges)}")
 
+    def dhw_circulation_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
+        """Switches on (manually) circulation of sanitary water for 5 minutes.
+        The switch turnes off automatically after 5 minutes and the DHW circulation pump stops.
+        Note that register 2028 is not documented!
+        """
+        logger.info(f'{component.name} state changed: {old_state!r} -> {new_state!r}')
+
+        value = 1 if new_state == 'ON' else 0
+        response = self.modbus_client.write_register(address=2327, value=value, slave=MODBUS_SLAVE_ID)
+        if isinstance(response, (ExceptionResponse, ModbusIOException)):
+            print('Error:', response)
+        else:
+            assert isinstance(response, WriteSingleRegisterResponse), f'{response=}'
+        component.set_state(new_state)
+        component.publish_state(client)
 
 
     def ranges(self, i: list) -> list:
@@ -122,14 +151,14 @@ class KronotermMqttHandler:
             b = list(b)
             yield b[0][1], b[-1][1]
 
-    def read_heat_pump_register_blocks(self, modbus_client, slave_id):
+    def read_heat_pump_register_blocks(self):
         """In order to minimize Modbus communication the register
         values are fetched in ranges that are computed initially from
         definitions and then read in blocks (ranges)
         """
         for address_start, address_end in self.address_ranges:
             count = address_end - address_start + 1
-            response = modbus_client.read_holding_registers(address=address_start, count=count, slave=slave_id)
+            response = self.modbus_client.read_holding_registers(address=address_start, count=count, slave=MODBUS_SLAVE_ID)
             if isinstance(response, (ExceptionResponse, ModbusIOException)):
                 print('Error:', response)
             else:
@@ -147,8 +176,7 @@ class KronotermMqttHandler:
 
         definitions = self.heat_pump.get_definitions(self.verbosity)
 
-        client = get_modbus_client(self.heat_pump, definitions, self.verbosity)
-        slave_id = self.heat_pump.slave_id
+        self.modbus_client = get_modbus_client(self.heat_pump, definitions, self.verbosity)
 
         logger.info(f'Publishing Home Assistant MQTT discovery for {self.device_name}')
 
@@ -158,7 +186,7 @@ class KronotermMqttHandler:
         async def update_sensors():
             print("Kronoterm to MQTT publish loop started...")
             while True:
-                self.read_heat_pump_register_blocks(client, slave_id)
+                self.read_heat_pump_register_blocks()
                 for address in self.sensors:
                     sensor, scale = self.sensors[address]
                     value = self.registers[address]
@@ -178,6 +206,9 @@ class KronotermMqttHandler:
                             break
                     sensor.set_state(options['values'][index])
                     sensor.publish(self.mqtt_client)
+
+                self.dhw_circulation_switch.set_state(self.dhw_circulation_switch.ON if self.registers[2327] else self.dhw_circulation_switch.OFF)
+                self.dhw_circulation_switch.publish(self.mqtt_client)
 
                         
                 if self.expander is not None:
