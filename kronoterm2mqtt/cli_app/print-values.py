@@ -17,6 +17,7 @@ from kronoterm2mqtt.cli_app import cli
 from kronoterm2mqtt.user_settings import HeatPump, get_user_settings
 
 from kronoterm2mqtt.api import get_modbus_client
+from kronoterm2mqtt.constants import MODBUS_SLAVE_ID
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +29,7 @@ def probe_one_port(heat_pump, definitions, verbosity):
     if verbosity > 1:
         pprint(parameters)
 
-    slave_id = heat_pump.slave_id
-    print(f'{slave_id=}')
-
-    print_parameter_values(client, parameters, slave_id, verbosity)
+    print_parameter_values(client, parameters, verbosity)
 
 
 @cli.command()
@@ -59,13 +57,13 @@ def probe_usb_ports(verbosity: int, max_port: int, port_template: str):
             print(f'ERROR: {err}')
 
 
-def print_parameter_values(client, parameters, slave_id, verbosity):
+def print_parameter_values(client, parameters,  verbosity):
     for parameter in parameters:
         print(f'{parameter["name"]:>30}', end=' ')
         address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
         if verbosity:
             print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
-        response = client.read_holding_registers(address=address, count=1, slave=slave_id)
+        response = client.read_holding_registers(address=address, count=1, slave=MODBUS_SLAVE_ID)
         if isinstance(response, (ExceptionResponse, ModbusIOException)):
             print('Error:', response)
         else:
@@ -98,10 +96,7 @@ def print_values(verbosity: int):
     if verbosity > 1:
         pprint(parameters)
 
-    slave_id = heat_pump.slave_id
-    print(f'{slave_id=}')
-
-    print_parameter_values(client, parameters, slave_id, verbosity)
+    print_parameter_values(client, parameters, verbosity)
 
 
 @cli.command()
@@ -122,15 +117,12 @@ def print_registers(verbosity: int):
     if verbosity > 1:
         pprint(parameters)
 
-    slave_id = heat_pump.slave_id
-    print(f'{slave_id=}')
-
     error_count = 0
     address = 2000
     while error_count < 5:
         print(f'[blue]Read register[/blue] dec: {address:02} hex: {address:04x} ->', end=' ')
 
-        response = client.read_holding_registers(address=address, count=1, slave=slave_id)
+        response = client.read_holding_registers(address=address, count=1, slave=MODBUS_SLAVE_ID)
         if isinstance(response, (ExceptionResponse, ModbusIOException)):
             print('Error:', response)
             error_count += 1

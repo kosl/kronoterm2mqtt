@@ -35,7 +35,7 @@ Clone the sources and just call the CLI to create a Python Virtualenv, e.g.:
 The output of `./cli.py --help` looks like:
 
 ```sh
-kronoterm2mqtt v0.1.3 bed9746 (/home/leon/kronoterm2mqtt)
+kronoterm2mqtt v0.1.6 bed9746 (/home/leon/kronoterm2mqtt)
                                                                                             
  Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...                                                
                                                                                             
@@ -88,23 +88,21 @@ $ ./cli.py print-values
 
 + /home/leon/kronoterm2mqtt/.venv-app/bin/kronoterm2mqtt_app print-values
 
-kronoterm2mqtt v0.1.3 bed9746 (/home/leon/kronoterm2mqtt)
-                                        (Set log level 0: ERROR)
+kronoterm2mqtt v0.1.6 42cf603 (/home/leon/kronoterm2mqtt)
+                                                                                                                                                                                                                                                                                               (Set log level 0: ERROR)
 Connect to /dev/ttyUSB0...
-slave_id=20
-              System operation 1 
-          HP inlet temperature 29.7 °C
-               DHW temperature 46.4 °C
-           Outside temperature 28.4 °C
-         HP outlet temperature 29.3 °C
-       Evaporating temperature 30.4 °C
-        Compressor temperature 30.1 °C
+          HP inlet temperature 30.7 °C
+               DHW temperature 48.1 °C
+           Outside temperature 29.0 °C
+         HP outlet temperature 30.9 °C
+       Evaporating temperature 30.7 °C
+        Compressor temperature 30.3 °C
      Current power consumption 0.0 W
-            Loop 1 temperature 29.6 °C
-            Loop 2 temperature 27.3 °C
- Loop 2 thermostat temperature 25.0 °C
+            Loop 1 temperature 29.8 °C
+            Loop 2 temperature 28.3 °C
+ Loop 2 thermostat temperature 25.5 °C
        Heating system pressure 1.4 bar
-               Source pressure 1.9 bar
+               Source pressure 1.8 bar
                            COP 0.00 
                           SCOP 0.00 
 ```
