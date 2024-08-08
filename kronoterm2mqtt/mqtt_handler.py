@@ -44,6 +44,7 @@ class KronotermMqttHandler:
         self.address_ranges = list()
         self.registers  = dict()
         self.dhw_circulation_switch: Switch = None
+        self.additional_source_switch: Switch = None
 
     def init_device(self, verbosity: int):
         """
@@ -108,19 +109,25 @@ class KronotermMqttHandler:
                 *parameter['options'],
             )
 
-
-
         self.dhw_circulation_switch = Switch(
             device=self.main_device,
             name='Circulation of sanitary water',
             uid='dhw_circulation_switch',
             callback=self.dhw_circulation_callback,
             )
+        self.additional_source_switch = Switch(
+            device=self.main_device,
+            name='Additional Source',
+            uid='additional_source_switch',
+            callback=self.additional_source_callback,
+            )
+            
 
         # Prepare ranges of registers for faster reads in blocks
         addresses = set(self.sensors.keys())
         addresses = addresses.union(set(self.binary_sensors.keys()))
         addresses.add(2327) # DHW circulation switch
+        addresses.add(2015) # Additional source switch
         addresses = sorted(addresses.union(set(self.enum_sensors.keys())))
         self.address_ranges = list(self.ranges(list(addresses)))
         if self.verbosity:
@@ -141,6 +148,21 @@ class KronotermMqttHandler:
             assert isinstance(response, WriteSingleRegisterResponse), f'{response=}'
         component.set_state(new_state)
         component.publish_state(client)
+
+    def additional_source_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
+        """Switches on (manually) additional heating source.
+        """
+        logger.info(f'{component.name} state changed: {old_state!r} -> {new_state!r}')
+
+        value = 1 if new_state == 'ON' else 0
+        response = self.modbus_client.write_register(address=2015, value=value, slave=MODBUS_SLAVE_ID)
+        if isinstance(response, (ExceptionResponse, ModbusIOException)):
+            print('Error:', response)
+        else:
+            assert isinstance(response, WriteSingleRegisterResponse), f'{response=}'
+        component.set_state(new_state)
+        component.publish_state(client)
+    
 
 
     def ranges(self, i: list) -> list:
@@ -182,6 +204,9 @@ class KronotermMqttHandler:
 
         if self.main_device is None:
             self.init_device(self.verbosity)
+
+        switches =  { 2327: self.dhw_circulation_switch,
+                      2015: self.additional_source_switch}
         
         async def update_sensors():
             print("Kronoterm to MQTT publish loop started...")
@@ -207,9 +232,10 @@ class KronotermMqttHandler:
                     sensor.set_state(options['values'][index])
                     sensor.publish(self.mqtt_client)
 
-                self.dhw_circulation_switch.set_state(self.dhw_circulation_switch.ON if self.registers[2327] else self.dhw_circulation_switch.OFF)
-                self.dhw_circulation_switch.publish(self.mqtt_client)
-
+                for address in switches:
+                    switch = switches[address]
+                    switch.set_state(switch.ON if self.registers[address] else switch.OFF)
+                    switch.publish(self.mqtt_client)
                         
                 if self.expander is not None:
                     await self.expander.update_sensors(self.verbosity)

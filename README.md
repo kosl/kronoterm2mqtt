@@ -89,7 +89,7 @@ $ ./cli.py print-values
 + /home/leon/kronoterm2mqtt/.venv-app/bin/kronoterm2mqtt_app print-values
 
 kronoterm2mqtt v0.1.6 42cf603 (/home/leon/kronoterm2mqtt)
-                                                                                                                                                                                                                                                                                               (Set log level 0: ERROR)
+
 Connect to /dev/ttyUSB0...
           HP inlet temperature 30.7 °C
                DHW temperature 48.1 °C
@@ -142,4 +142,4 @@ Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
 ## References
 
 - `Navodila za priklop in uporabo CNS sistema.pdf` Kronoterm Modbus RTU description (in Slovene) obtained from Kronoterm support
-- `Installation and Operating Manual for BMS System.pdf` Kronoterm Modbus RTU description obtained from Kronoterm support
+- `Installation and Operating Manual for BMS System.pdf` Kronoterm Modbus V3.13-1 RTU description obtained from Kronoterm support
