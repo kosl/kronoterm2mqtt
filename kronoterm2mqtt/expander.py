@@ -109,7 +109,9 @@ class ExpanderMqttHandler:
     async def update_sensors_and_control(self, outside_temperature: float,
                                          current_desired_dhw_temperature: float,
                                          loop_circulation_enabled: bool,
-                                         intra_tank_circulation_enabled: bool):
+                                         intra_tank_circulation_enabled: bool,
+                                         loop_1_temperature_offset_in_eco_mode: float,
+                                         loop_1_operation_status_on_schedule: int):
         """Updates ETERA expander subdevice in Home Assistant and
         performs control of the pumps and mixing valve motors with
         target temperatures computed from outside temperature. If loop
