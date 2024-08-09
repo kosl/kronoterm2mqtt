@@ -27,6 +27,7 @@ class ExpanderMqttHandler:
     def __init__(self,  mqtt_client, user_settings: UserSettings, verbosity: int):
         self.mqtt_client = mqtt_client
         self.user_settings = user_settings
+        self.verbosity = verbosity
         self.mqtt_device: MqttDevice | None = None
         self.sensors = list()
         self.relays = list()
@@ -73,7 +74,25 @@ class ExpanderMqttHandler:
             ) if len(name) else None) # relay in use?
             self.relay_state.append(False)
 
-    async def update_sensors(self, verbosity: int):
+    async def update_sensors_and_control(self, outside_temperature: float,
+                                         current_desired_dhw_temperature: float,
+                                         loop_circulation_enabled: bool,
+                                         intra_tank_circulation_enabled: bool):
+        """Updates ETERA expander subdevice in Home Assistant and
+        performs control of the pumps and mixing valve motors with
+        target temperatures computed from outside temperature. If loop
+        circulation is not enabled then the loop pumps and mixing
+        valves are stopped. Intra tank circulation is required if the
+        temperature in solar tank is higher that DHW tank and when the
+        temperature of DHW tank is lower than "current desired
+        domestic hot water temperature" increased for 1°C to prevent
+        starting of heat pump when we have enough hot water from solar
+        tank.  In winter when the solar tank temperature is well below
+        current desired DHW temperature and if intra_tank_circulation
+        is enabled then the intra-tank circulation starts to prepare
+        water in both tanks for large bath tube consumption
+        afterwards.
+        """
         try:
             await self.etera.ready()
             temperatures = await self.etera.get_temperatures()
@@ -99,8 +118,8 @@ class ExpanderMqttHandler:
                 self.relay_state[solar_pump_relay_id] = False
             else:
                 state = 'switch unchanged'
-            if verbosity:
-                print(f'Temperatures {temperatures} Difference {difference} -> {state}')
+            if self.verbosity:
+                print(f'Temperatures {temperatures} Collector-heat exchanger difference {difference} -> {state}')
             #### Expander control end
         except EteraUartBridge.DeviceException as e:
                 print('Get temperatures error', e)

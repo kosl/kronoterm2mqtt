@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 class KronotermMqttHandler:
     def __init__(self, user_settings: UserSettings, verbosity: int):
         self.user_settings = user_settings
+        self.verbosity = verbosity
         self.heat_pump = self.user_settings.heat_pump
         self.device_name = self.heat_pump.device_name
         self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
@@ -37,7 +38,6 @@ class KronotermMqttHandler:
         self.modbus_client = None
         self.expander = ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity) if self.user_settings.custom_expander.module_enabled else None
         self.main_device = None
-        self.verbosity = verbosity
         self.sensors = dict()
         self.binary_sensors = dict()
         self.enum_sensors = dict()
@@ -72,7 +72,8 @@ class KronotermMqttHandler:
                 print(f'Creating sensor {parameter}')
 
             address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
-        
+            scale = parameter['scale']
+            precision = len(str(scale)[str(scale).rfind('.')+1:]) if scale < 1 else 0
             self.sensors[address] = (
                 Sensor(
                     device=self.main_device,
@@ -81,7 +82,7 @@ class KronotermMqttHandler:
                     device_class=parameter['device_class'],
                     state_class=parameter['state_class'] if len(parameter['state_class']) else None,
                     unit_of_measurement=parameter['unit_of_measurement'],
-                    suggested_display_precision= 1,
+                    suggested_display_precision=precision,
                 ),
                 Decimal(str(parameter['scale'])),
             )
@@ -237,13 +238,17 @@ class KronotermMqttHandler:
                     sensor.set_state(options['values'][index])
                     sensor.publish(self.mqtt_client)
 
-                for address in switches:
-                    switch = switches[address]
+                for address, switch in switches.items():
                     switch.set_state(switch.ON if self.registers[address] else switch.OFF)
                     switch.publish(self.mqtt_client)
                         
                 if self.expander is not None:
-                    await self.expander.update_sensors(self.verbosity)
+                    await self.expander.update_sensors_and_control(
+                        0.1*self.registers[2101], # outside temperature
+                        0.1*self.registers[2023], # Current desired DHW temperature
+                        self.registers[2054] > 0, # loop 2 pump status
+                        self.registers[2015] > 0, # Additional source activated
+                    )
 
                 if self.verbosity:
                     print('\n', flush=True)

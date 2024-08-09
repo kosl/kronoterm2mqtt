@@ -5,6 +5,21 @@ parity = "N"
 stopbits = 1
 
 
+[[sensor]]
+register = 2023
+name = "Desired DHW temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2024
+name = "Current desired DHW temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
 
 
 [[sensor]]
@@ -182,13 +197,6 @@ name = "Working function"
 keys = [0, 1, 2, 3, 4, 5, 7]
 values = ["heating", "DHW", "cooling", "pool heating", "thermal disinfection", "standby", "remote deactivation"]
 
-[[enum_sensor]]
-register = 2028
-name = "DHW Circulation pumps status"
-[[enum_sensor.options]]
-keys = [0, 1, 2, 3]
-values = ["OFF", "running", "DHW running", "both running"]
-
 
 [[binary_sensor]]
 register = 2000
@@ -216,3 +224,16 @@ register = 2002
 name = "Aditional source 1 is active"
 device_class = "running"
 bit = 4
+
+[[binary_sensor]]
+register = 2028
+name = "DHW circulation pump"
+device_class = "running"
+bit = 0
+
+[[binary_sensor]]
+register = 2028
+name = "Circulation Pump for DHW tank"
+device_class = "running"
+bit = 1
+
