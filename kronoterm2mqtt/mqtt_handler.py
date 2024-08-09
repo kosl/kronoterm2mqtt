@@ -219,7 +219,10 @@ class KronotermMqttHandler:
                 for address in self.sensors:
                     sensor, scale = self.sensors[address]
                     value = self.registers[address]
-                    value = float(value * scale)
+                    if scale > 0:
+                        value = float(value * scale)
+                    else:
+                        value = float((65536-value)*scale)
                     sensor.set_state(value)
                     sensor.publish(self.mqtt_client)
                 for address in self.binary_sensors:

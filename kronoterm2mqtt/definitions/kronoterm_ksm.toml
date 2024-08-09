@@ -27,6 +27,14 @@ state_class = "measurement"
 unit_of_measurement = "°C"
 scale = 0.1
 
+[[sensor]]
+register = 2047 # undocumented
+name = "Loop 1 temperature offset in ECO mode"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = -0.1
+
 
 [[sensor]]
 register = 2101
@@ -208,6 +216,15 @@ name = "Working function"
 [[enum_sensor.options]]
 keys = [0, 1, 2, 3, 4, 5, 7]
 values = ["heating", "DHW", "cooling", "pool heating", "thermal disinfection", "standby", "remote deactivation"]
+
+[[enum_sensor]]
+register = 2044
+name = "Loop 1 operation status on schedule"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3]
+values = ["off", "normal", "ECO", "COM"]
+
+
 
 
 [[binary_sensor]]
