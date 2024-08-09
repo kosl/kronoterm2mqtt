@@ -46,7 +46,7 @@ class KronotermMqttHandler:
         self.dhw_circulation_switch: Switch = None
         self.additional_source_switch: Switch = None
 
-    def init_device(self, verbosity: int):
+    async def init_device(self, event_loop, verbosity: int):
         """
         Create sensors from definitions.toml add it to device for later
         update in publish process.
@@ -61,7 +61,7 @@ class KronotermMqttHandler:
         )
         
         if self.expander is not None:
-            self.expander.init_device(self.main_device, verbosity)
+            await self.expander.init_device(event_loop, self.main_device, verbosity)
 
         definitions = self.heat_pump.get_definitions(verbosity)
         
@@ -206,13 +206,15 @@ class KronotermMqttHandler:
 
         logger.info(f'Publishing Home Assistant MQTT discovery for {self.device_name}')
 
+        event_loop = asyncio.get_event_loop()
+        
         if self.main_device is None:
-            self.init_device(self.verbosity)
+            await self.init_device(event_loop, self.verbosity)
 
         switches =  { 2327: self.dhw_circulation_switch,
                       2015: self.additional_source_switch}
         
-        async def update_sensors():
+        async def update_sensors(event_loop):
             print("Kronoterm to MQTT publish loop started...")
             while True:
                 self.read_heat_pump_register_blocks()
@@ -246,8 +248,8 @@ class KronotermMqttHandler:
                     await self.expander.update_sensors_and_control(
                         0.1*self.registers[2101], # outside temperature
                         0.1*self.registers[2023], # Current desired DHW temperature
-                        self.registers[2054] > 0, # loop 2 pump status
                         self.registers[2015] > 0, # Additional source activated
+                        self.registers[2054] > 0, # loop 2 pump status
                         -0.1*(65536-self.registers[2046]), # Loop 1 temperature offset in ECO mode
                         self.registers[2043], # Loop 1 operation status on schedule
                     )
@@ -261,6 +263,5 @@ class KronotermMqttHandler:
                 else:
                     await asyncio.sleep(10)
 
-        await asyncio.gather(
-            update_sensors(),
-        )
+        await update_sensors(event_loop)
+

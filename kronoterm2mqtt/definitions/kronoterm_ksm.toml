@@ -28,7 +28,7 @@ unit_of_measurement = "°C"
 scale = 0.1
 
 [[sensor]]
-register = 2047 # undocumented
+register = 2047
 name = "Loop 1 temperature offset in ECO mode"
 device_class = "temperature"
 state_class = "measurement"
@@ -223,9 +223,6 @@ name = "Loop 1 operation status on schedule"
 [[enum_sensor.options]]
 keys = [0, 1, 2, 3]
 values = ["off", "normal", "ECO", "COM"]
-
-
-
 
 [[binary_sensor]]
 register = 2000

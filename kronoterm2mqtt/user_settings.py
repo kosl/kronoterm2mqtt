@@ -65,7 +65,7 @@ class CustomEteraExpander:
 
     loop_operation: list = dataclasses.field(default_factory=lambda:[1, 1, 1, 0]) 
     loop_sensors: list = dataclasses.field(default_factory=lambda:[1, 6, 5, 0])
-    loop_temperatue: list = dataclasses.field(default_factory=lambda:[24.0, 24.0, 24.0, 24.0]) # At 0°C
+    loop_temperature: list = dataclasses.field(default_factory=lambda:[24.0, 24.0, 24.0, 24.0]) # At 0°C
     heating_curve_coefficient: float = 0.2 #: loop/outside temp °C
 
     solar_pump_operation: int = 1 #: 0 = disabled, 1 = enabled
