@@ -63,8 +63,6 @@ class CustomEteraExpander:
     timeout: float = 0.5
     number_of_thermometers: int = 10 # To check initially if settings are OK
 
-    loop_operation: list = dataclasses.field(default_factory=lambda:[1,1,1,0])
-
     loop_operation: list = dataclasses.field(default_factory=lambda:[1, 1, 1, 0]) 
     loop_sensors: list = dataclasses.field(default_factory=lambda:[1, 6, 5, 0])
     loop_temperatue: list = dataclasses.field(default_factory=lambda:[24.0, 24.0, 24.0, 24.0]) # At 0°C

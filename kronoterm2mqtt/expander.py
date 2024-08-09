@@ -8,12 +8,16 @@ from ha_services.mqtt4homeassistant.components.switch import Switch
 from ha_services.mqtt4homeassistant.device import  MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
+from paho.mqtt.client import Client
 
 import kronoterm2mqtt
 from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER
 from kronoterm2mqtt.user_settings import UserSettings, CustomEteraExpander
 import kronoterm2mqtt.pyetera_uart_bridge
 from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
+
+
+logger = logging.getLogger(__name__)
 
 
 async def etera_reset_handler():
@@ -29,8 +33,9 @@ class ExpanderMqttHandler:
         self.user_settings = user_settings
         self.verbosity = verbosity
         self.mqtt_device: MqttDevice | None = None
-        self.sensors = list()
+        self.sensors: list(Sensor) = list()
         self.relays = list()
+        self.switches: list(Switch) = list()
         self.relay_state = list()
         self.etera = None
 
@@ -74,6 +79,33 @@ class ExpanderMqttHandler:
             ) if len(name) else None) # relay in use?
             self.relay_state.append(False)
 
+        for i, state in enumerate(self.user_settings.custom_expander.loop_operation):
+            name = self.user_settings.custom_expander.sensor_names[i]
+            if len(self.user_settings.custom_expander.relay_names[i]):
+                switch = Switch(
+                    device=self.mqtt_device,
+                    name=name,
+                    uid=slugify(name),
+                    callback=self.loop_switch_callback,
+                )
+                switch.set_state(switch.ON if state else switch.OFF)
+                self.switches.append(switch)
+
+    def loop_switch_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
+        """Switches on/off (manually) loop.
+        """
+
+        for loop_number, switch in enumerate(self.switches):
+            if component == switch:
+                break
+
+        logger.info(f'Loop number {loop_number} ({component.name}) state changed: {old_state!r} -> {new_state!r}')        
+        value = 1 if new_state == 'ON' else 0
+        
+        component.set_state(new_state)
+        component.publish_state(client)
+                                 
+
     async def update_sensors_and_control(self, outside_temperature: float,
                                          current_desired_dhw_temperature: float,
                                          loop_circulation_enabled: bool,
@@ -104,6 +136,9 @@ class ExpanderMqttHandler:
                 value = temperatures[ids[i]]
                 sensor.set_state(value)
                 sensor.publish(self.mqtt_client)    
+            for switch in self.switches:
+                switch.publish(self.mqtt_client)
+                #print(f"{switch.state}")
             #### Expander control start
             collector_temperature = temperatures[settings.solar_sensors[0]]
             tank_temperature = temperatures[settings.solar_sensors[2]]
