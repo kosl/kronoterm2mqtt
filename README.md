@@ -6,7 +6,11 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/kronoterm2mqtt)](https://github.com/kosl/kronoterm2mqtt/blob/main/pyproject.toml)
 [![License GPL-3.0-or-later](https://img.shields.io/pypi/l/kronoterm2mqtt)](https://github.com/kosl/kronoterm2mqtt/blob/main/LICENSE)
 
-Get information from the Kronoterm heat pump connected to Modbus TEX interface.
+Gets information from the Kronoterm heat pump connected to Modbus TEX
+interface. While this should work for all Kronoterm heat pumps the
+software was only verified to run on ETERA with Heat pump manager
+V3.13-1.  From the Kronoterm modbus specification the registers are
+the same for all Kronoterm heat pumps.
 
 While reading Modbus registers from the pump the kronoterm2mqtt sends
 MQTT discovery events from KRONOTERM to MQTT broker (Mosquito) that
@@ -134,8 +138,13 @@ Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
 ## Hardware wiring test
 
 The connection to TEX port is done with RS485 dongle using 3 wires (A,
-B, GND). Before running `kronoterm2mqtt` it is advisable to run simple
-example provided to debug and test the communication as shown below.
+B, GND). The cheapest "USB to RS485 Converter" with GND will work when
+connected to TEX (Modbus) port located in the Kronoterm heat pump
+processor board (KSM). I recommend Raspberry Pi 3B+ with Home
+Assistant to be used inside the heat pump. Otherwise, you will need to
+have a long 3-wire twisted cable to it or some dongle.  Before running
+`kronoterm2mqtt` it is advisable to run simple example provided to
+debug and test the communication as shown below.
 
 ~~~sh
 $ python -m venv venv

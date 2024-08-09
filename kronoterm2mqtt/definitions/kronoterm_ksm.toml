@@ -4,6 +4,12 @@ bytesize = 8
 parity = "N"
 stopbits = 1
 
+# KRONOTERM MA_numbering is one-based in documentation and we
+# use it here too alrhough internally we substract 1 for all
+# register adresses!
+
+
+# https://developers.home-assistant.io/docs/core/entity/sensor
 
 [[sensor]]
 register = 2023
@@ -121,8 +127,6 @@ state_class = "measurement"
 unit_of_measurement = ""
 scale = 0.001
 
-
-
 [[sensor_disabled]]
 register = 2160
 name = "Loop 1 thermostat temperature"
@@ -156,6 +160,14 @@ state_class = "measurement"
 unit_of_measurement = "bar"
 scale = 0.1
 
+[[sensor]]
+register = 2327
+name = "Current HP load"
+device_class = "battery" # instead of power_factor for nicer show
+state_class = "measurement"
+unit_of_measurement = "%"
+scale = 1
+
 [[sensor_disabled]]
 register = 2347
 name = "Setting pressure of the heating source"
@@ -173,7 +185,7 @@ unit_of_measurement = "bar"
 scale = 0.1
 
 
-[[sensor]]
+[[sensor_disabled]]
 register = 2371
 name = "COP"
 device_class = "power_factor"
