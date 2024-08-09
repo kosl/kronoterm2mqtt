@@ -131,6 +131,35 @@ switch below are powered by a buckle step down (12->5V) converters.
 Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
 ![Home Assistant](images/ha-sensors.png)
 
+## Hardware wiring test
+
+The connection to TEX port is done with RS485 dongle using 3 wires (A,
+B, GND). Before running `kronoterm2mqtt` it is advisable to run simple
+example provided to debug and test the communication as shown below.
+
+~~~sh
+$ python -m venv venv
+$ venv/bin/pip install pymodbus pyserial
+$ venv/bin/python kronoterm2mqtt/examples/print-temperatures.py
+2024-08-09 10:11:35,553 DEBUG logging:103 Current transaction state - IDLE
+2024-08-09 10:11:35,554 DEBUG logging:103 Running transaction 1
+2024-08-09 10:11:35,554 DEBUG logging:103 SEND: 0x14 0x3 0x8 0x34 0x0 0xa 0x84 0xa6
+2024-08-09 10:11:35,555 DEBUG logging:103 Resetting frame - Current Frame in buffer - 
+2024-08-09 10:11:35,556 DEBUG logging:103 New Transaction state "SENDING"
+2024-08-09 10:11:35,557 DEBUG logging:103 Changing transaction state from "SENDING" to "WAITING FOR REPLY"
+2024-08-09 10:11:35,579 DEBUG logging:103 Changing transaction state from "WAITING FOR REPLY" to "PROCESSING REPLY"
+2024-08-09 10:11:35,579 DEBUG logging:103 RECV: 0x14 0x3 0x14 0x1 0x20 0x1 0xe3 0x0 0xf7 0x1 0x25 0x1 0x2f 0x1 0x2a 0xfd 0xa8 0x0 0x0 0xfd 0xa8 0x1 0xc 0x8d 0x77
+2024-08-09 10:11:35,580 DEBUG logging:103 Processing: 0x14 0x3 0x14 0x1 0x20 0x1 0xe3 0x0 0xf7 0x1 0x25 0x1 0x2f 0x1 0x2a 0xfd 0xa8 0x0 0x0 0xfd 0xa8 0x1 0xc 0x8d 0x77
+2024-08-09 10:11:35,580 DEBUG logging:103 Getting Frame - 0x3 0x14 0x1 0x20 0x1 0xe3 0x0 0xf7 0x1 0x25 0x1 0x2f 0x1 0x2a 0xfd 0xa8 0x0 0x0 0xfd 0xa8 0x1 0xc
+2024-08-09 10:11:35,580 DEBUG logging:103 Factory Response[ReadHoldingRegistersResponse': 3]
+2024-08-09 10:11:35,581 DEBUG logging:103 Frame advanced, resetting header!!
+2024-08-09 10:11:35,581 DEBUG logging:103 Adding transaction 0
+2024-08-09 10:11:35,581 DEBUG logging:103 Getting transaction 0
+2024-08-09 10:11:35,581 DEBUG logging:103 Changing transaction state from "PROCESSING REPLY" to "TRANSACTION_COMPLETE"
+KRONOTERM Temperatures: ['28.8°C', '48.3°C', '24.7°C', '29.3°C', '30.3°C', '29.8°C', '6493.6°C', '0.0°C', '6493.6°C', '26.8°C']
+~~~
+
+
 ## TODO
 
 - [x] `enum_sensor` to convert status registers to more meaningfull text readings instead of float sensor
