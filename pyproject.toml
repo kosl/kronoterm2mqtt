@@ -1,7 +1,7 @@
 [project]
 name = "kronoterm2mqtt"
 dynamic = ["version"]
-description = "Sends MQTT events from KRONOTERM device"
+description = "Sends MQTT events from KRONOTERM heat pump"
 license = {text = "GPL-3.0-or-later"}
 readme = "README.md"
 authors = [

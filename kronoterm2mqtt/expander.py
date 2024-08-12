@@ -52,9 +52,8 @@ class ExpanderMqttHandler:
         self.event_loop = event_loop
         self.event_loop.create_task(self.etera.run_forever())
         await self.etera.ready()
-        for i in range(4): # TODO if moving more tnan 65 second then exception is raised when with override=True
-            event_loop.create_task(self.etera.move_motor(i, EteraUartBridge.Direction.COUNTER_CLOCKWISE, 65*1000))
-            event_loop.create_task(self.etera.move_motor(i, EteraUartBridge.Direction.COUNTER_CLOCKWISE, 65*1000))
+        for i in range(4):
+            event_loop.create_task(self.etera.move_motor(i, EteraUartBridge.Direction.COUNTER_CLOCKWISE, 120*1000))
 
         self.mqtt_device = MqttDevice(
                 main_device=main_device,
@@ -108,9 +107,8 @@ class ExpanderMqttHandler:
                                              
         logger.info(f'Loop number {loop_number} ({component.name}) state changed: {old_state!r} -> {new_state!r}')
         if new_state == 'OFF': # close the valve immediately TODO , override=True
-            self.event_loop.create_task(self.etera.move_motor(loop_number, EteraUartBridge.Direction.COUNTER_CLOCKWISE, 120*1000))
+            self.event_loop.create_task(self.etera.move_motor(loop_number, EteraUartBridge.Direction.COUNTER_CLOCKWISE, 120*1000, override=True))
             self.event_loop.create_task(self.etera.set_relay(loop_number, False))
-
 
 
     async def update_sensors_and_control(self, outside_temperature: float,
