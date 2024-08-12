@@ -246,7 +246,7 @@ class KronotermMqttHandler:
                         
                 if self.expander is not None:
                     await self.expander.update_sensors_and_control(
-                        0.1*self.registers[2101], # outside temperature
+                        0.1*self.registers[2102], # outside temperature
                         0.1*self.registers[2023], # Current desired DHW temperature
                         self.registers[2015] > 0, # Additional source activated
                         self.registers[2054] > 0, # loop 2 pump status
