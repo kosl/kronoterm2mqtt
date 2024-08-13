@@ -39,7 +39,7 @@ Clone the sources and just call the CLI to create a Python Virtualenv, e.g.:
 The output of `./cli.py --help` looks like:
 
 ```sh
-kronoterm2mqtt v0.1.6 bed9746 (/home/leon/kronoterm2mqtt)
+kronoterm2mqtt v0.1.8 bed9746 (/home/leon/kronoterm2mqtt)
                                                                                             
  Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...                                                
                                                                                             
@@ -88,26 +88,28 @@ more sensors if required.
 
 ### print-values
 ```sh
-$ ./cli.py print-values
+./cli.py print-values
 
 + /home/leon/kronoterm2mqtt/.venv-app/bin/kronoterm2mqtt_app print-values
 
-kronoterm2mqtt v0.1.6 42cf603 (/home/leon/kronoterm2mqtt)
-
+kronoterm2mqtt v0.1.8 ab9d6f5 (/home/leon/kronoterm2mqtt)
 Connect to /dev/ttyUSB0...
-          HP inlet temperature 30.7 °C
-               DHW temperature 48.1 °C
-           Outside temperature 29.0 °C
-         HP outlet temperature 30.9 °C
-       Evaporating temperature 30.7 °C
-        Compressor temperature 30.3 °C
+       Desired DHW temperature 45.0 °C
+Current desired DHW temperature 45.0 °C
+Loop 1 temperature offset in ECO mode -6550.7 °C
+          HP inlet temperature 30.5 °C
+               DHW temperature 52.3 °C
+           Outside temperature 33.6 °C
+         HP outlet temperature 31.0 °C
+       Evaporating temperature 30.9 °C
+        Compressor temperature 30.4 °C
      Current power consumption 0.0 W
-            Loop 1 temperature 29.8 °C
-            Loop 2 temperature 28.3 °C
- Loop 2 thermostat temperature 25.5 °C
+            Loop 1 temperature 30.8 °C
+            Loop 2 temperature 28.7 °C
+ Loop 2 thermostat temperature 25.4 °C
        Heating system pressure 1.4 bar
+               Current HP load 0 %
                Source pressure 1.8 bar
-                           COP 0.00 
                           SCOP 0.00 
 ```
 

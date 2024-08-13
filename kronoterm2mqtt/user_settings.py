@@ -71,7 +71,7 @@ class CustomEteraExpander:
     solar_pump_operation: int = 1 #: 0 = disabled, 1 = enabled
     solar_pump_difference_on: float = 8.0 #: °C On(solar collector - solar tank bottom)
     solar_pump_difference_off: float = 3.0 #: °C Off(solar collector - solart tank bottom)
-    intra_tank_circulation_operation: int = 0 # 0 = disabled, 1 = enabled
+    intra_tank_circulation_operation: bool = True # enabled. Additional source signal required!
     intra_tank_circulation_difference_on: float = 8.0 #: °C On > (solar tank top - Hydro B DHW)
     intra_tank_circulation_difference_off: float = 5.0 #: °C Off < (solar tank top - Hydro B DHW)
     #: id of solar collector, solar tank (top, bottom), Etera Hydro B DHW, DHW Circulator return

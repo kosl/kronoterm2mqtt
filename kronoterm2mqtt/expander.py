@@ -80,12 +80,17 @@ class ExpanderMqttHandler:
                 suggested_display_precision= 1,
             ))
         for name in self.user_settings.custom_expander.relay_names:
-            self.relays.append(BinarySensor(
+            if len(name): # relay in use?
+                relay = BinarySensor(
                     device=self.mqtt_device,
                     name=name,
                     uid=slugify(name, '_').lower(),
                     device_class='running',
-            ) if len(name) else None) # relay in use?
+                )
+                relay.set_state(relay.OFF)
+                self.relays.append(relay)
+            else:
+                self.relays.append(None)
 
         for i, state in enumerate(self.user_settings.custom_expander.loop_operation):
             name = self.user_settings.custom_expander.sensor_names[i]
@@ -135,7 +140,7 @@ class ExpanderMqttHandler:
 
     async def update_sensors_and_control(self, outside_temperature: float,
                                          current_desired_dhw_temperature: float, # 
-                                         intra_tank_circulation_enabled: bool,
+                                         additional_source_enabled: bool,
                                          loop_circulation_status: bool,
                                          loop_temperature_offset_in_eco_mode: float,
                                          loop_operation_status_on_schedule: int):
@@ -156,7 +161,7 @@ class ExpanderMqttHandler:
         offset in ECO mode when loop_operation_status_on_schedule is 2
         (ECO).  Loops are turned off if
         loop_operation_status_on_schedule in 0 and run normally if
-        oop_operation_status_on_schedule 1.
+        loop_operation_status_on_schedule 1.
 
         """
         try:
@@ -189,6 +194,26 @@ class ExpanderMqttHandler:
                 state_message = 'switch unchanged'
             if self.verbosity:
                 print(f'Temperatures {temperatures} Collector-heat exchanger difference {difference} -> {state_message}')
+
+            if additional_source_enabled and self.user_settings.custom_expander.intra_tank_circulation_operation:
+                dhw_temperature = self.sensors[7].value
+                solar_tank_temperature = self.sensors[5]
+                relay = self.relays[self.user_settings.custom_expander.inter_tank_pump_relay_id]
+                if dhw_temperature < current_desired_dhw_temperature:
+                    dt = solar_tank_temperature > dhw_temperature
+                    if abs(dt) > self.user_settings.custom_expander.solar_pump_difference_on:
+                        if not relay.is_on:
+                            relay.set_state[relay.ON]
+                            await self.etera.set_relay(self.user_settings.custom_expander.inter_tank_pump_relay_id, True)
+                    elif abs(dt) < self.user_settings.custom_expander.solar_pump_difference_off:
+                        if relay.is_on:
+                            relay.set_state[relay.OFF]
+                            await self.etera.set_relay(self.user_settings.custom_expander.inter_tank_pump_relay_id, False)
+                else:
+                    if relay.is_on:
+                       relay.set_state[relay.OFF]
+                       await self.etera.set_relay(self.user_settings.custom_expander.inter_tank_pump_relay_id, False)
+                
                 
             #loop_circulation_status=True
             if loop_circulation_status: # if primary loop pump is running so should other heating loops
@@ -197,7 +222,7 @@ class ExpanderMqttHandler:
                     if relay is not None:
                         if self.switches[heat_loop].state == 'ON':
                             if not relay.is_on:
-                                relay.set_state('ON')
+                                relay.set_state(relay.ON)
                                 await self.etera.set_relay(heat_loop, True)
                             # Move motors according to the last reading
                             loop_temperature = self.sensors[heat_loop].value
@@ -225,15 +250,17 @@ class ExpanderMqttHandler:
                                     if move_duration > 10: 
                                         move_duration = 10 # limit move
                                     self.event_loop.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
-                                #print(f"Circuit #{heat_loop} {self.switches[heat_loop].name}: {loop_temperature=} {target_loop_temperature=} {temp_at_zero=} {outside_temperature=} {underfloor_temp_correction=} {move_duration=}")
+                                if self.verbosity > 1:
+                                    print(f"Circuit #{heat_loop} {self.switches[heat_loop].name}: {loop_temperature=} {target_loop_temperature=}"
+                                          f" {temp_at_zero=} {outside_temperature=} {underfloor_temp_correction=} {move_duration=}")
 
                         else: # Loop is switched OFF (disabled) and we close the valve and the pump if needed
                             if relay.is_on:
-                                relay.set_state('OFF')
+                                relay.set_state(relay.OFF)
                                 self.event_loop.create_task(self.mixing_valve_motor_close(
                                     heat_loop, 120, override=True))
                                 await self.etera.set_relay(heat_loop, False)                                
-            else: # The circulation is stopped momentarily due to DHW heating 
+            else: # The loop circulation in the Kronoterm heat pump is stopped momentarily due to DHW heating?
                 for heat_loop in range(4):
                     relay = self.relays[heat_loop]
                     if relay is not None:
@@ -241,8 +268,10 @@ class ExpanderMqttHandler:
                             self.event_loop.create_task(self.mixing_valve_motor_close(
                                 heat_loop, 120, override=True))
                         if relay.is_on: # We stop the pumps for now
-                            relay.set_state('OFF')
+                            relay.set_state(relay.OFF)
                             await self.etera.set_relay(heat_loop, False)
+                            if self.verbosity:
+                                print(f"{relay.name} switched OFF")
     
             #### Expander control end
         except EteraUartBridge.DeviceException as e:
