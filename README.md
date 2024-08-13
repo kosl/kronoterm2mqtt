@@ -76,7 +76,7 @@ Once having hardware (Modbus wiring) correctly installed the steps to get runnin
 3. Install and configure MQTT integration in Home assistant
 4. `./cli-app.py publish-loop` to see the heat pump under Home Assistant -> Settings -> Devices & Services -> MQTT.
 5. `sudo ./cli-app.py systemd-setup` to create permanent service (enable) and (re-)start it
-6. `sudo ./cli-app.py systemd-status` to see `publish-loop` service status
+6. `sudo ./cli-app.py systemd-status` to see the `kronoterm2mqtt.service` status
 
 There are some other useful commands to debug (`-v` switch) and
 develop it further. Unwanted registers can be commented out by
