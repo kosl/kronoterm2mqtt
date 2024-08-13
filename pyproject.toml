@@ -10,7 +10,7 @@ authors = [
 requires-python = ">=3.11,<4"
 dependencies = [
     "ha-services>=2.5.0",  # https://github.com/jedie/ha-services
-    "cli-base-utilities>=0.8.0",  # https://github.com/jedie/cli-base-utilities
+    "cli-base-utilities>=0.10.3",  # https://github.com/jedie/cli-base-utilities
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
     "click",  # https://github.com/pallets/click/
     "rich-click",  # https://github.com/ewels/rich-click
