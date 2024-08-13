@@ -66,7 +66,7 @@ class ExpanderMqttHandler:
                 uid="expander",
                 manufacturer='Wigaun DIY',
                 model='Arduino nano',
-                sw_version='1.0.8',
+                sw_version='1.0.9',
                 config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
             )
         for name in self.user_settings.custom_expander.sensor_names:
@@ -77,7 +77,7 @@ class ExpanderMqttHandler:
                 device_class='temperature',
                 state_class='measurement',
                 unit_of_measurement="°C",
-                suggested_display_precision= 1,
+                suggested_display_precision=2,
             ))
         for name in self.user_settings.custom_expander.relay_names:
             if len(name): # relay in use?
