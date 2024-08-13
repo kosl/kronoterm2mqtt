@@ -13,6 +13,7 @@ async-timeout==4.0.3 \
     # via cli-base-utilities
 bx-py-utils==94 \
     --hash=sha256:24b26873e66a1ef61e0f2b709f9a1a2b90a44bf29e86ad72be193c1dd49b17fe \
+    --hash=sha256:bc8fcbbd1a4d6b600a09ec99cbbc02f2118a37d39350be79fa9a8d4d60b94799 \
     --hash=sha256:cb8c1f32d67d152fa5fd355503a3f69ddc5a6b5d79fee1acc16f9d55a5605130
     # via
     #   cli-base-utilities

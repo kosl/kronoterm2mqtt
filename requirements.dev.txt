@@ -99,6 +99,7 @@ build==1.2.1 \
     # via pip-tools
 bx-py-utils==94 \
     --hash=sha256:24b26873e66a1ef61e0f2b709f9a1a2b90a44bf29e86ad72be193c1dd49b17fe \
+    --hash=sha256:bc8fcbbd1a4d6b600a09ec99cbbc02f2118a37d39350be79fa9a8d4d60b94799 \
     --hash=sha256:cb8c1f32d67d152fa5fd355503a3f69ddc5a6b5d79fee1acc16f9d55a5605130
     # via
     #   cli-base-utilities
@@ -695,10 +696,10 @@ mdurl==0.1.2 \
     --hash=sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8 \
     --hash=sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba
     # via markdown-it-py
-more-itertools==10.3.0 \
-    --hash=sha256:e5d93ef411224fbcef366a6e8ddc4c5781bc6359d43412a65dd5964e46111463 \
-    --hash=sha256:ea6a02e24a9161e51faad17a8782b92a0df82c12c1c8886fec7f0c3fa1a1b320 \
-    --hash=sha256:f56123ea39cc038412350251f122a29990485eaf71f51fd30db015fb6860f0c6
+more-itertools==10.4.0 \
+    --hash=sha256:0e8e4190608efa3f7ede9d05e48d74e1fffe95f3435940716c96e4e0f6f5a3f7 \
+    --hash=sha256:0f7d9f83a0a8dcfa8a2694a770590d98a67ea943e3d9f5298309a484758c4e27 \
+    --hash=sha256:fe0e63c4ab068eac62410ab05cccca2dc71ec44ba8ef29916a0090df061cf923
     # via
     #   jaraco-classes
     #   jaraco-functools
@@ -1215,9 +1216,10 @@ safety==3.2.3 \
     --hash=sha256:77923359b5bf7666905a5a176e50a89dba982f237e327e46ffdebf322c63261a \
     --hash=sha256:cda1e91749f610337a18b7f21f78267c127e44ebbbbcbbd419c83284279a5024
     # via kronoterm2mqtt (pyproject.toml)
-safety-schemas==0.0.2 \
-    --hash=sha256:277c077ce6e53221874a87c29515ffdd2f3773a6db4d035a9f67cc98db3b8c7f \
-    --hash=sha256:7d1b040ec06480f05cff6b45ea7a93e09c8942df864fb0d01ddeb67c323cfa8c
+safety-schemas==0.0.3 \
+    --hash=sha256:05b59d3973765911c64541ac6b5aca16418d56c1f043d983a5450ea265916061 \
+    --hash=sha256:756522392041cff855795ef8e796f21e434ab9f55eaa60fc5995ba8e67aa2e43 \
+    --hash=sha256:b39554f9c010e4f11f7c9e5773eb31d2c96c164f7a595c273a98b074d0fb98f4
     # via safety
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
@@ -1280,9 +1282,9 @@ tomlkit==0.13.0 \
     #   cli-base-utilities
     #   ha-services
     #   manageprojects
-tox==4.17.0 \
-    --hash=sha256:82ef41e7e54182e2143daf0b2920d9030c2e1c4291e12091ebad66860c7be7a4 \
-    --hash=sha256:b1e2e1dfbfdc174d9be95ae78ec2c4d2cf4800d4c15571deddb197a2c90d2de6
+tox==4.17.1 \
+    --hash=sha256:2974597c0353577126ab014f52d1a399fb761049e165ff34427f84e8cfe6c990 \
+    --hash=sha256:2c41565a571e34480bd401d668a4899806169a4633e972ac296c54406d2ded8a
     # via kronoterm2mqtt (pyproject.toml)
 twine==5.1.1 \
     --hash=sha256:215dbe7b4b94c2c50a7315c0275d2258399280fbb7d04182c7e55e24b5f93997 \
@@ -1341,10 +1343,10 @@ wsproto==1.2.0 \
     --hash=sha256:ad565f26ecb92588a3e43bc3d96164de84cd9902482b130d0ddbaa9664a85065 \
     --hash=sha256:b9acddd652b585d75b20477888c56642fdade28bdfd3579aa24a4d2c037dd736
     # via platformio
-zipp==3.19.2 \
-    --hash=sha256:9f2707d1f419880343e2b0b9954644cef6d6baa7a0e4e84662cd0555b679e120 \
-    --hash=sha256:bf1dcf6450f873a13e952a29504887c89e6de7506209e5b1bcc3460135d4de19 \
-    --hash=sha256:f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c
+zipp==3.20.0 \
+    --hash=sha256:0145e43d89664cfe1a2e533adc75adafed82fe2da404b4bbb6b026c0157bdb31 \
+    --hash=sha256:58da6168be89f0be59beb194da1250516fdaa062ccebd30127ac65d30045e10d \
+    --hash=sha256:a39bf2591015b4618de8cba66c42fa1846361b3959b12f19be3c7dc34e8dbb36
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
