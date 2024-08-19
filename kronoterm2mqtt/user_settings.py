@@ -121,13 +121,12 @@ class SystemdServiceInfo(BaseSystemdServiceInfo):
 
 @dataclasses.dataclass
 class UserSettings:
-    """
-    KRONOTERM -> MQTT - settings
+    """KRONOTERM -> MQTT - settings
 
     See README for more information.
 
-    At least you should specify MQTT settingsi to connect to mosquito server.
-    main_uid defaults to hostname
+    At least you should specify MQTT settings to connect to the
+    Mosquito server.
     """
 
 
@@ -139,6 +138,11 @@ class UserSettings:
     heat_pump: dataclasses = dataclasses.field(default_factory=HeatPump)
 
     custom_expander: dataclasses = dataclasses.field(default_factory=CustomEteraExpander)
+
+    def __post_init__(self):
+        """ Modify the MQTT defaults"""
+        self.mqtt.main_uid = 'kronoterm'
+        self.mqtt.host = 'mqtt.your-server.tld'
 
 def get_toml_settings() -> TomlSettings:
     return TomlSettings(
