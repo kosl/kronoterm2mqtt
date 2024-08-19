@@ -26,10 +26,6 @@ async def etera_reset_handler():
 async def etera_message_handler(message: bytes):
     print(message.decode())
 
-def get_epoch_ms():
-    return int(time.time() * 1000.0)
-
-
 class ExpanderMqttHandler:
     def __init__(self, mqtt_client, user_settings: UserSettings, verbosity: int):
         self.event_loop = None
@@ -58,7 +54,7 @@ class ExpanderMqttHandler:
         await self.etera.ready()
         for i in range(4):
             event_loop.create_task(self.mixing_valve_motor_close(i, 120))
-            self.mixing_valve_timer.append(get_epoch_ms())
+            self.mixing_valve_timer.append(time.monotonic())
 
         self.mqtt_device = MqttDevice(
                 main_device=main_device,
@@ -232,8 +228,8 @@ class ExpanderMqttHandler:
                                 self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=True))
                                 print( f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.switches[heat_loop].name}! Switched off now!")
                                 break
-                            if get_epoch_ms() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME: # can move motor?
-                                self.mixing_valve_timer[heat_loop] = get_epoch_ms() # reset timer
+                            if time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME: # can move motor?
+                                self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
                                 underfloor_temp_correction = -outside_temperature*self.user_settings.custom_expander.heating_curve_coefficient
                                 if loop_operation_status_on_schedule == 2: # ECO mode
                                     underfloor_temp_correction += loop_temperature_offset_in_eco_mode
