@@ -214,54 +214,51 @@ class KronotermMqttHandler:
         switches =  { 2327: self.dhw_circulation_switch,
                       2015: self.additional_source_switch}
         
-        async def update_sensors(event_loop):
-            print("Kronoterm to MQTT publish loop started...")
-            while True:
-                self.read_heat_pump_register_blocks()
-                for address in self.sensors:
-                    sensor, scale = self.sensors[address]
-                    value = self.registers[address]
-                    value = float(scale)*(value if scale > 0 else 65536-value)
-                    sensor.set_state(value)
-                    sensor.publish(self.mqtt_client)
-                for address in self.binary_sensors:
-                    sensor, bit = self.binary_sensors[address]
-                    value = self.registers[address]
-                    if bit is not None:
-                        value &= 1 << bit
-                    sensor.set_state(sensor.ON if value else sensor.OFF)
-                    sensor.publish(self.mqtt_client)
-                for address in self.enum_sensors:
-                    sensor, options = self.enum_sensors[address]
-                    value = self.registers[address]
-                    for index, key in enumerate(options['keys']):
-                        if value == key:
-                            break
-                    sensor.set_state(options['values'][index])
-                    sensor.publish(self.mqtt_client)
+        print("Kronoterm to MQTT publish loop started...")
+        while True:
+            self.read_heat_pump_register_blocks()
+            for address in self.sensors:
+                sensor, scale = self.sensors[address]
+                value = self.registers[address]
+                value = float(scale)*(value if scale > 0 else 65536-value)
+                sensor.set_state(value)
+                sensor.publish(self.mqtt_client)
+            for address in self.binary_sensors:
+                sensor, bit = self.binary_sensors[address]
+                value = self.registers[address]
+                if bit is not None:
+                    value &= 1 << bit
+                sensor.set_state(sensor.ON if value else sensor.OFF)
+                sensor.publish(self.mqtt_client)
+            for address in self.enum_sensors:
+                sensor, options = self.enum_sensors[address]
+                value = self.registers[address]
+                for index, key in enumerate(options['keys']):
+                    if value == key:
+                        break
+                sensor.set_state(options['values'][index])
+                sensor.publish(self.mqtt_client)
 
-                for address, switch in switches.items():
-                    switch.set_state(switch.ON if self.registers[address] else switch.OFF)
-                    switch.publish(self.mqtt_client)
-                        
-                if self.expander is not None:
-                    await self.expander.update_sensors_and_control(
-                        0.1*self.registers[2102], # outside temperature
-                        0.1*self.registers[2023], # Current desired DHW temperature
-                        self.registers[2015] > 0, # Additional source activated
-                        self.registers[2054] > 0, # loop 2 pump status
-                        -0.1*(65536-self.registers[2046]), # Loop 1 temperature offset in ECO mode
-                        self.registers[2043], # Loop 1 operation status on schedule
-                    )
+            for address, switch in switches.items():
+                switch.set_state(switch.ON if self.registers[address] else switch.OFF)
+                switch.publish(self.mqtt_client)
+                    
+            if self.expander is not None:
+                await self.expander.update_sensors_and_control(
+                    0.1*self.registers[2102], # outside temperature
+                    0.1*self.registers[2023], # Current desired DHW temperature
+                    self.registers[2015] > 0, # Additional source activated
+                    self.registers[2054] > 0, # loop 2 pump status
+                    -0.1*(65536-self.registers[2046]), # Loop 1 temperature offset in ECO mode
+                    self.registers[2043], # Loop 1 operation status on schedule
+                )
 
-                if self.verbosity:
-                    print('\n', flush=True)
-                    print('Wait', end='...')
-                    for i in range(10, 0, -1):
-                        await asyncio.sleep(1)
-                        print(i, end='...', flush=True)
-                else:
-                    await asyncio.sleep(10)
-
-        await update_sensors(event_loop)
+            if self.verbosity:
+                print('\n', flush=True)
+                print('Wait', end='...')
+                for i in range(10, 0, -1):
+                    await asyncio.sleep(1)
+                    print(i, end='...', flush=True)
+            else:
+                await asyncio.sleep(10)
 
