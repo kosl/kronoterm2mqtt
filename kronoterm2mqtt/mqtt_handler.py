@@ -95,7 +95,7 @@ class KronotermMqttHandler:
                     uid=slugify(parameter['name'], '_').lower(),
                     device_class=parameter['device_class'],
                     state_class=parameter['state_class'] if len(parameter['state_class']) else None,
-                    unit_of_measurement=parameter['unit_of_measurement'],
+                    unit_of_measurement=parameter['unit_of_measurement'] if len(parameter['unit_of_measurement']) else None,
                     suggested_display_precision=precision,
                 ),
                 Decimal(str(parameter['scale'])),
