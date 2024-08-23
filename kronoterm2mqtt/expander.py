@@ -38,6 +38,18 @@ class ExpanderMqttHandler:
         self.switches: list(Switch) = list() # Loop names from sensors
         self.mixing_valve_timer: list() = list()
         self.etera = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            return False
+
+        if self.config.verbosity:
+            print('\nClosing Etera Expander"', end='...')
+        if self.etera: 
+            self.etera._s.close() # TODO add context manager or close to etera library
         
 
     async def init_device(self, event_loop, main_device: MqttDevice, verbosity: int):

@@ -46,6 +46,20 @@ class KronotermMqttHandler:
         self.dhw_circulation_switch: Switch = None
         self.additional_source_switch: Switch = None
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            return False
+
+        if self.config.verbosity:
+            print('\nClosing MQTT and Modbus client"', end='...')
+        if self.modbus_client:
+            self.modbus_client.close()
+
+
+
     async def init_device(self, event_loop, verbosity: int):
         """
         Create sensors from definitions.toml add it to device for later
