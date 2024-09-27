@@ -8,9 +8,11 @@
 
 Gets information from the Kronoterm heat pump connected to Modbus TEX
 interface. While this should work for all Kronoterm heat pumps the
-software was only verified to run on ETERA with Heat pump manager
-V3.13-1.  From the Kronoterm modbus specification the registers are
-the same for all Kronoterm heat pumps.
+software was verified to run on ETERA ground source heat pump with
+Heat pump manager V3.13-1 and WPG-10-K2 HT ground source heat pump
+with Heat pump manager V2.12-1 (19200 baud rate).  From the Kronoterm
+modbus specification the registers are the same for all Kronoterm heat
+pumps.
 
 While reading Modbus registers from the pump the kronoterm2mqtt sends
 MQTT discovery events from KRONOTERM to MQTT broker (Mosquito) that
@@ -132,10 +134,16 @@ venv/bin/kronoterm2mqtt_app print-values
 Raspberry Pi3B (running Home Assistant) and a small 5-port ethernet
 switch below are powered by a buckle step down (12->5V) converters.
 
+### WPG-10-K2 HT
+![Raspberry Pi](images/WPG-10-K2_HT-raspberry-pi.jpg)
+![](images/WPG-10-K2_HT.jpg)
+![](images/WPG-10-K2_HT_tex.jpg)
+
 ### Home Assistant
 
 Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
 ![Home Assistant](images/ha-sensors.png)
+![WPG card](images/WPG-10-K2_HT-ha-card.png)
 
 ## Hardware wiring test
 
@@ -169,6 +177,14 @@ $ venv/bin/python kronoterm2mqtt/examples/print-temperatures.py
 2024-08-09 10:11:35,581 DEBUG logging:103 Changing transaction state from "PROCESSING REPLY" to "TRANSACTION_COMPLETE"
 KRONOTERM Temperatures: ['28.8°C', '48.3°C', '24.7°C', '29.3°C', '30.3°C', '29.8°C', '6493.6°C', '0.0°C', '6493.6°C', '26.8°C']
 ~~~
+If the test above fails, try to change port or baudrate to 19200 by editing `kronoterm2mqtt/examples/print-temperatures.py`.
+
+## Home assistant Heat pump card
+
+ - Lovelace HTML Jinja2 Template card (html-template-card)
+ - Numberbox Card (numberbox-card)
+ - fold-entity-row
+
 
 
 ## TODO
@@ -178,8 +194,10 @@ KRONOTERM Temperatures: ['28.8°C', '48.3°C', '24.7°C', '29.3°C', '30.3°C', 
 - [x] `binary_sensor` to show some two-state states
 - [x] `binary_sensor` to decode binary statuses in `enum` like manner combined. For example error messages or "additional activations".
 - [ ] Upgrade [ha-services](https://github.com/jedie/ha-services) with `number` component allowing change of some numeric parameters (set temperatures, etc.).
+- [ ] Display the heat pump state using ThermIQ as an example.
 
 ## References
 
 - `Navodila za priklop in uporabo CNS sistema.pdf` Kronoterm Modbus RTU description (in Slovene) obtained from Kronoterm support
 - `Installation and Operating Manual for BMS System.pdf` Kronoterm Modbus V3.13-1 RTU description obtained from Kronoterm support
+- 1122-16-17-4021-05_Modbus_BMS_TT3000web.pdf` Modbus naslovi za BMS; Regulacija TT3000 (in Slovene) obtained from Kronoterm support

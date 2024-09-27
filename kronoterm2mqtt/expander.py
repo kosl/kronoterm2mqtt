@@ -1,6 +1,7 @@
 import logging
 import time
 import asyncio
+import sys
 
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
@@ -21,10 +22,15 @@ logger = logging.getLogger(__name__)
 
 
 async def etera_reset_handler():
-    print('Custom ETERA expander just reset...')
+    print('Custom ETERA expander just reset...', flush=True, file=sys.stderr)
+    logging.error('Custom ETERA expander just reset...')
 
 async def etera_message_handler(message: bytes):
-    print(message.decode())
+    try:
+        print(message.decode(), flush=True)
+    except UnicodeDecodeError:
+        print(message, flush=True)
+    #logging.info(message.decode())
 
 class ExpanderMqttHandler:
     def __init__(self, mqtt_client, user_settings: UserSettings, verbosity: int):
@@ -74,7 +80,7 @@ class ExpanderMqttHandler:
                 uid="expander",
                 manufacturer='Wigaun DIY',
                 model='Arduino nano',
-                sw_version='1.0.9',
+                sw_version='1.1.3',
                 config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
             )
         for name in self.user_settings.custom_expander.sensor_names:
@@ -188,7 +194,7 @@ class ExpanderMqttHandler:
             collector_temperature = temperatures[settings.solar_sensors[0]]
             tank_temperature = temperatures[settings.solar_sensors[2]]
             difference = collector_temperature - tank_temperature
-            if difference > settings.solar_pump_difference_on:
+            if difference > settings.solar_pump_difference_on or collector_temperature < 5:
                 await self.etera.set_relay(solar_pump_relay_id, True)
                 relay = self.relays[solar_pump_relay_id]
                 relay.set_state(relay.ON)
