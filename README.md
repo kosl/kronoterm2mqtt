@@ -86,7 +86,10 @@ changing `kronoterm2mqtt/definitions/kronoterm_ksm.toml` individual
 `[[sensor]]` entries to something like `[[sensor_disabled]]` so that
 it will be skipped during definitions scan. There are quite some
 number of disabled sensors that can be shown and the TOML file can get
-more sensors if required.
+more sensors if required. Note that you need to have at least one of
+each sensor type enabled in your TOML file (`[[enum_sensor]]`,
+`[[sensor]]]`, `[[binary_sensor]]`). Switches are harcoded and can
+only be commented out or expanded in the `mqtt_handler.py`
 
 ### print-values
 ```sh
@@ -138,6 +141,17 @@ switch below are powered by a buckle step down (12->5V) converters.
 ![Raspberry Pi](images/WPG-10-K2_HT-raspberry-pi.jpg)
 ![](images/WPG-10-K2_HT.jpg)
 ![](images/WPG-10-K2_HT_tex.jpg)
+Note that bitrate needs to be changed to 19200 for WPG heat pumps within `[connection]` section.
+~~~toml
+~/kronoterm2mqtt/kronoterm2mqtt/definitions/kronoterm_ksm.toml
+
+[connection]
+#baudrate = 115200
+baudrate = 19200
+bytesize = 8
+parity = "N"
+stopbits = 1
+~~~
 
 ### Home Assistant
 
