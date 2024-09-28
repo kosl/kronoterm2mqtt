@@ -64,7 +64,7 @@ class CustomEteraExpander:
     number_of_thermometers: int = 10 # To check initially if settings are OK
 
     loop_operation: list = dataclasses.field(default_factory=lambda:[1, 1, 1, 0]) 
-    loop_sensors: list = dataclasses.field(default_factory=lambda:[1, 5, 6, 0])
+    loop_sensors: list = dataclasses.field(default_factory=lambda:[1, 0, 6, 5])
     loop_temperature: list = dataclasses.field(default_factory=lambda:[24.0, 24.0, 24.0, 24.0]) # At 0°C
     heating_curve_coefficient: float = 0.25 #: loop/outside temp °C
 
