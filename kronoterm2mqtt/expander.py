@@ -253,7 +253,7 @@ class ExpanderMqttHandler:
                                 self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=True))
                                 print( f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.switches[heat_loop].name}!"
                                        " Switched off now!")
-                                break
+                                continue
                             if self.last_working_function > 0 and working_function == 0: # Start of heating detected, close the valve
                                 self.last_working_function = working_function
                                 self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
@@ -262,7 +262,7 @@ class ExpanderMqttHandler:
                                         heat_loop, EteraUartBridge.Direction.COUNTER_CLOCKWISE, int(4*3000), override=False)
                                 except EteraUartBridge.DeviceException as e:
                                     print(f'Mixing valve Motor #{heat_loop} move error', e)
-                                break
+                                continue # to next loop
                             self.last_working_function = working_function
                             if time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME: # can move motor?
                                 self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
