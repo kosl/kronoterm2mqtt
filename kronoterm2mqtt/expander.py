@@ -214,7 +214,7 @@ class ExpanderMqttHandler:
                 solar_tank_temperature = self.sensors[5]
                 relay = self.relays[self.user_settings.custom_expander.inter_tank_pump_relay_id]
                 if dhw_temperature < current_desired_dhw_temperature:
-                    dt = solar_tank_temperature > dhw_temperature
+                    dt = solar_tank_temperature - dhw_temperature
                     if abs(dt) > self.user_settings.custom_expander.solar_pump_difference_on:
                         if not relay.is_on:
                             relay.set_state[relay.ON]
