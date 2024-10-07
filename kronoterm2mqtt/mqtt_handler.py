@@ -259,12 +259,13 @@ class KronotermMqttHandler:
                     
             if self.expander is not None:
                 await self.expander.update_sensors_and_control(
-                    0.1*self.registers[2102], # outside temperature
-                    0.1*self.registers[2023], # Current desired DHW temperature
-                    self.registers[2015] > 0, # Additional source activated
-                    self.registers[2044] > 0, # Loop 1 circulation pump status
-                    -0.1*(65536-self.registers[2046]), # Loop 1 temperature offset in ECO mode
-                    self.registers[2043], # Loop 1 operation status on schedule
+                    outside_temperature=0.1*self.registers[2102], # outside temperature
+                    current_desired_dhw_temperature=0.1*self.registers[2023], # Current desired DHW temperature
+                    additional_source_enabled=self.registers[2015] > 0, # Additional source activated
+                    loop_circulation_status=self.registers[2044] > 0, # Loop 1 circulation pump status
+                    loop_temperature_offset_in_eco_mode=-0.1*(65536-self.registers[2046]), # Loop 1 temperature offset in ECO mode
+                    loop_operation_status_on_schedule=self.registers[2043], # Loop 1 operation status on schedule
+                    working_function=self.registers[2000], # Heat pump heating=0, standby=5
                 )
 
             if self.verbosity:

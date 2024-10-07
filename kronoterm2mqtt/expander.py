@@ -44,6 +44,7 @@ class ExpanderMqttHandler:
         self.switches: list(Switch) = list() # Loop names from sensors
         self.mixing_valve_timer: list() = list()
         self.etera = None
+        self.last_working_function : int = 5 # Standby
 
     def __enter__(self):
         return self
@@ -152,12 +153,14 @@ class ExpanderMqttHandler:
        #     self.event_loop.create_task(self.etera.set_relay(loop_number, True))
 
 
-    async def update_sensors_and_control(self, outside_temperature: float,
-                                         current_desired_dhw_temperature: float, # 
+    async def update_sensors_and_control(self, *, outside_temperature: float,
+                                         current_desired_dhw_temperature: float, 
                                          additional_source_enabled: bool,
                                          loop_circulation_status: bool,
                                          loop_temperature_offset_in_eco_mode: float,
-                                         loop_operation_status_on_schedule: int):
+                                         loop_operation_status_on_schedule: int,
+                                         working_function: int
+                                         ):
         """Updates ETERA expander sub-device in Home Assistant and
         performs control of the pumps and mixing valve motors with
         target temperatures computed from outside temperature. If loop
@@ -175,7 +178,11 @@ class ExpanderMqttHandler:
         offset in ECO mode when loop_operation_status_on_schedule is 2
         (ECO).  Loops are turned off if
         loop_operation_status_on_schedule in 0 and run normally if
-        loop_operation_status_on_schedule 1.
+        loop_operation_status_on_schedule 1.  To synchronise the
+        mixing valves motion with start of the heating from
+        `working_function` and to add differential response to ramp up
+        10K/10minutes for Loop 1 and initial closing of all mixing
+        valves is started.
 
         """
         try:
@@ -244,8 +251,19 @@ class ExpanderMqttHandler:
                                 self.switches[heat_loop].set_state('OFF')
                                 await self.etera.set_relay(heat_loop, False)
                                 self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=True))
-                                print( f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.switches[heat_loop].name}! Switched off now!")
+                                print( f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.switches[heat_loop].name}!"
+                                       " Switched off now!")
                                 break
+                            if self.last_working_function > 0 and working_function == 0: # Start of heating detected, close the valve
+                                self.last_working_function = working_function
+                                self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
+                                try:
+                                    await self.etera.move_motor(
+                                        heat_loop, EteraUartBridge.Direction.COUNTER_CLOCKWISE, int(4*3000), override=False)
+                                except EteraUartBridge.DeviceException as e:
+                                    print(f'Mixing valve Motor #{heat_loop} move error', e)
+                                break
+                            self.last_working_function = working_function
                             if time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME: # can move motor?
                                 self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
                                 underfloor_temp_correction = -outside_temperature*self.user_settings.custom_expander.heating_curve_coefficient
