@@ -34,6 +34,7 @@ async def etera_message_handler(message: bytes):
 
 class ExpanderMqttHandler:
     def __init__(self, mqtt_client, user_settings: UserSettings, verbosity: int):
+        self.etera = None
         self.event_loop = None
         self.mqtt_client = mqtt_client
         self.user_settings = user_settings
@@ -42,9 +43,9 @@ class ExpanderMqttHandler:
         self.sensors: list(Sensor) = list() # loop[0:4], collector, solar tank up/down, DHW, DHW circulation
         self.relays: list(BinarySensor) = list()
         self.switches: list(Switch) = list() # Loop names from sensors
-        self.mixing_valve_timer: list() = list()
-        self.etera = None
-        self.last_working_function : int = 5 # Standby
+        self.mixing_valve_sensors: list(Sensor) = list() # Position sensors in percentage
+        self.mixing_valve_timer: list() = list() # Measuring time from last move
+        self.last_working_function : int = 5 # Heat pump in 5=Standby
 
     def __enter__(self):
         return self
@@ -118,11 +119,31 @@ class ExpanderMqttHandler:
                 )
                 switch.set_state(switch.ON if state else switch.OFF)
                 self.switches.append(switch)
+                mixing_valve_sensor = Sensor(
+                    device=self.mqtt_device,
+                    name='Mešalni ventil '+name,
+                    uid=slugify('mesalni ventil '+name, '_').lower(),
+                    device_class='power_factor',
+                    state_class='measurement',
+                    unit_of_measurement='%',
+                    suggested_display_precision=1
+                )    
+                self.mixing_valve_sensors.append(mixing_valve_sensor)
+                mixing_valve_sensor.set_state(0)
+                mixing_valve_sensor.publish(self.mqtt_client)
                 
     async def mixing_valve_motor_close(self, heating_loop_number: int,  duration: float, override: bool = True):
         try:
             await self.etera.move_motor(
                 heating_loop_number, EteraUartBridge.Direction.COUNTER_CLOCKWISE, int(duration*1000), override=override)
+            position = self.mixing_valve_sensors[heating_loop_number].value
+            position -= duration/120.0*100
+            if position < 0:
+                position = 0
+            self.mixing_valve_sensors[heating_loop_number].set_state(position)
+            self.mixing_valve_sensors[heating_loop_number].publish(self.mqtt_client)
+        except IndexError as e:
+            print(f'Motor #{heating_loop_number} close invalid', e) 
         except EteraUartBridge.DeviceException as e:
             print(f'Motor #{heating_loop_number} move error', e)
 
@@ -130,6 +151,12 @@ class ExpanderMqttHandler:
         try:
             await self.etera.move_motor(
                 heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration*1000), override=override)
+            position = self.mixing_valve_sensors[heating_loop_number].value
+            position += duration/120.0*100
+            if position > 100:
+                position = 100
+            self.mixing_valve_sensors[heating_loop_number].set_state(position)
+            self.mixing_valve_sensors[heating_loop_number].publish(self.mqtt_client)
         except EteraUartBridge.DeviceException as e:
             print(f'Motor #{heating_loop_number} move error', e)
 
@@ -197,6 +224,7 @@ class ExpanderMqttHandler:
                 sensor.publish(self.mqtt_client)    
             for switch in self.switches:
                 switch.publish(self.mqtt_client)
+                
             #### Expander control start
             collector_temperature = temperatures[settings.solar_sensors[0]]
             tank_temperature = temperatures[settings.solar_sensors[2]]
@@ -255,15 +283,9 @@ class ExpanderMqttHandler:
                                        " Switched off now!")
                                 continue
                             if self.last_working_function > 0 and working_function == 0: # Start of heating detected, close the valve
-                                self.last_working_function = working_function
                                 self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
-                                try:
-                                    await self.etera.move_motor(
-                                        heat_loop, EteraUartBridge.Direction.COUNTER_CLOCKWISE, int(4*3000), override=False)
-                                except EteraUartBridge.DeviceException as e:
-                                    print(f'Mixing valve Motor #{heat_loop} move error', e)
+                                self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 12))
                                 continue # to next loop
-                            self.last_working_function = working_function
                             if time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME: # can move motor?
                                 self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
                                 underfloor_temp_correction = -outside_temperature*self.user_settings.custom_expander.heating_curve_coefficient
@@ -291,7 +313,8 @@ class ExpanderMqttHandler:
                                 relay.set_state(relay.OFF)
                                 self.event_loop.create_task(self.mixing_valve_motor_close(
                                     heat_loop, 120, override=True))
-                                await self.etera.set_relay(heat_loop, False)                                
+                                await self.etera.set_relay(heat_loop, False)
+                                
             else: # The loop circulation in the Kronoterm heat pump is stopped momentarily due to DHW heating?
                 for heat_loop in range(4):
                     relay = self.relays[heat_loop]
@@ -304,7 +327,8 @@ class ExpanderMqttHandler:
                             await self.etera.set_relay(heat_loop, False)
                             if self.verbosity:
                                 print(f"{relay.name} switched OFF")
-    
+                                
+            self.last_working_function = working_function 
             #### Expander control end
         except EteraUartBridge.DeviceException as e:
                 print('Get temperatures error', e)
