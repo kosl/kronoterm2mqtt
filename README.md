@@ -141,6 +141,7 @@ switch below are powered by a buckle step down (12->5V) converters.
 ![Raspberry Pi](images/WPG-10-K2_HT-raspberry-pi.jpg)
 ![](images/WPG-10-K2_HT.jpg)
 ![](images/WPG-10-K2_HT_tex.jpg)
+![](images/WPG-TEX-pinout.png)
 Note that bitrate needs to be changed to 19200 for WPG heat pumps within `[connection]` section.
 ~~~toml
 ~/kronoterm2mqtt/kronoterm2mqtt/definitions/kronoterm_ksm.toml
