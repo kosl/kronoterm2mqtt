@@ -54,9 +54,8 @@ def publish_loop(verbosity: int):
             with KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity) as kronoterm_mqtt_handler:
                 asyncio.run(kronoterm_mqtt_handler.publish_loop())
         except TimeoutError:
-            print('Timeout... Retrying in 1 second...')
-            time.sleep(1)
+            print('Timeout... Retrying in 10 seconds...')
         except Exception as e:
             print(f'Error: {e}', type(e))
-            print('Retrying in 1 second...')
-            time.sleep(1)
+            print('Retrying in 10 seconds...')
+        time.sleep(10)
