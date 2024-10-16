@@ -72,10 +72,6 @@ class ExpanderMqttHandler:
         self.event_loop = event_loop
         self.event_loop.create_task(self.etera.run_forever())
         await self.etera.ready()
-        for i in range(4): # We run only 3 out of 4 mixing valve motors for now
-            if self.relays[i] is not None:
-                event_loop.create_task(self.mixing_valve_motor_close(i, 120))
-                self.mixing_valve_timer.append(time.monotonic())
 
         self.mqtt_device = MqttDevice(
                 main_device=main_device,
@@ -97,7 +93,7 @@ class ExpanderMqttHandler:
                 suggested_display_precision=2,
             ))
         for name in self.user_settings.custom_expander.relay_names:
-            if len(name): # relay in use?
+            if len(name): # relay in use? We run only 3 out of 4 mixing valve motors for now
                 relay = BinarySensor(
                     device=self.mqtt_device,
                     name=name,
@@ -132,6 +128,9 @@ class ExpanderMqttHandler:
                 self.mixing_valve_sensors.append(mixing_valve_sensor)
                 mixing_valve_sensor.set_state(0)
                 mixing_valve_sensor.publish(self.mqtt_client)
+                event_loop.create_task(self.mixing_valve_motor_close(i, 120))
+                self.mixing_valve_timer.append(time.monotonic())
+
                 
     async def mixing_valve_motor_close(self, heating_loop_number: int,  duration: float, override: bool = True):
         try:
