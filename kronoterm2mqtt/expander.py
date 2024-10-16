@@ -212,9 +212,9 @@ class ExpanderMqttHandler:
         valves is started.
 
         """
+        settings = self.user_settings.custom_expander
         try:
             temperatures = await self.etera.get_temperatures()
-            settings = self.user_settings.custom_expander
             ids = settings.loop_sensors + settings.solar_sensors
             solar_pump_relay_id = settings.solar_pump_relay_id
 
@@ -332,7 +332,6 @@ class ExpanderMqttHandler:
             #### Expander control end
         except EteraUartBridge.DeviceException as e:
                 print('Get temperatures error', e)
-        relay_names = settings.relay_names
         for relay in self.relays:
             if relay is not None:
                 relay.publish(self.mqtt_client)
