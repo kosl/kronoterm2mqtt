@@ -72,9 +72,10 @@ class ExpanderMqttHandler:
         self.event_loop = event_loop
         self.event_loop.create_task(self.etera.run_forever())
         await self.etera.ready()
-        for i in range(4):
-            event_loop.create_task(self.mixing_valve_motor_close(i, 120))
-            self.mixing_valve_timer.append(time.monotonic())
+        for i in range(4): # We run only 3 out of 4 mixing valve motors for now
+            if self.relays[i] is not None:
+                event_loop.create_task(self.mixing_valve_motor_close(i, 120))
+                self.mixing_valve_timer.append(time.monotonic())
 
         self.mqtt_device = MqttDevice(
                 main_device=main_device,
