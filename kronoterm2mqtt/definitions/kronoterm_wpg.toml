@@ -1,0 +1,133 @@
+[connection]
+#baudrate = 115200
+baudrate = 19200
+bytesize = 8
+parity = "N"
+stopbits = 1
+
+# KRONOTERM MA_numbering is one-based in documentation and we
+# use it here too although internally we substract 1 for all
+# register adresses!
+
+
+# https://developers.home-assistant.io/docs/core/entity/sensor
+
+[[binary_sensor]]
+register = 2000
+name = "System operation"
+device_class = ""
+
+[[enum_sensor]]
+register = 2001
+name = "Working function"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3, 4, 5, 6, 8]
+values = ["ogrevanje", "sanitarna voda", "hlajenje", "ogrevanje bazena", "pregrevanje sanitarne vode", "mirovanje", "zagonska procedura", "varovanje kompresorja"]
+#keys = [0, 1, 2, 3, 4, 5, 7]
+#values = ["heating", "DHW", "cooling", "pool heating", "thermal disinfection", "standby", "remote deactivation"]
+
+[[enum_sensor]]
+register = 2007
+name = "Rezim delovanja"
+[[enum_sensor.options]]
+keys = [0, 1]
+values = ["zimski", "poletni"] #vrednosti obrnjene - napaka v dokumentaciji. sem obrnil
+
+[[enum_sensor]]
+register = 2006
+name = "Errors"
+[[enum_sensor.options]]
+keys = [0, 1, 2]
+values = ["ni napake", "napaka", "opozorilo"]
+
+#temperatura zalogovnika (povratni vod)
+[[sensor]]
+register = 2101
+name = "HP inlet temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2102
+name = "DHW temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "  C"
+scale = 0.1
+
+[[sensor]]
+register = 2023
+name = "Desired DHW temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2103
+name = "Outside temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2104
+name = "HP outlet temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+#vstop
+[[sensor]]
+register = 2105
+name = "Evaporating temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+#izstop
+[[sensor]]
+register = 2106
+name = "Compressor temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+#Obratovalne ure
+[[sensor]]
+register = 2090
+name = "Obratovalne ure kompresor ogrevanje"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2091
+name = "Obratovalne ure kompresor ogrevanje sanitarna"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2092
+name = "Obratovalne minute kompresorja dnevno"
+device_class = "duration"
+state_class = "measurement"
+unit_of_measurement = "min"
+scale = 1
+
+[[sensor]]
+register = 2095
+name = "Obratovalne ure vgrajenega dodatnega vira"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
