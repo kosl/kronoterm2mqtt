@@ -1,0 +1,144 @@
+views:
+  - title: Pregled
+    cards:
+      - type: entities
+        entities:
+          - entity: binary_sensor.heat_pump_system_operation
+            name: Delovanje sistema
+            secondary_info: none
+          - entity: sensor.heat_pump_operation_regime
+            name: Režim delovanja
+            secondary_info: none
+            icon: mdi:sun-snowflake-variant
+          - entity: sensor.heat_pump_working_function
+            name: Funkcija delovanja
+            secondary_info: last-changed
+          - entity: sensor.heat_pump_error_warning_status
+            name: Stanje napak
+            icon: mdi:list-status
+            secondary_info: last-changed
+          - entity: switch.heat_pump_additional_source
+            name: Dodatni vir
+          - entity: switch.heat_pump_circulation_of_sanitary_water
+            name: Cirkulacija sanitarne vode
+        title: Toplotna črpalka ETERA
+        show_header_toggle: false
+      - type: custom:apexcharts-card
+        graph_span: 24h
+        apex_config:
+          legend:
+            show: false
+        header:
+          show: true
+          title: Zunanja temperatura
+          show_states: true
+          colorize_states: true
+        series:
+          - entity: sensor.heat_pump_outside_temperature
+            name: ' '
+            stroke_width: 1
+            color: green
+      - type: vertical-stack
+        cards:
+          - type: custom:apexcharts-card
+            graph_span: 12h
+            apex_config:
+              legend:
+                show: false
+            header:
+              show: true
+              title: Sanitarna voda
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.heat_pump_dhw_temperature
+                name: Temperatura
+                stroke_width: 1
+                color: lightblue
+              - entity: sensor.heat_pump_desired_dhw_temperature
+                name: Željena temperatura
+                stroke_width: 2
+                color: darkred
+              - entity: sensor.heat_pump_working_function
+                transform: 'return entity.state != ''standby'' ? 10 : 0;'
+                type: column
+                stroke_width: 0
+                show:
+                  in_header: false
+          - type: history-graph
+            entities:
+              - sensor.heat_pump_working_function
+            show_names: false
+            hours_to_show: 12
+      - type: vertical-stack
+        cards:
+          - type: custom:apexcharts-card
+            apex_config:
+              legend:
+                show: false
+            header:
+              show: true
+              title: Zalogovnik
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.heat_pump_hp_outlet_temperature
+                name: Dvižni vod
+                stroke_width: 1
+                color: red
+              - entity: sensor.heat_pump_hp_inlet_temperature
+                name: Povratni vod
+                stroke_width: 1
+                color: lightblue
+            graph_span: 1h
+          - type: history-graph
+            entities:
+              - sensor.heat_pump_working_function
+            show_names: false
+            hours_to_show: 1
+      - type: entities
+        entities:
+          - entity: sensor.heat_pump_operating_hours_compressor_heating
+            name: Ogrevanje
+            icon: mdi:radiator
+          - entity: sensor.heat_pump_operating_hours_compressor_heating_dhw
+            name: Sanitarna
+            icon: mdi:water-boiler
+          - entity: sensor.heat_pump_operating_hours_additional_source_1
+            icon: mdi:fire
+            name: Dodatni vir
+          - entity: sensor.heat_pump_energy_consumption_yearly_reset
+            name: Letna poraba energije
+        title: Obratovalne ure
+      - type: vertical-stack
+        cards:
+          - type: custom:apexcharts-card
+            apex_config:
+              legend:
+                show: false
+            header:
+              show: true
+              title: Vrtina - temperatura
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.heat_pump_evaporating_temperature
+                name: Vstop
+                stroke_width: 1
+                color: red
+              - entity: sensor.heat_pump_compressor_temperature
+                name: Izstop
+                stroke_width: 1
+                color: lightblue
+              - entity: sensor.heat_pump_source_temperature_difference
+                name: Razlika
+                stroke_width: 1
+                color: green
+                show:
+                  in_chart: false
+            graph_span: 1h
+          - type: history-graph
+            entities:
+              - sensor.heat_pump_working_function
+            show_names: false
+            hours_to_show: 1

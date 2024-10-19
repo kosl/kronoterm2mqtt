@@ -130,6 +130,52 @@ venv/bin/kronoterm2mqtt_app edit-settings
 venv/bin/kronoterm2mqtt_app print-values
 ```
 
+## Derived sensors (helpers) in Home Assistant
+
+If we are interested in some additional info derived from the heat
+pump then it is useful to add some derived sensors. The following
+example calculates difference between source inlet and outlet
+(evaporating and compressor) temperatures.
+
+### Temperature calculation
+In Homeassistant select Settings -> Devices -> Helpers -> + Add Helper
+-> Template -> Template a Sensor and enter
+
+- Name: Heat Pump Source temperature difference
+- State template:
+ ~~~ json
+ {{ states('sensor.heat_pump_evaporating_temperature')|float(default=0)
+ - states('sensor.heat_pump_compressor_temperature')|float(default=0) }}
+ ~~~
+- Unit of measurement: C
+- Device class: Temperature
+- State class: Measurement
+- Add this helper under Heat Pump
+
+### Energy calculation
+
+### Power integration over time
+
+Integral of power is energy consumend.
+
+- Select Settings -> Devices -> Helpers -> + Add Helper-> Integral
+- Name: Heat Pump Energy consumption
+- Metric prefix: 
+- Time unit: h
+- Input Sensor: sensor.heat_pump_current_power_consumption
+- Integration method: trapezoidal
+- Add this helper under Heat Pump
+
+### Yearly energy calculation
+
+- [Add Utility Meter](https://www.home-assistant.io/integrations/utility_meter) integration
+- Select Settings -> Devices -> Helpers -> + Add Helper-> Template 
+- Name: Heat Pump Energy consumption (yearly reset)
+- Input sensor: sensor.heat_pump_energy_consumption
+- Meter reset cycle: yearly
+- Meter reset offset: 0
+- Add this helper under Heat Pump
+
 ## Images
 ### Modbus RTU connection within a Kronoterm ETERA heat pump from Raspberry Pi3B to TEX interface
 ![](images/etera.jpeg)
@@ -158,7 +204,16 @@ stopbits = 1
 
 Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
 ![Home Assistant](images/ha-sensors.png)
-![WPG card](images/WPG-10-K2_HT-ha-card.png)
+![ETERA card](images/dashboard-overview.png)
+
+Dashboard raw sources for above cards is under
+[kronoterm2mqtt/examples/dashboard-overview.yaml](kronoterm2mqtt/examples/dashboard-overview.yaml).
+It requires custom
+[apexcharts-card](https://github.com/RomRider/apexcharts-card) to be
+installed. Create new dashboard with Home Assistant -> Settings ->
+Dashboard -> Add Dashboard and then Edit -> Edit raw sources.  While
+the sensor names are in English, you may always rename the names to
+your local language.
 
 ## Hardware wiring test
 

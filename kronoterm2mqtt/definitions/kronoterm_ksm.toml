@@ -5,7 +5,7 @@ parity = "N"
 stopbits = 1
 
 # KRONOTERM MA_numbering is one-based in documentation and we
-# use it here too alrhough internally we substract 1 for all
+# use it here too although internally we substract 1 for all
 # register adresses!
 
 
@@ -35,6 +35,29 @@ state_class = "measurement"
 unit_of_measurement = "°C"
 scale = -0.1
 
+[[sensor]]
+register = 2090
+name = "Operating hours compressor heating"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2091
+name = "Operating hours compressor heating DHW"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2095
+name = "Operating hours additional source 1"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
 
 [[sensor]]
 register = 2101
@@ -67,7 +90,6 @@ device_class = "temperature"
 state_class = "measurement"
 unit_of_measurement = "°C"
 scale = 0.1
-
 
 [[sensor]]
 register = 2105
@@ -216,6 +238,20 @@ name = "Working function"
 [[enum_sensor.options]]
 keys = [0, 1, 2, 3, 4, 5, 7]
 values = ["heating", "DHW", "cooling", "pool heating", "thermal disinfection", "standby", "remote deactivation"]
+
+[[enum_sensor]]
+register = 2006
+name = "Error/warning status"
+[[enum_sensor.options]]
+keys = [0, 1, 2]
+values = ["no error", "opozorilo", "error", "notification"]
+
+[[enum_sensor]]
+register = 2007
+name = "Operation regime"
+[[enum_sensor.options]]
+keys = [0, 1, 2]
+values = ["cooling", "heating", "heating and cooling off"]
 
 [[enum_sensor]]
 register = 2044
