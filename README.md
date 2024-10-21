@@ -143,7 +143,7 @@ In Homeassistant select Settings -> Devices -> Helpers -> + Add Helper
 
 - Name: Heat Pump Source temperature difference
 - State template:
- ~~~ json
+ ~~~ javascript
  {{ states('sensor.heat_pump_evaporating_temperature')|float(default=0)
  - states('sensor.heat_pump_compressor_temperature')|float(default=0) }}
  ~~~
@@ -270,4 +270,4 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 
 - `Navodila za priklop in uporabo CNS sistema.pdf` Kronoterm Modbus RTU description (in Slovene) obtained from Kronoterm support
 - `Installation and Operating Manual for BMS System.pdf` Kronoterm Modbus V3.13-1 RTU description obtained from Kronoterm support
-- 1122-16-17-4021-05_Modbus_BMS_TT3000web.pdf` Modbus naslovi za BMS; Regulacija TT3000 (in Slovene) obtained from Kronoterm support
+- `1122-16-17-4021-05_Modbus_BMS_TT3000web.pdf` Modbus naslovi za BMS; Regulacija TT3000 (in Slovene) obtained from Kronoterm support
