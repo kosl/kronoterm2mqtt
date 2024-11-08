@@ -300,7 +300,7 @@ class ExpanderMqttHandler:
                                         move_duration = 12 # limit move
                                     self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, move_duration))  
                                 else: # open the mixing valve since target_loop_temperature > loop_temperature
-                                    move_duration = (target_loop_temperature-loop_temperature)*2.0 # 2 seconds for 1K
+                                    move_duration = (target_loop_temperature-loop_temperature)*3.0 # 3 seconds for 1K
                                     if move_duration > 10: 
                                         move_duration = 10 # limit move
                                     self.event_loop.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
