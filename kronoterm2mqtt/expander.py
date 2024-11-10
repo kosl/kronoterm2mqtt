@@ -229,39 +229,39 @@ class ExpanderMqttHandler:
             collector_temperature = temperatures[settings.solar_sensors[0]]
             tank_temperature = temperatures[settings.solar_sensors[2]]
             difference = collector_temperature - tank_temperature
-            if difference > settings.solar_pump_difference_on or collector_temperature < 5:
-                await self.etera.set_relay(solar_pump_relay_id, True)
-                relay = self.relays[solar_pump_relay_id]
-                relay.set_state(relay.ON)
-                state_message = 'switch ON'
-            elif difference < settings.solar_pump_difference_off:
-                await self.etera.set_relay(solar_pump_relay_id, False)
-                relay = self.relays[solar_pump_relay_id]
-                relay.set_state(relay.OFF)
-                state_message = 'switch OFF'
-            else:
-                state_message = 'switch unchanged'
-            if self.verbosity:
-                print(f'Temperatures {temperatures} Collector-heat exchanger difference {difference} -> {state_message}')
+            relay = self.relays[solar_pump_relay_id]
+            if settings.solar_pump_operation:
+                if difference > settings.solar_pump_difference_on or collector_temperature < 5:
+                    await self.etera.set_relay(solar_pump_relay_id, True)
+                    relay.set_state(relay.ON)
+                    state_message = 'switch ON'
+                elif difference < settings.solar_pump_difference_off:
+                    await self.etera.set_relay(solar_pump_relay_id, False)
+                    relay.set_state(relay.OFF)
+                    state_message = 'switch OFF'
+                else:
+                    state_message = 'switch unchanged'
+                    if self.verbosity:
+                        print(f'Temperatures {temperatures} Collector-heat exchanger difference {difference} -> {state_message}')
 
-            if additional_source_enabled and self.user_settings.custom_expander.intra_tank_circulation_operation:
+            if additional_source_enabled and settings.intra_tank_circulation_operation:
                 dhw_temperature = self.sensors[7].value
                 solar_tank_temperature = self.sensors[5]
-                relay = self.relays[self.user_settings.custom_expander.inter_tank_pump_relay_id]
+                relay = self.relays[settings.inter_tank_pump_relay_id]
                 if dhw_temperature < current_desired_dhw_temperature:
                     dt = solar_tank_temperature - dhw_temperature
-                    if abs(dt) > self.user_settings.custom_expander.solar_pump_difference_on:
+                    if abs(dt) > settings.solar_pump_difference_on:
                         if not relay.is_on:
                             relay.set_state[relay.ON]
-                            await self.etera.set_relay(self.user_settings.custom_expander.inter_tank_pump_relay_id, True)
-                    elif abs(dt) < self.user_settings.custom_expander.solar_pump_difference_off:
+                            await self.etera.set_relay(settings.inter_tank_pump_relay_id, True)
+                    elif abs(dt) < settings.solar_pump_difference_off:
                         if relay.is_on:
                             relay.set_state[relay.OFF]
-                            await self.etera.set_relay(self.user_settings.custom_expander.inter_tank_pump_relay_id, False)
+                            await self.etera.set_relay(settings.inter_tank_pump_relay_id, False)
                 else:
                     if relay.is_on:
                        relay.set_state[relay.OFF]
-                       await self.etera.set_relay(self.user_settings.custom_expander.inter_tank_pump_relay_id, False)
+                       await self.etera.set_relay(settings.inter_tank_pump_relay_id, False)
                 
                 
             #loop_circulation_status=True
@@ -288,11 +288,11 @@ class ExpanderMqttHandler:
                                 continue # to next loop
                             if time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME: # can move motor?
                                 self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
-                                underfloor_temp_correction = -outside_temperature*self.user_settings.custom_expander.heating_curve_coefficient
+                                underfloor_temp_correction = -outside_temperature*settings.heating_curve_coefficient
                                 if loop_operation_status_on_schedule == 2: # ECO mode
                                     underfloor_temp_correction += loop_temperature_offset_in_eco_mode
 
-                                temp_at_zero = self.user_settings.custom_expander.loop_temperature[heat_loop] 
+                                temp_at_zero = settings.loop_temperature[heat_loop] 
                                 target_loop_temperature = temp_at_zero + underfloor_temp_correction # CTC
                                 if loop_temperature >= target_loop_temperature: # close the mixing valve
                                     move_duration = (loop_temperature - target_loop_temperature)*3.0 # 3 seconds for 1K
