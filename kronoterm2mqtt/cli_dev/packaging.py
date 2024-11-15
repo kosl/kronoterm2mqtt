@@ -27,6 +27,8 @@ def _call_safety():
         'check',
         '--ignore',
         '70612',  # Jinja2 Server Side Template Injection (SSTI)
+        '--ignore',
+        '73725', # starlette DoS 
         '-r',
         'requirements.dev.txt',
     )
@@ -70,7 +72,7 @@ def update():
         '--output-file',
         'requirements.txt',
         extra_env=extra_env,
-        timeout=2000,
+        timeout=5000,
     )
 
     # dependencies + "dev"-optional-dependencies:
@@ -81,7 +83,7 @@ def update():
         '--output-file',
         'requirements.dev.txt',
         extra_env=extra_env,
-        timeout=3000,
+        timeout=5000,
     )
 
     _call_safety()  # Check new dependencies for known security issues
