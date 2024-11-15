@@ -33,7 +33,7 @@ name = "Loop 1 temperature offset in ECO mode"
 device_class = "temperature"
 state_class = "measurement"
 unit_of_measurement = "°C"
-scale = -0.1
+scale = 0.1
 
 [[sensor]]
 register = 2090

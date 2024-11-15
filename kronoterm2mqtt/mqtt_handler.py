@@ -234,7 +234,7 @@ class KronotermMqttHandler:
             for address in self.sensors:
                 sensor, scale = self.sensors[address]
                 value = self.registers[address]
-                value = float(scale)*(value if scale > 0 else 65536-value)
+                value = float(scale)*value
                 sensor.set_state(value)
                 sensor.publish(self.mqtt_client)
             for address in self.binary_sensors:
@@ -263,7 +263,7 @@ class KronotermMqttHandler:
                     current_desired_dhw_temperature=0.1*self.registers[2023], # Current desired DHW temperature
                     additional_source_enabled=self.registers[2015] > 0, # Additional source activated
                     loop_circulation_status=self.registers[2044] > 0, # Loop 1 circulation pump status
-                    loop_temperature_offset_in_eco_mode=-0.1*(65536-self.registers[2046]), # Loop 1 temperature offset in ECO mode
+                    loop_temperature_offset_in_eco_mode=0.1*self.registers[2046], # Loop 1 temperature offset in ECO mode
                     loop_operation_status_on_schedule=self.registers[2043], # Loop 1 operation status on schedule
                     working_function=self.registers[2000], # Heat pump heating=0, standby=5
                 )
