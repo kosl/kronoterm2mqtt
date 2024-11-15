@@ -7,7 +7,7 @@ readme = "README.md"
 authors = [
     {name = 'Leon Kos', email = 'leon.kos@lecad.fs.uni-lj.si'}
 ]
-requires-python = ">=3.11,<4"
+requires-python = ">=3.11, <4"
 dependencies = [
     "ha-services>=2.5.0",  # https://github.com/jedie/ha-services
     "cli-base-utilities>=0.10.3",  # https://github.com/jedie/cli-base-utilities
@@ -122,7 +122,7 @@ exclude_lines = [
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py{312,311,310}
+envlist = py{312,311}
 skip_missing_interpreters = True
 
 [testenv]
