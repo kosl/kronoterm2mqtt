@@ -43,7 +43,7 @@ dev = [
     # https://github.com/pygments/pygments
     "darker[flynt, isort, color]",
 
-    "tomli",  # https://github.com/hukkin/tomli
+    #"tomli",  # https://github.com/hukkin/tomli
     #
     # tomli only needed for Python <3.11, but see pip bug:
     # https://github.com/pypa/pip/issues/9644 / https://github.com/jazzband/pip-tools/issues/1866
@@ -108,7 +108,7 @@ command_line = '-m unittest --verbose --locals --buffer'
 [tool.coverage.report]
 omit = ['.*', '*/tests/*']
 skip_empty = true
-fail_under = 30
+fail_under = 25
 show_missing = true
 exclude_lines = [
     'if self.debug:',

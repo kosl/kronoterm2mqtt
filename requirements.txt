@@ -4,9 +4,9 @@
 #
 #    ./dev-cli.py update
 #
-bx-py-utils==105 \
-    --hash=sha256:1bb7c1401147df35a95ca78c1de9f25d104aeda941a5cc89f9cfc2d1616ddbd7 \
-    --hash=sha256:d441b0e413f8b19b03ab1784187ca2cf2ec5b68d64082790bdbca16a4612cb3e
+bx-py-utils==106 \
+    --hash=sha256:1b5e7622310c5ef814de241419bc0f0929c3d0445e1418fa477d2be3f7da0332 \
+    --hash=sha256:26d6d3353ccd7d93ae322d33f8dde1b14d01b88f10329a714cd43da67b2e3d9f
     # via
     #   cli-base-utilities
     #   kronoterm2mqtt (pyproject.toml)
@@ -171,9 +171,9 @@ rich==13.9.4 \
     #   kronoterm2mqtt (pyproject.toml)
     #   rich-click
     #   tyro
-rich-click==1.8.3 \
-    --hash=sha256:636d9c040d31c5eee242201b5bf4f2d358bfae4db14bb22ec1cafa717cfd02cd \
-    --hash=sha256:6d75bdfa7aa9ed2c467789a0688bc6da23fbe3a143e19aa6ad3f8bac113d2ab3
+rich-click==1.8.4 \
+    --hash=sha256:0f49471f04439269d0e66a6f43120f52d11d594869a2a0be600cfb12eb0616b9 \
+    --hash=sha256:2d2841b3cebe610d5682baa1194beaf78ab00c4fa31931533261b5eba2ee80b7
     # via
     #   ha-services
     #   kronoterm2mqtt (pyproject.toml)

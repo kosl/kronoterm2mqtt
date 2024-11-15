@@ -205,7 +205,7 @@ class KronotermMqttHandler:
                 assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
                 for i in range(count):
                     value = response.registers[i]
-                    self.registers[address_start+i] = value
+                    self.registers[address_start+i] = value - (value >> 15 << 16) # Convert value to signed integer
         if self.verbosity:
             print(f"Registers: {self.registers}")
 

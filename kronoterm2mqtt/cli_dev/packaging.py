@@ -70,7 +70,7 @@ def update():
         '--output-file',
         'requirements.txt',
         extra_env=extra_env,
-        timeout=1000,
+        timeout=2000,
     )
 
     # dependencies + "dev"-optional-dependencies:
@@ -81,7 +81,7 @@ def update():
         '--output-file',
         'requirements.dev.txt',
         extra_env=extra_env,
-        timeout=1000,
+        timeout=3000,
     )
 
     _call_safety()  # Check new dependencies for known security issues
