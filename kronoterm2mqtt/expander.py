@@ -246,21 +246,21 @@ class ExpanderMqttHandler:
 
             if additional_source_enabled and settings.intra_tank_circulation_operation:
                 dhw_temperature = self.sensors[7].value
-                solar_tank_temperature = self.sensors[5]
+                solar_tank_temperature = self.sensors[5].value
                 relay = self.relays[settings.inter_tank_pump_relay_id]
                 if dhw_temperature < current_desired_dhw_temperature:
                     dt = solar_tank_temperature - dhw_temperature
                     if abs(dt) > settings.solar_pump_difference_on:
                         if not relay.is_on:
-                            relay.set_state[relay.ON]
+                            relay.set_state(relay.ON)
                             await self.etera.set_relay(settings.inter_tank_pump_relay_id, True)
                     elif abs(dt) < settings.solar_pump_difference_off:
                         if relay.is_on:
-                            relay.set_state[relay.OFF]
+                            relay.set_state(relay.OFF)
                             await self.etera.set_relay(settings.inter_tank_pump_relay_id, False)
                 else:
                     if relay.is_on:
-                       relay.set_state[relay.OFF]
+                       relay.set_state(relay.OFF)
                        await self.etera.set_relay(settings.inter_tank_pump_relay_id, False)
                 
                 
