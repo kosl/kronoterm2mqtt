@@ -2,10 +2,11 @@ import logging
 import time
 import asyncio
 import sys
+from typing import List
 
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
-from ha_services.mqtt4homeassistant.components.switch import Switch
+from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.device import  MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
@@ -40,11 +41,11 @@ class ExpanderMqttHandler:
         self.user_settings = user_settings
         self.verbosity = verbosity
         self.mqtt_device: MqttDevice | None = None
-        self.sensors: list(Sensor) = list() # loop[0:4], collector, solar tank up/down, DHW, DHW circulation
-        self.relays: list(BinarySensor) = list()
-        self.switches: list(Switch) = list() # Loop names from sensors
-        self.mixing_valve_sensors: list(Sensor) = list() # Position sensors in percentage
-        self.mixing_valve_timer: list() = list() # Measuring time from last move
+        self.sensors: List[Sensor] = list() # loop[0:4], collector, solar tank up/down, DHW, DHW circulation
+        self.relays: List[BinarySensor] = list()
+        self.loop_states: List[Select] = list() # Loop names from sensors
+        self.mixing_valve_sensors: List[Sensor] = list() # Position sensors in percentage
+        self.mixing_valve_timer: List[float] = list() # Measuring time from last move
         self.last_working_function : int = 5 # Heat pump in 5=Standby
 
     def __enter__(self):
@@ -108,14 +109,15 @@ class ExpanderMqttHandler:
         for i, state in enumerate(self.user_settings.custom_expander.loop_operation):
             name = self.user_settings.custom_expander.sensor_names[i]
             if len(self.user_settings.custom_expander.relay_names[i]):
-                switch = Switch(
+                select = Select(
                     device=self.mqtt_device,
                     name=name,
                     uid=slugify(name),
                     callback=self.loop_switch_callback,
+                    options=('Izklop', 'Vklop', 'Pospešeno 5h'),
+                    default_option='Vklop' if state else 'Izklop'
                 )
-                switch.set_state(switch.ON if state else switch.OFF)
-                self.switches.append(switch)
+                self.loop_states.append(select)
                 mixing_valve_sensor = Sensor(
                     device=self.mqtt_device,
                     name='Mešalni ventil '+name,
@@ -161,12 +163,12 @@ class ExpanderMqttHandler:
             print(f'Motor #{heating_loop_number} move error', e)
 
 
-    def loop_switch_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
+    def loop_switch_callback(self, *, client: Client, component: Select, old_state: str, new_state: str):
         """Switches on/off (manually) loop.
         """
 
-        for loop_number, switch in enumerate(self.switches):
-            if component == switch:
+        for loop_number, select in enumerate(self.loop_states):
+            if component == select:
                 break
 
         component.set_state(new_state)
@@ -222,8 +224,8 @@ class ExpanderMqttHandler:
                 value = temperatures[ids[i]]
                 sensor.set_state(value)
                 sensor.publish(self.mqtt_client)    
-            for switch in self.switches:
-                switch.publish(self.mqtt_client)
+            for select in self.loop_states:
+                select.publish(self.mqtt_client)
                 
             #### Expander control start
             collector_temperature = temperatures[settings.solar_sensors[0]]
@@ -269,17 +271,17 @@ class ExpanderMqttHandler:
                 for heat_loop in range(4):
                     relay = self.relays[heat_loop]
                     if relay is not None:
-                        if self.switches[heat_loop].state == 'ON':
+                        if self.loop_states[heat_loop].state != 'Izklop':
                             if not relay.is_on:
                                 relay.set_state(relay.ON)
                                 await self.etera.set_relay(heat_loop, True)
                             # Move motors according to the last reading
                             loop_temperature = self.sensors[heat_loop].value
                             if loop_temperature > 40.0: # rapid loop shutdown
-                                self.switches[heat_loop].set_state('OFF')
+                                self.loop_states[heat_loop].set_state('Izklop')
                                 await self.etera.set_relay(heat_loop, False)
                                 self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=True))
-                                print( f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.switches[heat_loop].name}!"
+                                print( f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.loop_states[heat_loop].name}!"
                                        " Switched off now!")
                                 continue
                             if self.last_working_function > 0 and working_function == 0: # Start of heating detected, close the valve
@@ -305,7 +307,7 @@ class ExpanderMqttHandler:
                                         move_duration = 10 # limit move
                                     self.event_loop.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
                                 if self.verbosity > 1:
-                                    print(f"Circuit #{heat_loop} {self.switches[heat_loop].name}: {loop_temperature=} {target_loop_temperature=}"
+                                    print(f"Circuit #{heat_loop} {self.loop_states[heat_loop].name}: {loop_temperature=} {target_loop_temperature=}"
                                           f" {temp_at_zero=} {outside_temperature=} {underfloor_temp_correction=} {move_duration=}")
 
                         else: # Loop is switched OFF (disabled) and we close the valve and the pump if needed
@@ -319,7 +321,7 @@ class ExpanderMqttHandler:
                 for heat_loop in range(4):
                     relay = self.relays[heat_loop]
                     if relay is not None:
-                        if self.switches[heat_loop].state == 'OFF' and relay.is_on:
+                        if self.loop_states[heat_loop].state == 'Izklop' and relay.is_on:
                             self.event_loop.create_task(self.mixing_valve_motor_close(
                                 heat_loop, 120, override=True))
                         if relay.is_on: # We stop the pumps for now
