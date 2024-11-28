@@ -46,6 +46,7 @@ class ExpanderMqttHandler:
         self.loop_states: List[Select] = list() # Loop names from sensors
         self.mixing_valve_sensors: List[Sensor] = list() # Position sensors in percentage
         self.mixing_valve_timer: List[float] = list() # Measuring time from last move
+        self.expedited_heating_timer: List[float] = list() # Measuring time from start of expedited heating
         self.last_working_function : int = 5 # Heat pump in 5=Standby
 
     def __enter__(self):
@@ -132,6 +133,7 @@ class ExpanderMqttHandler:
                 mixing_valve_sensor.publish(self.mqtt_client)
                 event_loop.create_task(self.mixing_valve_motor_close(i, 120))
                 self.mixing_valve_timer.append(time.monotonic())
+                self.expedited_heating_timer.append(None)
 
                 
     async def mixing_valve_motor_close(self, heating_loop_number: int,  duration: float, override: bool = True):
@@ -181,6 +183,27 @@ class ExpanderMqttHandler:
        # else: # ON
        #     self.event_loop.create_task(self.etera.set_relay(loop_number, True))
 
+    def get_loop_target_temperature(self,
+                                    loop_number: int,
+                                    temp_at_zero: float,
+                                    outside_temperature: float,
+                                    heating_curve_coefficient: float,
+                                    loop_temperature_offset_in_eco_mode: float,
+                                    loop_operation_status_on_schedule: int
+                                    ):
+        """Returns target temperature for the loop based on the
+        outside temperature and heating curve coefficient.     
+        """
+
+        # Expedited heating for 5 hours is set to 30°C
+        if self.loop_states[loop_number].state == 'Pospešeno 5h':
+            return 30.0
+
+        underfloor_temp_correction = -outside_temperature*heating_curve_coefficient
+        if loop_operation_status_on_schedule == 2:
+            underfloor_temp_correction += loop_temperature_offset_in_eco_mode
+
+        return temp_at_zero + underfloor_temp_correction
 
     async def update_sensors_and_control(self, *, outside_temperature: float,
                                          current_desired_dhw_temperature: float, 
@@ -216,6 +239,17 @@ class ExpanderMqttHandler:
         """
         settings = self.user_settings.custom_expander
         try:
+            #### Heating loop state
+            for i, select in enumerate(self.loop_states):
+                if select.state == 'Pospešeno 5h':
+                    if self.expedited_heating_timer[i] is None:
+                        self.expedited_heating_timer[i] = time.monotonic()
+                        print(f"Expedited heating for {select.name} is started!")
+                    if time.monotonic() - self.expedited_heating_timer[i] > 5*3600:
+                        select.set_state('Vklop')
+                        self.expedited_heating_timer[i] = None
+                        print(f"Expedited heating for {select.name} is over!")          
+
             temperatures = await self.etera.get_temperatures()
             ids = settings.loop_sensors + settings.solar_sensors
             solar_pump_relay_id = settings.solar_pump_relay_id
@@ -290,12 +324,11 @@ class ExpanderMqttHandler:
                                 continue # to next loop
                             if time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME: # can move motor?
                                 self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
-                                underfloor_temp_correction = -outside_temperature*settings.heating_curve_coefficient
-                                if loop_operation_status_on_schedule == 2: # ECO mode
-                                    underfloor_temp_correction += loop_temperature_offset_in_eco_mode
-
-                                temp_at_zero = settings.loop_temperature[heat_loop] 
-                                target_loop_temperature = temp_at_zero + underfloor_temp_correction # CTC
+                                temp_at_zero = settings.loop_temperature[heat_loop]
+                                target_loop_temperature = self.get_loop_target_temperature(
+                                    heat_loop, temp_at_zero,
+                                    outside_temperature, settings.heating_curve_coefficient,
+                                    loop_temperature_offset_in_eco_mode, loop_operation_status_on_schedule)
                                 if loop_temperature >= target_loop_temperature: # close the mixing valve
                                     move_duration = (loop_temperature - target_loop_temperature)*3.0 # 3 seconds for 1K
                                     if move_duration > 12: 
@@ -307,7 +340,8 @@ class ExpanderMqttHandler:
                                         move_duration = 10 # limit move
                                     self.event_loop.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
                                 if self.verbosity > 1:
-                                    print(f"Circuit #{heat_loop} {self.loop_states[heat_loop].name}: {loop_temperature=} {target_loop_temperature=}"
+                                    underfloor_temp_correction = target_loop_temperature - temp_at_zero
+                                    print(f"Circuit #{heat_loop} {self.loop_states[heat_loop].name}[{self.loop_states[heat_loop].state}]: {loop_temperature=} {target_loop_temperature=}"
                                           f" {temp_at_zero=} {outside_temperature=} {underfloor_temp_correction=} {move_duration=}")
 
                         else: # Loop is switched OFF (disabled) and we close the valve and the pump if needed
