@@ -269,7 +269,7 @@ class ExpanderMqttHandler:
             try:
                 #### Heating loop state
                 for i, select in enumerate(self.loop_states):
-                    if self.expedited_heating_timer[i] is None:
+                    if self.expedited_heating_timer[i] is not None:
                         if time.monotonic() - self.expedited_heating_timer[i] > 5*3600:
                             select.set_state(self.WorkingMode.ON.value)
                             self.expedited_heating_timer[i] = None
@@ -292,7 +292,7 @@ class ExpanderMqttHandler:
                 difference = collector_temperature - tank_temperature
                 relay = self.relays[solar_pump_relay_id]
                 if settings.solar_pump_operation:
-                    if difference > settings.solar_pump_difference_on or collector_temperature < 5:
+                    if difference > settings.solar_pump_difference_on or collector_temperature < -13.45:
                         await self.etera.set_relay(solar_pump_relay_id, True)
                         relay.set_state(relay.ON)
                         state_message = 'switch ON'
