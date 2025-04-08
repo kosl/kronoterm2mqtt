@@ -20,8 +20,8 @@ from kronoterm2mqtt.user_settings import UserSettings, HeatPump
 from kronoterm2mqtt.expander import ExpanderMqttHandler
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
-from pymodbus.pdu.register_read_message import ReadHoldingRegistersResponse
-from pymodbus.pdu.register_write_message import WriteSingleRegisterResponse
+from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
+from pymodbus.pdu.register_message import WriteSingleRegisterResponse
 
 
 logger = logging.getLogger(__name__)
