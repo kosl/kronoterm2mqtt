@@ -73,7 +73,7 @@ def print_parameter_values(client, parameters,  verbosity):
             #    value += response.registers[1] * 65536
 
             scale = Decimal(str(parameter['scale']))
-            value = value * scale
+            value = (value - (value >> 15 << 16)) * scale # Convert value to signed integer
             print(f'{value} [blue]{parameter.get("unit_of_measurement", "")}')
     print('\n')
 
