@@ -1,19 +1,18 @@
 import logging
 
-import rich_click as click
-from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.toml_settings.api import TomlSettings
+from cli_base.tyro_commands import TyroVerbosityArgType
 from rich import print  # noqa
 
-from kronoterm2mqtt.cli_app import cli
+from kronoterm2mqtt.cli_app import app
 from kronoterm2mqtt.user_settings import get_toml_settings
 
 logger = logging.getLogger(__name__)
 
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def edit_settings(verbosity: int):
+@app.command
+def edit_settings(verbosity: TyroVerbosityArgType):
     """
     Edit the settings file. On first call: Create the default one.
     """
@@ -21,9 +20,8 @@ def edit_settings(verbosity: int):
     toml_settings: TomlSettings = get_toml_settings()
     toml_settings.open_in_editor()
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def print_settings(verbosity: int):
+@app.command
+def print_settings(verbosity: TyroVerbosityArgType):
     """
     Display (anonymized) MQTT server username and password
     """
