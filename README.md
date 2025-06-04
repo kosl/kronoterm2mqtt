@@ -272,6 +272,132 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-04 - Update for history
+  * 2025-06-04 - cli_dev pip->uv
+  * 2025-06-03 - Add update README history command
+  * 2025-06-03 - pip -> uv for cli_app
+  * 2025-04-18 - pip->uv
+  * 2025-04-09 - Convert value to signed integer when printing
+  * 2025-04-08 - Test for DS1820 parasitic or external power at start start
+  * 2025-04-08 - Upgrade to latest pymodbus and other vulnerable libraries
+  * 2025-04-08 - Align with updated firmware
+  * 2024-12-16 - Fix standby mode for loops
+  * 2024-12-16 - Protect solar collectors agains freezing below -13.45 degrees
+  * 2024-12-16 - feat(expander): Add standby working mode
+  * 2024-11-29 - Temporarily disable intertank logics
+  * 2024-11-28 - feat(expander): Implement expedited heating
+  * 2024-11-28 - refactor(expander): Convert heating loop on/off switch to multi-state working function select
+  * 2024-11-17 - Fix parenthesis typo
+* [v0.1.10](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.9...v0.1.10)
+  * 2024-11-15 - Add Downloads counter fix
+  * 2024-11-15 - Add Downloads counter
+  * 2024-11-15 - Revise python versions
+  * 2024-11-15 - Negative scale handled by signed int conversion
+  * 2024-11-15 - Upgrade and ignore starlette safety issues
+  * 2024-11-15 - Handle all Modbus values as 16 bit signed integers to address negative temperatures
+  * 2024-11-10 - Disabling solar collectors in settings now works with service restart
+* [v0.1.9](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.8...v0.1.9)
+  * 2024-11-08 - Tune expander default for mix-valve control and upgrade virtualenv due to vulnerability ID: 73456
+  * 2024-10-21 - Minor typos
+  * 2024-10-19 - Add dashboard example with apexcharts cards
+  * 2024-10-18 - Add WPG pump TOML example in Slovenian. Contributed by lukapple80
+  * 2024-10-16 - Move settings outside exception loop
+  * 2024-10-16 - Fix unused motor usage Motor #3 close invalid list index out of range
+  * 2024-10-12 - Retry loop after 10 seconds in case of error
+  * 2024-10-11 - WPG TEX pinout added
+  * 2024-10-09 - Add mixing valves sensors
+  * 2024-10-07 - Loop should be continued for all
+  * 2024-10-07 - Close slightly the mixing valve already at the beginning of heating only
+  * 2024-10-07 - Fix issue  Wrong operator used when calculating solar tank and dhw tank temperature delta #1
+  * 2024-09-28 - Swap sensors for Pritličje and Mansarda
+  * 2024-09-28 - Swap sensors for Nadgaražje and Mansarda
+  * 2024-09-27 - Add bitrate and sensor notes
+  * 2024-09-27 - Add WPG-10-K2_HT and Expander updates
+  * 2024-09-27 - Add WPG-10-K2_HT photos and screens provided by Lukapple80
+  * 2024-08-23 - Allow empty unit of measutement
+  * 2024-08-23 - Add context manager to rescue from unexpected crashes by closing the UARTs before restart in a main loop
+  * 2024-08-23 - update_sensors() is not needed fort clarity
+  * 2024-08-19 - Rather use time.monotonic() to measure elapsed time difference
+  * 2024-08-19 - Prefix main_uid to avoid conflicts with other ha_services
+  * 2024-08-16 - Do not clear LSB for other sensors
+  * 2024-08-13 - Udate minimum CLI requirements
+  * 2024-08-13 - systemd-status fix
+  * 2024-08-13 - systemd-setup does everything
+  * 2024-08-13 - Add 0.1.8 MQTT screenshot
+  * 2024-08-13 - Images inline
+* [v0.1.8](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.7...v0.1.8)
+  * 2024-08-13 - Increase precission read of DS1820 to 1/128 degree Celsius
+  * 2024-08-13 - Update to latest requirements
+  * 2024-08-13 - Add intra-tank circulation
+  * 2024-08-13 - Complete mixing valve motor control
+  * 2024-08-12 - When moving with override the previous task raises exception which is normal
+  * 2024-08-12 - Recursively clone
+  * 2024-08-10 - Symlink pyetera_uart_bridge
+  * 2024-08-09 - Create event loop without awaiting https://stackoverflow.com/questions/56318648/how-to-run-an-asyncio-task-without-awaiting
+  * 2024-08-09 - Pass Loop 1 ECO mode offset and state to expander
+  * 2024-08-09 - Add negative scaling sensors
+  * 2024-08-09 - Add HP load as battery percentage
+  * 2024-08-09 - Add expander loop switches
+  * 2024-08-09 - Prepare heat pump values for use in expander
+  * 2024-08-09 - Add hardware wiring test
+
+<details><summary>Expand older history entries ...</summary>
+
+* [v0.1.7](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.6...v0.1.7)
+  * 2024-08-08 - Add Alternative source switch and bit sensor
+  * 2024-08-08 - Add Alternative source switch
+* [v0.1.6](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.5...v0.1.6)
+  * 2024-08-08 - Fix CLI print-values
+* [v0.1.5](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.4...v0.1.5)
+  * 2024-08-08 - Add switch for Circulation of sanitary water
+  * 2024-08-08 - HA screenshot v0.1.5
+  * 2024-08-07 - Add DHW pumps
+  * 2024-08-07 - Add BinarySensor and Enum_sensors
+  * 2024-08-07 - Add tests badge
+* [v0.1.4](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.3...v0.1.4)
+  * 2024-08-07 - Prepare for 0.1.4 release
+* [v0.1.3](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.2...v0.1.3)
+  * 2024-08-07 - Add print values to README
+  * 2024-08-07 - Update deps
+* [v0.1.2](https://github.com/kosl/kronoterm2mqtt/compare/9b1af4c...v0.1.2)
+  * 2024-08-07 - Fix style
+  * 2024-08-07 - Correct loop order according to http://cad.lecad.si/~leon/electronics/thermo/src/ds1820.asm.html
+  * 2024-08-06 - Decode ETERA expander messages
+  * 2024-08-05 - Countdown to verbosity
+  * 2024-08-05 - Add control and bool moodule enable
+  * 2024-08-04 - Add relays to Etera Sensors
+  * 2024-08-03 - When a longer loop command is interrupted the subprocess task unwraps unnecessarily.
+  * 2024-08-03 - Add manual control loop for solar pump
+  * 2024-08-02 - Refrain from bool until https://github.com/jedie/cli-base-utilities/issues/50 is resolved
+  * 2024-08-02 - Fix urls
+  * 2024-08-02 - Upgrade API for pymodbus 3.7.0
+  * 2024-08-02 - Add relays test
+  * 2024-08-01 - Diagnose 1-wire with v1.0.8
+  * 2024-07-31 - Move expander to DEV CLI
+  * 2024-07-31 - Add firmware compile/flash DEV tools
+  * 2024-07-31 - Add exander submodule
+  * 2024-07-31 - Add expander temperatures print
+  * 2024-07-31 - Convert loop to asyncio
+  * 2024-07-29 - Comment out code style check due to timout=300 limit
+  * 2024-07-27 - Add hardware photo
+  * 2024-07-27 - Update README with some basic instructions
+  * 2024-07-26 - Add Home assistant screenshot
+  * 2024-07-26 - Add some undocumented registers
+  * 2024-07-26 - Slugify uid
+  * 2024-07-26 - Add missing device_class to Sensor
+  * 2024-07-26 - Fix typo
+  * 2024-07-26 - Reposition settings
+  * 2024-07-26 - Add sensors to main device
+  * 2024-07-26 - Add custom IO expander board
+  * 2024-07-26 - Add reference
+  * 2024-07-25 - Add Custom module source code
+  * 2024-07-25 - Add ETERA expander module
+  * 2024-07-24 - Initial version
+
+</details>
+
+
 [comment]: <> (✂✂✂ auto generated history end ✂✂✂)
 
 
