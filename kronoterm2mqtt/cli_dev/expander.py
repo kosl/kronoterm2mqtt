@@ -1,11 +1,11 @@
 import asyncio
 
-import rich_click as click
-from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+from cli_base.cli_tools.verbosity import setup_logging
 from rich import print  as rprint # noqa
+from cli_base.tyro_commands import TyroVerbosityArgType
 
 import kronoterm2mqtt
-from kronoterm2mqtt.cli_dev import cli
+from kronoterm2mqtt.cli_dev import app
 from kronoterm2mqtt.user_settings import UserSettings, CustomEteraExpander, get_user_settings
 import kronoterm2mqtt.pyetera_uart_bridge
 from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
@@ -21,9 +21,8 @@ async def etera_message_handler(message: bytes):
     print(message.decode())
 
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def expander_temperatures(verbosity: int):
+@app.command
+def expander_temperatures(verbosity: TyroVerbosityArgType):
     """Print temperatures read from Custom expander"""
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
@@ -53,12 +52,8 @@ def expander_temperatures(verbosity: int):
     asyncio.run(temp())
 
 
-OPTION_ARGS_DEFAULT_TRUE = dict(is_flag=True, show_default=True, default=True)
-        
-@cli.command()
-@click.option('-o', '--opening/--closing', **OPTION_ARGS_DEFAULT_TRUE)
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def expander_motors(opening, verbosity: int):
+@app.command
+def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True):
     """Rotates all 4 motors by closing (counterclockwise) or opening (clockwise) for 120 seconds"""
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
@@ -95,19 +90,16 @@ def expander_motors(opening, verbosity: int):
     
     asyncio.run(go())
 
-option_kwargs_relay = dict(
-    required=True,
-    type=click.IntRange(0, 7),
-    help='Relay number',
-    default=0,
-    show_default=True,
-)
+#option_kwargs_relay = dict(
+#    required=True,
+#    type=click.IntRange(0, 7),
+#    help='Relay number',
+#    default=0,
+#    show_default=True,
+#)
 
-@cli.command()
-@click.option('-r', '--relay', **option_kwargs_relay)
-@click.option('-o', '--on/--off', **OPTION_ARGS_DEFAULT_TRUE)
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def expander_relay(relay: int, on: bool, verbosity: int):
+@app.command
+def expander_relay(verbosity: TyroVerbosityArgType, relay: int = 0, on: bool = True):
     """Switches on or off selected relay"""
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
@@ -137,9 +129,8 @@ def expander_relay(relay: int, on: bool, verbosity: int):
     
     asyncio.run(go())
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def expander_loop(verbosity: int):
+@app.command
+def expander_loop(verbosity: TyroVerbosityArgType):
     """Runs Custom expander control of a solar pump"""
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)

@@ -1,14 +1,15 @@
 import sys
-import rich_click as click
 from pathlib import Path
 
 import kronoterm2mqtt
-from kronoterm2mqtt.cli_dev import PACKAGE_ROOT, cli
+from kronoterm2mqtt.cli_dev import PACKAGE_ROOT, app
 from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
-from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+from cli_base.cli_tools.verbosity import setup_logging
+from cli_base.tyro_commands import TyroVerbosityArgType
 
-@cli.command()
+
+@app.command
 def firmware_compile():
     """
     Compiles firmware for Etera GPIO expander with PlatformIO compiler
@@ -18,9 +19,8 @@ def firmware_compile():
     verbose_check_call(bin_path / 'pio', 'run', cwd="etera-uart-bridge/pio-eub-firmware")
     
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def firmware_flash(verbosity: int):
+@app.command
+def firmware_flash(verbosity: TyroVerbosityArgType):
     """
     Flashes compiled firmware to Etera GPIO expander
     """

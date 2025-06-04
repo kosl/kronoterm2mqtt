@@ -31,10 +31,10 @@ def probe_one_port(heat_pump, definitions, verbosity):
     print_parameter_values(client, parameters, verbosity)
 
 
-@app.command()
+@app.command
 #@Click.option('--max-port', default=10, help='Maximum USB port number')
 #@click.option('--port-template', default='/dev/ttyUSB{i}', help='USB device path template')
-def probe_usb_ports(verbosity: TyroVerbosityArgType, max_port: int, port_template: str):
+def probe_usb_ports(verbosity: TyroVerbosityArgType, max_port: int = 10, port_template: str = '/dev/ttyUSB{i}'):
     """
     Probe through the USB ports and print the values from definition
     """
