@@ -273,6 +273,7 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-04 - Default fixes for expander
   * 2025-06-04 - Update history
   * 2025-06-04 - Update for history
   * 2025-06-04 - cli_dev pip->uv
