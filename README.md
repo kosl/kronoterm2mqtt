@@ -267,6 +267,14 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 - [ ] Upgrade [ha-services](https://github.com/jedie/ha-services) with `number` component allowing change of some numeric parameters (set temperatures, etc.).
 - [ ] Display the heat pump state using ThermIQ as an example.
 
+
+# History
+
+[comment]: <> (✂✂✂ auto generated history start ✂✂✂)
+
+[comment]: <> (✂✂✂ auto generated history end ✂✂✂)
+
+
 ## References
 
 - `Navodila za priklop in uporabo CNS sistema.pdf` Kronoterm Modbus RTU description (in Slovene) obtained from Kronoterm support
