@@ -1,6 +1,5 @@
 import logging
 import time
-import asyncio
 import sys
 from typing import List
 from enum import Enum
@@ -9,16 +8,12 @@ from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.device import MqttDevice
-from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
 
-import kronoterm2mqtt
-from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER, MIXING_VALVE_HOLD_TIME
-from kronoterm2mqtt.user_settings import UserSettings, CustomEteraExpander
-import kronoterm2mqtt.pyetera_uart_bridge
+from kronoterm2mqtt.constants import MIXING_VALVE_HOLD_TIME
+from kronoterm2mqtt.user_settings import UserSettings
 from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
-
 
 logger = logging.getLogger(__name__)
 
@@ -303,8 +298,8 @@ class ExpanderMqttHandler:
 
             relay = self.relays[settings.inter_tank_pump_relay_id]
             if additional_source_enabled and settings.intra_tank_circulation_operation:
-                dhw_temperature = self.sensors[7].value
-                solar_tank_temperature = self.sensors[5].value
+                dhw_temperature = self.sensors[7].value  # noqa
+                solar_tank_temperature = self.sensors[5].value  # noqa
                 # if dhw_temperature < current_desired_dhw_temperature:
                 #    dt = solar_tank_temperature - dhw_temperature
                 #    if abs(dt) > settings.solar_pump_difference_on:

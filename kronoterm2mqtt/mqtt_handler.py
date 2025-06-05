@@ -1,5 +1,4 @@
 import logging
-import time
 import asyncio
 import itertools
 
@@ -15,8 +14,8 @@ from paho.mqtt.client import Client
 from kronoterm2mqtt.api import get_modbus_client
 
 import kronoterm2mqtt
-from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER, MODBUS_SLAVE_ID
-from kronoterm2mqtt.user_settings import UserSettings, HeatPump
+from kronoterm2mqtt.constants import DEFAULT_DEVICE_MANUFACTURER, MODBUS_SLAVE_ID
+from kronoterm2mqtt.user_settings import UserSettings
 from kronoterm2mqtt.expander import ExpanderMqttHandler
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
@@ -186,9 +185,9 @@ class KronotermMqttHandler:
         """Prepare intervals of modbus addresses for fetching register groups
         See https://stackoverflow.com/questions/4628333
         """
-        for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
-            b = list(b)
-            yield b[0][1], b[-1][1]
+        for _, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+            b = list(b)  # noqa
+            yield b[0][1], b[-1][1]  # noqa
 
     def read_heat_pump_register_blocks(self):
         """In order to minimize Modbus communication the register
@@ -246,10 +245,10 @@ class KronotermMqttHandler:
             for address in self.enum_sensors:
                 sensor, options = self.enum_sensors[address]
                 value = self.registers[address]
-                for index, key in enumerate(options['keys']):
+                for _index, key in enumerate(options['keys']):
                     if value == key:
                         break
-                sensor.set_state(options['values'][index])
+                sensor.set_state(options['values'][_index])
                 sensor.publish(self.mqtt_client)
 
             for address, switch in switches.items():

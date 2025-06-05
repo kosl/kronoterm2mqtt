@@ -341,6 +341,7 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-05 - Applied .venv/bin/autopep8 --in-place --aggressive --max-line-length=119
   * 2025-06-05 - Fix code style
   * 2025-06-05 - Change safety to pip-audit
   * 2025-06-04 - Update README

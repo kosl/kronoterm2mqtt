@@ -14,7 +14,7 @@ from kronoterm2mqtt.api import get_modbus_client
 from kronoterm2mqtt.cli_app import app
 from kronoterm2mqtt.constants import MODBUS_SLAVE_ID
 
-#from kronoterm2mqtt.probe_usb_ports import print_parameter_values, probe_one_port
+# from kronoterm2mqtt.probe_usb_ports import print_parameter_values, probe_one_port
 from kronoterm2mqtt.user_settings import HeatPump, get_user_settings
 
 
@@ -55,10 +55,10 @@ def probe_usb_ports(verbosity: TyroVerbosityArgType, max_port: int = 10, port_te
             print(f'ERROR: {err}')
 
 
-def print_parameter_values(client, parameters,  verbosity):
+def print_parameter_values(client, parameters, verbosity):
     for parameter in parameters:
         print(f'{parameter["name"]:>30}', end=' ')
-        address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
+        address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
         if verbosity:
             print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
         response = client.read_holding_registers(address=address, count=1, slave=MODBUS_SLAVE_ID)
@@ -67,15 +67,15 @@ def print_parameter_values(client, parameters,  verbosity):
         else:
             assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
             value = response.registers[0]
-            #if count > 1:
+            # if count > 1:
             #    value += response.registers[1] * 65536
 
             scale = Decimal(str(parameter['scale']))
-            value = (value - (value >> 15 << 16)) * scale # Convert value to signed integer
+            value = (value - (value >> 15 << 16)) * scale  # Convert value to signed integer
             print(f'{value} [blue]{parameter.get("unit_of_measurement", "")}')
     print('\n')
 
-            
+
 @app.command
 def print_values(verbosity: TyroVerbosityArgType):
     """
