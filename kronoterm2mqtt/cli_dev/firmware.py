@@ -27,6 +27,18 @@ def firmware_flash(verbosity: TyroVerbosityArgType):
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
     port = user_settings.custom_expander.port
 
-    verbose_check_call('avrdude', '-v', '-p', 'atmega328p', '-c', 'arduino',
-                       '-P', port, '-b', '57600', '-D',
-                       '-U', 'flash:w:etera-uart-bridge/pio-eub-firmware/.pio/build/nanoatmega328/firmware.hex:i')
+    verbose_check_call(
+        'avrdude',
+        '-v',
+        '-p',
+        'atmega328p',
+        '-c',
+        'arduino',
+        '-P',
+        port,
+        '-b',
+        '57600',
+        '-D',
+        '-U',
+        'flash:w:etera-uart-bridge/pio-eub-firmware/.pio/build/nanoatmega328/firmware.hex:i',
+    )

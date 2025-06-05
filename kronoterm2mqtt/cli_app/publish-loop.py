@@ -4,8 +4,8 @@ import time
 
 from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.tyro_commands import TyroVerbosityArgType
-from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.data_classes import MqttSettings
+from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from rich import print  # noqa
 
 from kronoterm2mqtt.cli_app import app

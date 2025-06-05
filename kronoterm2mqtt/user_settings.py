@@ -80,13 +80,32 @@ class CustomEteraExpander:
     # Relays with id [0 to 3] are for loop circulation pumps
     solar_pump_relay_id: int = 4
     inter_tank_pump_relay_id: int = 5
-    sensor_names: list = dataclasses.field(default_factory=lambda: ["Spalnice", "Mansarda", "Nadgaražje", "Pritličje",
-                                                                    "Kolektorji", "Solarni zgoraj", "Solarni spodaj",
-                                                                    "Bojler", "Cirkulacija"])
+    sensor_names: list = dataclasses.field(
+        default_factory=lambda: [
+            "Spalnice",
+            "Mansarda",
+            "Nadgaražje",
+            "Pritličje",
+            "Kolektorji",
+            "Solarni zgoraj",
+            "Solarni spodaj",
+            "Bojler",
+            "Cirkulacija",
+        ]
+    )
     # empty string means relay is not used (disabled)
-    relay_names: list = dataclasses.field(default_factory=lambda: ["Črpalka spalnic", "Črpalka mansarde",
-                                                                   "Črpalka nadgaražja", "", "Črpalka kolektorjev",
-                                                                   "Cirkulacija med bojlerjema", "", ""])
+    relay_names: list = dataclasses.field(
+        default_factory=lambda: [
+            "Črpalka spalnic",
+            "Črpalka mansarde",
+            "Črpalka nadgaražja",
+            "",
+            "Črpalka kolektorjev",
+            "Cirkulacija med bojlerjema",
+            "",
+            "",
+        ]
+    )
 
     def get_definitions(self, verbosity) -> dict:
         definition_file_path = BASE_PATH / 'definitions' / f'{self.definitions_name}.toml'

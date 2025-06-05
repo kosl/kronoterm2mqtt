@@ -1,26 +1,24 @@
-import logging
 import asyncio
 import itertools
-
+import logging
 from decimal import Decimal
-from ha_services.mqtt4homeassistant.components.sensor import Sensor
+
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
+from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.switch import Switch
 from ha_services.mqtt4homeassistant.device import MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
-
-from kronoterm2mqtt.api import get_modbus_client
-
-import kronoterm2mqtt
-from kronoterm2mqtt.constants import DEFAULT_DEVICE_MANUFACTURER, MODBUS_SLAVE_ID
-from kronoterm2mqtt.user_settings import UserSettings
-from kronoterm2mqtt.expander import ExpanderMqttHandler
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
-from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
-from pymodbus.pdu.register_message import WriteSingleRegisterResponse
+from pymodbus.pdu.register_message import ReadHoldingRegistersResponse, WriteSingleRegisterResponse
+
+import kronoterm2mqtt
+from kronoterm2mqtt.api import get_modbus_client
+from kronoterm2mqtt.constants import DEFAULT_DEVICE_MANUFACTURER, MODBUS_SLAVE_ID
+from kronoterm2mqtt.expander import ExpanderMqttHandler
+from kronoterm2mqtt.user_settings import UserSettings
 
 
 logger = logging.getLogger(__name__)
@@ -35,10 +33,11 @@ class KronotermMqttHandler:
         self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
         self.mqtt_client.loop_start()
         self.modbus_client = None
-        self.expander = ExpanderMqttHandler(
-            self.mqtt_client,
-            user_settings,
-            verbosity) if self.user_settings.custom_expander.module_enabled else None
+        self.expander = (
+            ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity)
+            if self.user_settings.custom_expander.module_enabled
+            else None
+        )
         self.main_device = None
         self.sensors = dict()
         self.binary_sensors = dict()
@@ -87,7 +86,7 @@ class KronotermMqttHandler:
 
             address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
             scale = parameter['scale']
-            precision = len(str(scale)[str(scale).rfind('.') + 1:]) if scale < 1 else 0
+            precision = len(str(scale)[str(scale).rfind('.') + 1 :]) if scale < 1 else 0  # noqa
             self.sensors[address] = (
                 Sensor(
                     device=self.main_device,
@@ -95,8 +94,9 @@ class KronotermMqttHandler:
                     uid=slugify(parameter['name'], '_').lower(),
                     device_class=parameter['device_class'],
                     state_class=parameter['state_class'] if len(parameter['state_class']) else None,
-                    unit_of_measurement=parameter['unit_of_measurement'] if len(
-                        parameter['unit_of_measurement']) else None,
+                    unit_of_measurement=(
+                        parameter['unit_of_measurement'] if len(parameter['unit_of_measurement']) else None
+                    ),
                     suggested_display_precision=precision,
                 ),
                 Decimal(str(parameter['scale'])),
@@ -197,7 +197,8 @@ class KronotermMqttHandler:
         for address_start, address_end in self.address_ranges:
             count = address_end - address_start + 1
             response = self.modbus_client.read_holding_registers(
-                address=address_start, count=count, slave=MODBUS_SLAVE_ID)
+                address=address_start, count=count, slave=MODBUS_SLAVE_ID
+            )
             if isinstance(response, (ExceptionResponse, ModbusIOException)):
                 logger.error(f'Error: {response}')
             else:
@@ -223,8 +224,7 @@ class KronotermMqttHandler:
         if self.main_device is None:
             await self.init_device(event_loop, self.verbosity)
 
-        switches = {2327: self.dhw_circulation_switch,
-                    2015: self.additional_source_switch}
+        switches = {2327: self.dhw_circulation_switch, 2015: self.additional_source_switch}
 
         print("Kronoterm to MQTT publish loop started...")
         while True:

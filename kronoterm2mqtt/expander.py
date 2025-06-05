@@ -1,19 +1,20 @@
 import logging
-import time
 import sys
-from typing import List
+import time
 from enum import Enum
+from typing import List
 
-from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
+from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.device import MqttDevice
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
 
 from kronoterm2mqtt.constants import MIXING_VALVE_HOLD_TIME
-from kronoterm2mqtt.user_settings import UserSettings
 from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
+from kronoterm2mqtt.user_settings import UserSettings
+
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +142,11 @@ class ExpanderMqttHandler:
     async def mixing_valve_motor_close(self, heating_loop_number: int, duration: float, override: bool = True):
         try:
             await self.etera.move_motor(
-                heating_loop_number, EteraUartBridge.Direction.COUNTER_CLOCKWISE, int(duration * 1000), override=override)
+                heating_loop_number,
+                EteraUartBridge.Direction.COUNTER_CLOCKWISE,
+                int(duration * 1000),
+                override=override,
+            )
             position = self.mixing_valve_sensors[heating_loop_number].value
             position -= duration / 120.0 * 100
             if position < 0:
@@ -156,7 +161,8 @@ class ExpanderMqttHandler:
     async def mixing_valve_motor_open(self, heating_loop_number: int, duration: float, override: bool = True):
         try:
             await self.etera.move_motor(
-                heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration * 1000), override=override)
+                heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration * 1000), override=override
+            )
             position = self.mixing_valve_sensors[heating_loop_number].value
             position += duration / 120.0 * 100
             if position > 100:
@@ -294,7 +300,9 @@ class ExpanderMqttHandler:
                     state_message = 'switch unchanged'
                     if self.verbosity:
                         print(
-                            f'Temperatures {temperatures} Collector-heat exchanger difference {difference} -> {state_message}')
+                            f'Temperatures {temperatures} Collector-heat exchanger'
+                            f' difference {difference} -> {state_message}'
+                        )
 
             relay = self.relays[settings.inter_tank_pump_relay_id]
             if additional_source_enabled and settings.intra_tank_circulation_operation:
@@ -336,43 +344,55 @@ class ExpanderMqttHandler:
                                 self.loop_states[heat_loop].set_state('Izklop')
                                 await self.etera.set_relay(heat_loop, False)
                                 self.event_loop.create_task(
-                                    self.mixing_valve_motor_close(
-                                        heat_loop, 120, override=True))
-                                print(f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.loop_states[heat_loop].name}!"
-                                      " Switched off now!")
+                                    self.mixing_valve_motor_close(heat_loop, 120, override=True)
+                                )
+                                print(
+                                    f"Undefloor temperature #{heat_loop} too high ({loop_temperature})"
+                                    f" for {self.loop_states[heat_loop].name}! Switched off now!"
+                                )
                                 continue
-                            if self.last_working_function > 0 and working_function == 0:  # Start of heating detected, close the valve
+                            if (
+                                self.last_working_function > 0 and working_function == 0
+                            ):  # Start of heating detected, close the valve
                                 self.mixing_valve_timer[heat_loop] = time.monotonic()  # reset timer
                                 self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 12))
                                 continue  # to next loop
-                            if time.monotonic() - \
-                                    self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME:  # can move motor?
+                            if (
+                                time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME
+                            ):  # can move motor?
                                 self.mixing_valve_timer[heat_loop] = time.monotonic()  # reset timer
                                 temp_at_zero = settings.loop_temperature[heat_loop]
                                 target_loop_temperature = self.get_loop_target_temperature(
                                     heat_loop, temp_at_zero,
                                     outside_temperature, settings.heating_curve_coefficient,
                                     loop_temperature_offset_in_eco_mode, loop_operation_status_on_schedule)
-                                # print(f"DBG: Loop {heat_loop}: target -> {target_loop_temperature} ({self.loop_states[heat_loop].state})")
+                                # print(f"DBG: Loop {heat_loop}: target -> {target_loop_temperature} "
+                                #       f"({self.loop_states[heat_loop].state})")
                                 if loop_temperature >= target_loop_temperature:  # close the mixing valve
                                     move_duration = (
-                                        loop_temperature - target_loop_temperature) * 3.0  # 3 seconds for 1K
+                                        loop_temperature - target_loop_temperature
+                                    ) * 3.0  # 3 seconds for 1K
                                     if move_duration > 12:
                                         move_duration = 12  # limit move
                                     self.event_loop.create_task(
-                                        self.mixing_valve_motor_close(
-                                            heat_loop, move_duration))
+                                        self.mixing_valve_motor_close(heat_loop, move_duration)
+                                    )
 
                                 else:  # open the mixing valve since target_loop_temperature > loop_temperature
                                     move_duration = (
-                                        target_loop_temperature - loop_temperature) * 3.0  # 3 seconds for 1K
+                                        target_loop_temperature - loop_temperature
+                                    ) * 3.0  # 3 seconds for 1K
                                     if move_duration > 10:
                                         move_duration = 10  # limit move
                                     self.event_loop.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
                                 if self.verbosity > 1:
                                     underfloor_temp_correction = target_loop_temperature - temp_at_zero
-                                    print(f"Circuit #{heat_loop} {self.loop_states[heat_loop].name}[{self.loop_states[heat_loop].state}]: {loop_temperature=} {target_loop_temperature=}"
-                                          f" {temp_at_zero=} {outside_temperature=} {underfloor_temp_correction=} {move_duration=}")
+                                    print(
+                                        f"Circuit #{heat_loop} "
+                                        f"{self.loop_states[heat_loop].name}[{self.loop_states[heat_loop].state}]: "
+                                        f"{loop_temperature=} {target_loop_temperature=} {temp_at_zero=} "
+                                        f"{outside_temperature=} {underfloor_temp_correction=} {move_duration=}"
+                                    )
 
                         else:  # Loop is switched OFF (disabled) and we close the valve and the pump if needed
                             if relay.is_on:

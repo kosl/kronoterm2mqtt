@@ -74,8 +74,17 @@ def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True):
         try:
             moves = []
             for i in range(4):
-                moves.append(etera.move_motor(i, EteraUartBridge.Direction.CLOCKWISE if opening
-                                              else EteraUartBridge.Direction.COUNTER_CLOCKWISE, duration * 1000))
+                moves.append(
+                    etera.move_motor(
+                        i,
+                        (
+                            EteraUartBridge.Direction.CLOCKWISE
+                            if opening
+                            else EteraUartBridge.Direction.COUNTER_CLOCKWISE
+                        ),
+                        duration * 1000,
+                    )
+                )
             await asyncio.gather(*moves)
         except EteraUartBridge.DeviceException as e:
             print('Motor move error', e)
