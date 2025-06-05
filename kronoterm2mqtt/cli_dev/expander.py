@@ -11,11 +11,12 @@ from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
 from kronoterm2mqtt.user_settings import CustomEteraExpander, UserSettings, get_user_settings
 
 
-#import logging
-#logger = logging.getLogger(__name__)
+# import logging
+# logger = logging.getLogger(__name__)
 
 async def etera_reset_handler():
     print('Device just reset...')
+
 
 async def etera_message_handler(message: bytes):
     print(message.decode())
@@ -33,7 +34,7 @@ def expander_temperatures(verbosity: TyroVerbosityArgType):
                             on_device_message_handler=etera_message_handler)
 
     print('Starting temperature read from custom expander')
-    
+
     async def print_temperatures():
         await etera.ready()
         sensors = await etera.get_sensors()
@@ -48,7 +49,7 @@ def expander_temperatures(verbosity: TyroVerbosityArgType):
         loop = asyncio.create_task(etera.run_forever())
         await print_temperatures()
         loop.cancel()
-        
+
     asyncio.run(temp())
 
 
@@ -67,17 +68,16 @@ def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True):
 
     print(f'Moving all motors for {duration} seconds at custom expander')
 
-
     async def move_motors(opening, duration: int):
 
         await etera.ready()
-        #await etera.move_motor(1, EteraUartBridge.Direction.CLOCKWISE, 120 * 1000) # clockwise for 120 seconds
+        # await etera.move_motor(1, EteraUartBridge.Direction.CLOCKWISE, 120 * 1000) # clockwise for 120 seconds
 
         try:
             moves = []
             for i in range(4):
                 moves.append(etera.move_motor(i, EteraUartBridge.Direction.CLOCKWISE if opening
-                                              else EteraUartBridge.Direction.COUNTER_CLOCKWISE, duration*1000))
+                                              else EteraUartBridge.Direction.COUNTER_CLOCKWISE, duration * 1000))
             await asyncio.gather(*moves)
         except EteraUartBridge.DeviceException as e:
             print('Motor move error', e)
@@ -87,7 +87,7 @@ def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True):
         loop = asyncio.create_task(etera.run_forever())
         await move_motors(opening, duration)
         loop.cancel()
-    
+
     asyncio.run(go())
 
 
@@ -123,13 +123,13 @@ def expander_relay(verbosity: TyroVerbosityArgType, relay: int = 0, on: bool = T
         except EteraUartBridge.DeviceException as e:
             print('Relay switch error', e)
 
-
     async def go():
         loop = asyncio.create_task(etera.run_forever())
         await switch_relay(relay, on)
         loop.cancel()
-    
+
     asyncio.run(go())
+
 
 @app.command
 def expander_loop(verbosity: TyroVerbosityArgType):
@@ -140,15 +140,15 @@ def expander_loop(verbosity: TyroVerbosityArgType):
     port = user_settings.custom_expander.port
     etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
                             on_device_message_handler=etera_message_handler)
-    
+
     print('Starting manual control of a solar pump')
-    
+
     async def temperature_loop():
         await etera.ready()
         while True:
             try:
                 temps = await etera.get_temperatures()
-                
+
                 collector_temperature = temps[user_settings.custom_expander.solar_sensors[0]]
                 tank_temperature = temps[user_settings.custom_expander.solar_sensors[2]]
                 difference = collector_temperature - tank_temperature
@@ -166,7 +166,7 @@ def expander_loop(verbosity: TyroVerbosityArgType):
                 print('Get temp error', e)
             finally:
                 await asyncio.sleep(60)
-            
+
     async def loop():
         await asyncio.gather(etera.run_forever(),
                              temperature_loop()

@@ -16,6 +16,7 @@ import kronoterm2mqtt
 TERM_WIDTH = 100
 PACKAGE_ROOT = Path(kronoterm2mqtt.__file__).parent.parent
 
+
 class ReadmeTestCase(BaseTestCase):
     cli_mock = None
 

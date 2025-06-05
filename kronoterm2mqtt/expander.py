@@ -8,7 +8,7 @@ from enum import Enum
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
-from ha_services.mqtt4homeassistant.device import  MqttDevice
+from ha_services.mqtt4homeassistant.device import MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
@@ -27,12 +27,14 @@ async def etera_reset_handler():
     print('Custom ETERA expander just reset...', flush=True, file=sys.stderr)
     logging.error('Custom ETERA expander just reset...')
 
+
 async def etera_message_handler(message: bytes):
     try:
         print(message.decode(), flush=True)
     except UnicodeDecodeError:
         print(message, flush=True)
-    #logging.info(message.decode())
+    # logging.info(message.decode())
+
 
 class ExpanderMqttHandler:
     def __init__(self, mqtt_client, user_settings: UserSettings, verbosity: int):
@@ -42,13 +44,13 @@ class ExpanderMqttHandler:
         self.user_settings = user_settings
         self.verbosity = verbosity
         self.mqtt_device: MqttDevice | None = None
-        self.sensors: List[Sensor] = list() # loop[0:4], collector, solar tank up/down, DHW, DHW circulation
+        self.sensors: List[Sensor] = list()  # loop[0:4], collector, solar tank up/down, DHW, DHW circulation
         self.relays: List[BinarySensor] = list()
-        self.loop_states: List[Select] = list() # Loop names from sensors
-        self.mixing_valve_sensors: List[Sensor] = list() # Position sensors in percentage
-        self.mixing_valve_timer: List[float] = list() # Measuring time from last move
-        self.expedited_heating_timer: List[float] = list() # Measuring time from start of expedited heating
-        self.last_working_function : int = 5 # Heat pump in 5=Standby
+        self.loop_states: List[Select] = list()  # Loop names from sensors
+        self.mixing_valve_sensors: List[Sensor] = list()  # Position sensors in percentage
+        self.mixing_valve_timer: List[float] = list()  # Measuring time from last move
+        self.expedited_heating_timer: List[float] = list()  # Measuring time from start of expedited heating
+        self.last_working_function: int = 5  # Heat pump in 5=Standby
 
     class WorkingMode(Enum):
         OFF = 'Izklop'
@@ -66,8 +68,7 @@ class ExpanderMqttHandler:
         if self.config.verbosity:
             print('\nClosing Etera Expander"', end='...')
         if self.etera:
-            self.etera._s.close() # TODO add context manager or close to etera library
-
+            self.etera._s.close()  # TODO add context manager or close to etera library
 
     async def init_device(self, event_loop, main_device: MqttDevice, verbosity: int):
         """Create sensors and add it as subdevice for later update in
@@ -83,14 +84,14 @@ class ExpanderMqttHandler:
         await self.etera.ready()
 
         self.mqtt_device = MqttDevice(
-                main_device=main_device,
-                name="ETERA expander",
-                uid="expander",
-                manufacturer='Wigaun DIY',
-                model='Arduino nano',
-                sw_version='1.1.3',
-                config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
-            )
+            main_device=main_device,
+            name="ETERA expander",
+            uid="expander",
+            manufacturer='Wigaun DIY',
+            model='Arduino nano',
+            sw_version='1.1.3',
+            config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
+        )
         for name in self.user_settings.custom_expander.sensor_names:
             self.sensors.append(Sensor(
                 device=self.mqtt_device,
@@ -102,7 +103,7 @@ class ExpanderMqttHandler:
                 suggested_display_precision=2,
             ))
         for name in self.user_settings.custom_expander.relay_names:
-            if len(name): # relay in use? We run only 3 out of 4 mixing valve motors for now
+            if len(name):  # relay in use? We run only 3 out of 4 mixing valve motors for now
                 relay = BinarySensor(
                     device=self.mqtt_device,
                     name=name,
@@ -128,8 +129,8 @@ class ExpanderMqttHandler:
                 self.loop_states.append(select)
                 mixing_valve_sensor = Sensor(
                     device=self.mqtt_device,
-                    name='Mešalni ventil '+name,
-                    uid=slugify('mesalni ventil '+name, '_').lower(),
+                    name='Mešalni ventil ' + name,
+                    uid=slugify('mesalni ventil ' + name, '_').lower(),
                     device_class='power_factor',
                     state_class='measurement',
                     unit_of_measurement='%',
@@ -142,13 +143,12 @@ class ExpanderMqttHandler:
                 self.mixing_valve_timer.append(time.monotonic())
                 self.expedited_heating_timer.append(None)
 
-
-    async def mixing_valve_motor_close(self, heating_loop_number: int,  duration: float, override: bool = True):
+    async def mixing_valve_motor_close(self, heating_loop_number: int, duration: float, override: bool = True):
         try:
             await self.etera.move_motor(
-                heating_loop_number, EteraUartBridge.Direction.COUNTER_CLOCKWISE, int(duration*1000), override=override)
+                heating_loop_number, EteraUartBridge.Direction.COUNTER_CLOCKWISE, int(duration * 1000), override=override)
             position = self.mixing_valve_sensors[heating_loop_number].value
-            position -= duration/120.0*100
+            position -= duration / 120.0 * 100
             if position < 0:
                 position = 0
             self.mixing_valve_sensors[heating_loop_number].set_state(position)
@@ -158,19 +158,18 @@ class ExpanderMqttHandler:
         except EteraUartBridge.DeviceException as e:
             print(f'Motor #{heating_loop_number} move error', e)
 
-    async def mixing_valve_motor_open(self, heating_loop_number: int,  duration: float, override: bool = True):
+    async def mixing_valve_motor_open(self, heating_loop_number: int, duration: float, override: bool = True):
         try:
             await self.etera.move_motor(
-                heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration*1000), override=override)
+                heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration * 1000), override=override)
             position = self.mixing_valve_sensors[heating_loop_number].value
-            position += duration/120.0*100
+            position += duration / 120.0 * 100
             if position > 100:
                 position = 100
             self.mixing_valve_sensors[heating_loop_number].set_state(position)
             self.mixing_valve_sensors[heating_loop_number].publish(self.mqtt_client)
         except EteraUartBridge.DeviceException as e:
             print(f'Motor #{heating_loop_number} move error', e)
-
 
     def loop_switch_callback(self, *, client: Client, component: Select, old_state: str, new_state: str):
         """Switches on/off (manually) loop.
@@ -205,7 +204,6 @@ class ExpanderMqttHandler:
             logger.error(f'Invalid state: {new_state!r}')
             return
 
-
     def get_loop_target_temperature(self,
                                     loop_number: int,
                                     temp_at_zero: float,
@@ -224,7 +222,7 @@ class ExpanderMqttHandler:
         elif self.loop_states[loop_number].state == self.WorkingMode.STANDBY.value:
             return 10.0
 
-        underfloor_temp_correction = -outside_temperature*heating_curve_coefficient
+        underfloor_temp_correction = -outside_temperature * heating_curve_coefficient
         if loop_operation_status_on_schedule == 2:
             underfloor_temp_correction += loop_temperature_offset_in_eco_mode
 
@@ -264,10 +262,10 @@ class ExpanderMqttHandler:
         """
         settings = self.user_settings.custom_expander
         try:
-            #### Heating loop state
+            # Heating loop state
             for i, select in enumerate(self.loop_states):
                 if self.expedited_heating_timer[i] is not None:
-                    if time.monotonic() - self.expedited_heating_timer[i] > 5*3600:
+                    if time.monotonic() - self.expedited_heating_timer[i] > 5 * 3600:
                         select.set_state(self.WorkingMode.OFF.value)
                         self.expedited_heating_timer[i] = None
                         print(f"Expedited heating for {select.name} is over!")
@@ -283,7 +281,7 @@ class ExpanderMqttHandler:
             for select in self.loop_states:
                 select.publish(self.mqtt_client)
 
-            #### Expander control start
+            # Expander control start
             collector_temperature = temperatures[settings.solar_sensors[0]]
             tank_temperature = temperatures[settings.solar_sensors[2]]
             difference = collector_temperature - tank_temperature
@@ -300,13 +298,14 @@ class ExpanderMqttHandler:
                 else:
                     state_message = 'switch unchanged'
                     if self.verbosity:
-                        print(f'Temperatures {temperatures} Collector-heat exchanger difference {difference} -> {state_message}')
+                        print(
+                            f'Temperatures {temperatures} Collector-heat exchanger difference {difference} -> {state_message}')
 
             relay = self.relays[settings.inter_tank_pump_relay_id]
             if additional_source_enabled and settings.intra_tank_circulation_operation:
                 dhw_temperature = self.sensors[7].value
                 solar_tank_temperature = self.sensors[5].value
-                #if dhw_temperature < current_desired_dhw_temperature:
+                # if dhw_temperature < current_desired_dhw_temperature:
                 #    dt = solar_tank_temperature - dhw_temperature
                 #    if abs(dt) > settings.solar_pump_difference_on:
                 #        if not relay.is_on:
@@ -316,7 +315,7 @@ class ExpanderMqttHandler:
                 #        if relay.is_on:
                 #            relay.set_state(relay.OFF)
                 #            await self.etera.set_relay(settings.inter_tank_pump_relay_id, False)
-                #else:
+                # else:
                 #    if relay.is_on:
                 #       relay.set_state(relay.OFF)
                 #       await self.etera.set_relay(settings.inter_tank_pump_relay_id, False)
@@ -327,8 +326,8 @@ class ExpanderMqttHandler:
                 relay.set_state(relay.OFF)
                 await self.etera.set_relay(settings.inter_tank_pump_relay_id, False)
 
-            #loop_circulation_status=True
-            if loop_circulation_status: # if primary loop pump is running so should other heating loops
+            # loop_circulation_status=True
+            if loop_circulation_status:  # if primary loop pump is running so should other heating loops
                 for heat_loop in range(4):
                     relay = self.relays[heat_loop]
                     if relay is not None:
@@ -338,66 +337,72 @@ class ExpanderMqttHandler:
                                 await self.etera.set_relay(heat_loop, True)
                             # Move motors according to the last reading
                             loop_temperature = self.sensors[heat_loop].value
-                            if loop_temperature > 40.0: # rapid loop shutdown
+                            if loop_temperature > 40.0:  # rapid loop shutdown
                                 self.loop_states[heat_loop].set_state('Izklop')
                                 await self.etera.set_relay(heat_loop, False)
-                                self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=True))
-                                print( f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.loop_states[heat_loop].name}!"
-                                        " Switched off now!")
+                                self.event_loop.create_task(
+                                    self.mixing_valve_motor_close(
+                                        heat_loop, 120, override=True))
+                                print(f"Undefloor temperature #{heat_loop} too high ({loop_temperature}) for {self.loop_states[heat_loop].name}!"
+                                      " Switched off now!")
                                 continue
-                            if self.last_working_function > 0 and working_function == 0: # Start of heating detected, close the valve
-                                self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
+                            if self.last_working_function > 0 and working_function == 0:  # Start of heating detected, close the valve
+                                self.mixing_valve_timer[heat_loop] = time.monotonic()  # reset timer
                                 self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 12))
-                                continue # to next loop
-                            if time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME: # can move motor?
-                                self.mixing_valve_timer[heat_loop] = time.monotonic() # reset timer
+                                continue  # to next loop
+                            if time.monotonic() - \
+                                    self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME:  # can move motor?
+                                self.mixing_valve_timer[heat_loop] = time.monotonic()  # reset timer
                                 temp_at_zero = settings.loop_temperature[heat_loop]
                                 target_loop_temperature = self.get_loop_target_temperature(
                                     heat_loop, temp_at_zero,
                                     outside_temperature, settings.heating_curve_coefficient,
                                     loop_temperature_offset_in_eco_mode, loop_operation_status_on_schedule)
                                 # print(f"DBG: Loop {heat_loop}: target -> {target_loop_temperature} ({self.loop_states[heat_loop].state})")
-                                if loop_temperature >= target_loop_temperature: # close the mixing valve
-                                    move_duration = (loop_temperature - target_loop_temperature)*3.0 # 3 seconds for 1K
+                                if loop_temperature >= target_loop_temperature:  # close the mixing valve
+                                    move_duration = (
+                                        loop_temperature - target_loop_temperature) * 3.0  # 3 seconds for 1K
                                     if move_duration > 12:
-                                        move_duration = 12 # limit move
-                                    self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, move_duration))
+                                        move_duration = 12  # limit move
+                                    self.event_loop.create_task(
+                                        self.mixing_valve_motor_close(
+                                            heat_loop, move_duration))
 
-                                else: # open the mixing valve since target_loop_temperature > loop_temperature
-                                    move_duration = (target_loop_temperature-loop_temperature)*3.0 # 3 seconds for 1K
+                                else:  # open the mixing valve since target_loop_temperature > loop_temperature
+                                    move_duration = (
+                                        target_loop_temperature - loop_temperature) * 3.0  # 3 seconds for 1K
                                     if move_duration > 10:
-                                        move_duration = 10 # limit move
+                                        move_duration = 10  # limit move
                                     self.event_loop.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
                                 if self.verbosity > 1:
                                     underfloor_temp_correction = target_loop_temperature - temp_at_zero
                                     print(f"Circuit #{heat_loop} {self.loop_states[heat_loop].name}[{self.loop_states[heat_loop].state}]: {loop_temperature=} {target_loop_temperature=}"
-                                            f" {temp_at_zero=} {outside_temperature=} {underfloor_temp_correction=} {move_duration=}")
+                                          f" {temp_at_zero=} {outside_temperature=} {underfloor_temp_correction=} {move_duration=}")
 
-                        else: # Loop is switched OFF (disabled) and we close the valve and the pump if needed
+                        else:  # Loop is switched OFF (disabled) and we close the valve and the pump if needed
                             if relay.is_on:
                                 relay.set_state(relay.OFF)
                                 self.event_loop.create_task(self.mixing_valve_motor_close(
                                     heat_loop, 120, override=True))
                                 await self.etera.set_relay(heat_loop, False)
 
-            else: # The loop circulation in the Kronoterm heat pump is stopped momentarily due to DHW heating?
+            else:  # The loop circulation in the Kronoterm heat pump is stopped momentarily due to DHW heating?
                 for heat_loop in range(4):
                     relay = self.relays[heat_loop]
                     if relay is not None:
                         if self.loop_states[heat_loop].state == self.WorkingMode.OFF.value and relay.is_on:
                             self.event_loop.create_task(self.mixing_valve_motor_close(
                                 heat_loop, 120, override=True))
-                        if relay.is_on: # We stop the pumps for now
+                        if relay.is_on:  # We stop the pumps for now
                             relay.set_state(relay.OFF)
                             await self.etera.set_relay(heat_loop, False)
                             if self.verbosity:
                                 print(f"{relay.name} switched OFF")
 
             self.last_working_function = working_function
-            #### Expander control end
+            # Expander control end
         except EteraUartBridge.DeviceException as e:
-                print('Get temperatures error', e)
+            print('Get temperatures error', e)
         for relay in self.relays:
             if relay is not None:
                 relay.publish(self.mqtt_client)
-
