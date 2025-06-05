@@ -1,6 +1,7 @@
 from cli_base.cli_tools import code_style
-from kronoterm2mqtt.cli_dev import PACKAGE_ROOT, app
 from cli_base.tyro_commands import TyroVerbosityArgType
+
+from kronoterm2mqtt.cli_dev import PACKAGE_ROOT, app
 
 
 @app.command

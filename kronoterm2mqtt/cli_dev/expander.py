@@ -1,14 +1,14 @@
 import asyncio
 
 from cli_base.cli_tools.verbosity import setup_logging
-from rich import print  as rprint # noqa
 from cli_base.tyro_commands import TyroVerbosityArgType
+from rich import print as rprint  # noqa
 
 import kronoterm2mqtt
-from kronoterm2mqtt.cli_dev import app
-from kronoterm2mqtt.user_settings import UserSettings, CustomEteraExpander, get_user_settings
 import kronoterm2mqtt.pyetera_uart_bridge
+from kronoterm2mqtt.cli_dev import app
 from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
+from kronoterm2mqtt.user_settings import CustomEteraExpander, UserSettings, get_user_settings
 
 
 #import logging
@@ -90,13 +90,15 @@ def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True):
     
     asyncio.run(go())
 
-#option_kwargs_relay = dict(
+
+# option_kwargs_relay = dict(
 #    required=True,
 #    type=click.IntRange(0, 7),
 #    help='Relay number',
 #    default=0,
 #    show_default=True,
-#)
+# )
+
 
 @app.command
 def expander_relay(verbosity: TyroVerbosityArgType, relay: int = 0, on: bool = True):

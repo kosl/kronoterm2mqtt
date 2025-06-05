@@ -32,7 +32,7 @@ dev = [
     "pyflakes",  # https://github.com/PyCQA/pyflakes
     "codespell",  # https://github.com/codespell-project/codespell
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
-    "safety",  # https://github.com/pyupio/safety
+    "pip-audit",  # https://github.com/pypa/pip-audit
     "mypy",  # https://github.com/python/mypy
     "twine",  # https://github.com/pypa/twine
     "pre-commit",  # https://github.com/pre-commit/pre-commit
@@ -59,6 +59,12 @@ include = ["kronoterm2mqtt*"]
 
 [tool.setuptools.dynamic]
 version = {attr = "kronoterm2mqtt.__version__"}
+
+[tool.cli_base.pip_audit]
+requirements=["requirements.dev.txt"]
+strict=true
+require_hashes=true
+ignore-vuln=[]
 
 [tool.cli_base]
 version_module_name = "kronoterm2mqtt"  # Used by "update-readme-history" git hook

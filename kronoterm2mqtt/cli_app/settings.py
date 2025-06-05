@@ -8,6 +8,7 @@ from rich import print  # noqa
 from kronoterm2mqtt.cli_app import app
 from kronoterm2mqtt.user_settings import get_toml_settings
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -19,6 +20,7 @@ def edit_settings(verbosity: TyroVerbosityArgType):
     setup_logging(verbosity=verbosity)
     toml_settings: TomlSettings = get_toml_settings()
     toml_settings.open_in_editor()
+
 
 @app.command
 def print_settings(verbosity: TyroVerbosityArgType):

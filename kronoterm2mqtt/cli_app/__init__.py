@@ -5,11 +5,10 @@
 import logging
 import sys
 
-from rich import print  # noqa
-from tyro.extras import SubcommandApp
-
 from cli_base.autodiscover import import_all_files
 from cli_base.cli_tools.version_info import print_version
+from rich import print  # noqa
+from tyro.extras import SubcommandApp
 
 import kronoterm2mqtt
 from kronoterm2mqtt import constants

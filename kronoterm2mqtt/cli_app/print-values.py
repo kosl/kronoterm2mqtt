@@ -12,11 +12,11 @@ from rich.pretty import pprint
 
 from kronoterm2mqtt.api import get_modbus_client
 from kronoterm2mqtt.cli_app import app
+from kronoterm2mqtt.constants import MODBUS_SLAVE_ID
+
 #from kronoterm2mqtt.probe_usb_ports import print_parameter_values, probe_one_port
 from kronoterm2mqtt.user_settings import HeatPump, get_user_settings
 
-from kronoterm2mqtt.api import get_modbus_client
-from kronoterm2mqtt.constants import MODBUS_SLAVE_ID
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +32,8 @@ def probe_one_port(heat_pump, definitions, verbosity):
 
 
 @app.command
-#@Click.option('--max-port', default=10, help='Maximum USB port number')
-#@click.option('--port-template', default='/dev/ttyUSB{i}', help='USB device path template')
+# @Click.option('--max-port', default=10, help='Maximum USB port number')
+# @click.option('--port-template', default='/dev/ttyUSB{i}', help='USB device path template')
 def probe_usb_ports(verbosity: TyroVerbosityArgType, max_port: int = 10, port_template: str = '/dev/ttyUSB{i}'):
     """
     Probe through the USB ports and print the values from definition

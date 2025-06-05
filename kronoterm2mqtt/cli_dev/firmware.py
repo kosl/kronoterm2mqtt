@@ -1,12 +1,13 @@
 import sys
 from pathlib import Path
 
-import kronoterm2mqtt
-from kronoterm2mqtt.cli_dev import PACKAGE_ROOT, app
-from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.tyro_commands import TyroVerbosityArgType
+
+import kronoterm2mqtt
+from kronoterm2mqtt.cli_dev import PACKAGE_ROOT, app
+from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
 
 
 @app.command

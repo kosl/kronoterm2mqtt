@@ -123,7 +123,7 @@ class ExpanderMqttHandler:
                     uid=slugify(name),
                     callback=self.loop_switch_callback,
                     options=[v.value for v in self.WorkingMode],
-                    default_option=(self.WorkingMode.ON if state else self.WorkingMode.OFF).value
+                    default_option=(self.WorkingMode.ON if state else self.WorkingMode.OFF).value,
                 )
                 self.loop_states.append(select)
                 mixing_valve_sensor = Sensor(

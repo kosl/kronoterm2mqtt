@@ -1,15 +1,18 @@
 import logging
+
 from cli_base.cli_tools.dev_tools import run_unittest_cli
 from cli_base.cli_tools.subprocess_utils import ToolsExecutor
 from cli_base.cli_tools.verbosity import setup_logging
+from cli_base.run_pip_audit import run_pip_audit
 from cli_base.tyro_commands import TyroVerbosityArgType
 from manageprojects.utilities.publish import publish_package
-
 
 import kronoterm2mqtt
 from kronoterm2mqtt.cli_dev import PACKAGE_ROOT, app
 
+
 logger = logging.getLogger(__name__)
+
 
 @app.command
 def install():
@@ -19,29 +22,7 @@ def install():
     tools_executor = ToolsExecutor(cwd=PACKAGE_ROOT)
     tools_executor.verbose_check_call('uv', 'sync')
     tools_executor.verbose_check_call('pip', 'install', '--no-deps', '-e', '.')
-    
-def _call_safety():
-    """
-    Run safety check against current requirements files
-    """
-    verbose_check_call(
-        'safety',
-        'check',
-        '--ignore',
-        '70612',  # Jinja2 Server Side Template Injection (SSTI)
-        '--ignore',
-        '73725', # starlette DoS 
-        '-r',
-        'requirements.dev.txt',
-    )
 
-    
-@app.command
-def safety():
-    """
-    Run safety check against current requirements files
-    """
-    _call_safety()
 
 @app.command
 def pip_audit(verbosity: TyroVerbosityArgType):
@@ -50,7 +31,8 @@ def pip_audit(verbosity: TyroVerbosityArgType):
     """
     setup_logging(verbosity=verbosity)
     run_pip_audit(base_path=PACKAGE_ROOT, verbosity=verbosity)
-    
+
+
 @app.command
 def update(verbosity: TyroVerbosityArgType):
     """
@@ -65,6 +47,13 @@ def update(verbosity: TyroVerbosityArgType):
     tools_executor.verbose_check_call('uv', 'lock', '--upgrade')
 
     run_pip_audit(base_path=PACKAGE_ROOT, verbosity=verbosity)
+
+    # Install new dependencies in current .venv:
+    tools_executor.verbose_check_call('uv', 'sync')
+
+    # Update git pre-commit hooks:
+    tools_executor.verbose_check_call('pre-commit', 'autoupdate')
+
 
 @app.command
 def publish():

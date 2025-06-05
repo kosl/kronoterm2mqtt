@@ -53,21 +53,21 @@ class ReadmeTestCase(BaseTestCase):
         assert_rich_click_no_color(width=TERM_WIDTH)
 
     def invoke_cli(self, *args):
-        stdout = self.cli_mock.invoke(cli_bin=PACKAGE_ROOT / 'cli.py', args=args, strip_line_prefix='Usage: ')
+        stdout = self.cli_mock.invoke(cli_bin=PACKAGE_ROOT / 'cli.py', args=args, strip_line_prefix='usage: ')
 
         # Remove last line:
         stdout = '\n'.join(stdout.splitlines()[:-1])
         return stdout.rstrip()
 
     def invoke_dev_cli(self, *args):
-        return self.cli_mock.invoke(cli_bin=PACKAGE_ROOT / 'dev-cli.py', args=args, strip_line_prefix='Usage: ')
+        return self.cli_mock.invoke(cli_bin=PACKAGE_ROOT / 'dev-cli.py', args=args, strip_line_prefix='usage: ')
 
     def test_main_help(self):
         stdout = self.invoke_cli('--help')
         assert_in(
             content=stdout,
             parts=(
-                'Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...',
+                'usage: ./cli.py [-h]',
                 'print-values',
                 'publish-loop',
             ),
@@ -78,9 +78,9 @@ class ReadmeTestCase(BaseTestCase):
         assert_in(
             content=stdout,
             parts=(
-                'Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...',
+                'usage: ./dev-cli.py [-h]',
                 'fix-code-style',
-                'tox',
+                'nox',
                 constants.CLI_EPILOG,
             ),
         )
@@ -90,7 +90,7 @@ class ReadmeTestCase(BaseTestCase):
         assert_in(
             content=stdout,
             parts=(
-                'Usage: ./cli.py publish-loop [OPTIONS]',
+                'usage: ./cli.py publish-loop [-h] [-v]',
                 '--verbosity',
             ),
         )
@@ -100,7 +100,7 @@ class ReadmeTestCase(BaseTestCase):
         assert_in(
             content=stdout,
             parts=(
-                'Usage: ./cli.py print-values [OPTIONS]',
+                'usage: ./cli.py print-values [-h] [-v]',
                 '--verbosity',
             ),
         )

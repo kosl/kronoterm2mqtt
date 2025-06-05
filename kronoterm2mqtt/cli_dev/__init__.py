@@ -7,14 +7,10 @@ import logging
 import sys
 
 from bx_py_utils.path import assert_is_file
-from rich.console import Console
-from rich.traceback import install as rich_traceback_install
-from rich_click import RichGroup
-from typeguard import install_import_hook
-
 from cli_base.autodiscover import import_all_files
 from cli_base.cli_tools.dev_tools import run_coverage, run_nox, run_unittest_cli
 from cli_base.cli_tools.version_info import print_version
+from typeguard import install_import_hook
 from tyro.extras import SubcommandApp
 
 import kronoterm2mqtt
@@ -38,6 +34,7 @@ assert_is_file(PACKAGE_ROOT / 'pyproject.toml')  # Exists only in cloned git rep
 
 app = SubcommandApp()
 
+
 # Register all CLI commands, just by import all files in this package:
 import_all_files(package=__package__, init_file=__file__)
 
@@ -57,7 +54,7 @@ def main():
         command = sys.argv[1]
         command_map = {
             'test': run_unittest_cli,
-            'tox': run_nox,
+            'nox': run_nox,
             'coverage': run_coverage,
         }
         if real_func := command_map.get(command):

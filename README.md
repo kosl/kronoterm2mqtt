@@ -40,34 +40,49 @@ Clone the sources and just call the CLI to create a Python Virtualenv, e.g.:
 ~/kronoterm2mqtt$ ./cli.py --help
 ```
 The output of `./cli.py --help` looks like:
+[comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
+```
+usage: ./cli.py [-h]
+                {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,
+systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,update-readme-history,version}
 
-```sh
-kronoterm2mqtt v0.1.8 bed9746 (/home/leon/kronoterm2mqtt)
-                                                                                            
- Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...                                                
-                                                                                            
-╭─ Options ────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                  │
-╰──────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Commands ───────────────────────────────────────────────────────────────────────────────╮
-│ edit-settings         Edit the settings file. On first call: Create the default one.     │
-│ print-registers       Print RAW modbus register data                                     │
-│ print-settings        Display (anonymized) MQTT server username and password             │
-│ print-values          Print all values from the definition                               │
-│ probe-usb-ports       Probe through the USB ports and print the values from definition   │
-│ publish-loop          Publish KRONOTERM registers to Home Assistant MQTT                 │
-│ systemd-debug         Print Systemd service template + context + rendered file content.  │
-│ systemd-remove        Remove Systemd service file. (May need sudo)                       │
-│ systemd-setup         Write Systemd service file, enable it and (re-)start the service.  │
-│                       (May need sudo)                                                    │
-│ systemd-status        Display status of systemd service. (May need sudo)                 │
-│ systemd-stop          Stops the systemd service. (May need sudo)                         │
-│ test-mqtt-connection  Test connection to MQTT Server                                     │
-│ version               Print version and exit                                             │
-╰──────────────────────────────────────────────────────────────────────────────────────────╯
-                                                                                            
- Project Homepage: https://github.com/kosl/kronoterm2mqtt
- ```
+
+
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help        show this help message and exit                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,systemd-remo │
+│ ve,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,update-readme-history,version}                   │
+│     edit-settings                                                                                                  │
+│                   Edit the settings file. On first call: Create the default one.                                   │
+│     print-registers                                                                                                │
+│                   Print RAW modbus register data                                                                   │
+│     print-settings                                                                                                 │
+│                   Display (anonymized) MQTT server username and password                                           │
+│     print-values  Print all values from the definition                                                             │
+│     probe-usb-ports                                                                                                │
+│                   Probe through the USB ports and print the values from definition                                 │
+│     publish-loop  Publish KRONOTERM registers to Home Assistant MQTT                                               │
+│     systemd-debug                                                                                                  │
+│                   Print Systemd service template + context + rendered file content.                                │
+│     systemd-remove                                                                                                 │
+│                   Remove Systemd service file. (May need sudo)                                                     │
+│     systemd-setup                                                                                                  │
+│                   Write Systemd service file, enable it and (re-)start the service. (May need sudo)                │
+│     systemd-status                                                                                                 │
+│                   Display status of systemd service. (May need sudo)                                               │
+│     systemd-stop  Stops the systemd service. (May need sudo)                                                       │
+│     test-mqtt-connection                                                                                           │
+│                   Test connection to MQTT Server                                                                   │
+│     update-readme-history                                                                                          │
+│                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
+│                   README.md was updated otherwise with 0. Also, callable via e.g.:                                 │
+│                       python -m cli_base update-readme-history -v                                                  │
+│     version       Print version and exit                                                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
 
 ## Setup
 
@@ -267,12 +282,67 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 - [ ] Upgrade [ha-services](https://github.com/jedie/ha-services) with `number` component allowing change of some numeric parameters (set temperatures, etc.).
 - [ ] Display the heat pump state using ThermIQ as an example.
 
+# dev CLI
+
+[comment]: <> (✂✂✂ auto generated dev help start ✂✂✂)
+```
+usage: ./dev-cli.py [-h]
+                    {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firm
+ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update
+-test-snapshot-files,version}
+
+
+
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help        show this help message and exit                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,fir │
+│ mware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapsh │
+│ ot-files,version}                                                                                                  │
+│     check-code-style                                                                                               │
+│                   Check code style by calling darker + flake8                                                      │
+│     coverage      Run tests and show coverage report.                                                              │
+│     expander-loop                                                                                                  │
+│                   Runs Custom expander control of a solar pump                                                     │
+│     expander-motors                                                                                                │
+│                   Rotates all 4 motors by closing (counterclockwise) or opening (clockwise) for 120 seconds        │
+│     expander-relay                                                                                                 │
+│                   Switches on or off selected relay                                                                │
+│     expander-temperatures                                                                                          │
+│                   Print temperatures read from Custom expander                                                     │
+│     firmware-compile                                                                                               │
+│                   Compiles firmware for Etera GPIO expander with PlatformIO compiler                               │
+│     firmware-flash                                                                                                 │
+│                   Flashes compiled firmware to Etera GPIO expander                                                 │
+│     fix-code-style                                                                                                 │
+│                   Fix code style of all cli_base source code files via darker                                      │
+│     install       Install requirements and 'kronoterm2mqtt' via pip as editable.                                   │
+│     mypy          Run Mypy (configured in pyproject.toml)                                                          │
+│     nox           Run nox                                                                                          │
+│     pip-audit     Run pip-audit check against current requirements files                                           │
+│     publish       Build and upload this project to PyPi                                                            │
+│     test          Run unittests                                                                                    │
+│     update        Update "requirements*.txt" dependencies files                                                    │
+│     update-readme-history                                                                                          │
+│                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
+│                   README.md was updated otherwise with 0. Also, callable via e.g.:                                 │
+│                       python -m cli_base update-readme-history -v                                                  │
+│     update-test-snapshot-files                                                                                     │
+│                   Update all test snapshot files (by remove and recreate all snapshot files)                       │
+│     version       Print version and exit                                                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated dev help end ✂✂✂)
+
 
 # History
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-05 - Change safety to pip-audit
+  * 2025-06-04 - Update README
   * 2025-06-04 - Default fixes for expander
   * 2025-06-04 - Update history
   * 2025-06-04 - Update for history
