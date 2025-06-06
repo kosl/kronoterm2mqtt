@@ -44,7 +44,7 @@ The output of `./cli.py --help` looks like:
 ```
 usage: ./cli.py [-h]
                 {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,
-systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,update-readme-history,version}
+systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,version}
 
 
 
@@ -53,7 +53,7 @@ systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,up
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,systemd-remo │
-│ ve,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,update-readme-history,version}                   │
+│ ve,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,version}                                         │
 │     edit-settings                                                                                                  │
 │                   Edit the settings file. On first call: Create the default one.                                   │
 │     print-registers                                                                                                │
@@ -75,10 +75,6 @@ systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,up
 │     systemd-stop  Stops the systemd service. (May need sudo)                                                       │
 │     test-mqtt-connection                                                                                           │
 │                   Test connection to MQTT Server                                                                   │
-│     update-readme-history                                                                                          │
-│                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
-│                   README.md was updated otherwise with 0. Also, callable via e.g.:                                 │
-│                       python -m cli_base update-readme-history -v                                                  │
 │     version       Print version and exit                                                                           │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
@@ -288,8 +284,8 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 ```
 usage: ./dev-cli.py [-h]
                     {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firm
-ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-test-snapshot-files,v
-ersion}
+ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update
+-test-snapshot-files,version}
 
 
 
@@ -298,7 +294,8 @@ ersion}
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,fir │
-│ mware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-test-snapshot-files,version}      │
+│ mware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapsh │
+│ ot-files,version}                                                                                                  │
 │     check-code-style                                                                                               │
 │                   Check code style by calling darker + flake8                                                      │
 │     coverage      Run tests and show coverage report.                                                              │
@@ -323,6 +320,10 @@ ersion}
 │     publish       Build and upload this project to PyPi                                                            │
 │     test          Run unittests                                                                                    │
 │     update        Update "requirements*.txt" dependencies files                                                    │
+│     update-readme-history                                                                                          │
+│                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
+│                   README.md was updated otherwise with 0. Also, callable via e.g.:                                 │
+│                       python -m cli_base update-readme-history -v                                                  │
 │     update-test-snapshot-files                                                                                     │
 │                   Update all test snapshot files (by remove and recreate all snapshot files)                       │
 │     version       Print version and exit                                                                           │
@@ -336,6 +337,7 @@ ersion}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-06 - Update README
   * 2025-06-06 - Move readme history back to cli_app
   * 2025-06-06 - Limit ha-services to 2.9.0 due to switches callback problems
   * 2025-06-05 - Further code style fixes
@@ -343,7 +345,6 @@ ersion}
   * 2025-06-05 - Applied .venv/bin/autopep8 --in-place --aggressive --max-line-length=119
   * 2025-06-05 - Fix code style
   * 2025-06-05 - Change safety to pip-audit
-  * 2025-06-04 - Update README
   * 2025-06-04 - Default fixes for expander
   * 2025-06-04 - Update history
   * 2025-06-04 - Update for history

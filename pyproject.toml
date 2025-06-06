@@ -96,7 +96,7 @@ lines_after_imports=2
 branch = true
 parallel = true
 concurrency = ["multiprocessing"]
-source = ['.']
+source = ['kronoterm2mqtt']
 command_line = '-m unittest --verbose --locals --buffer'
 
 [tool.coverage.report]
@@ -110,8 +110,6 @@ exclude_lines = [
     'raise NotImplementedError',
     'if __name__ == .__main__.:',
 ]
-
-
 
 [tool.mypy]
 warn_unused_configs = true

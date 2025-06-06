@@ -30,7 +30,7 @@ class ReadmeTestCase(BaseTestCase):
             got=stdout,
             parts=(
                 'usage: ./cli.py [-h]',
-                ' update-readme-history ',
+                ' publish-loop ',
                 constants.CLI_EPILOG,
             ),
         )
@@ -45,6 +45,7 @@ class ReadmeTestCase(BaseTestCase):
                 'usage: ./dev-cli.py [-h]',
                 ' check-code-style ',
                 ' coverage ',
+                ' update-readme-history ',
                 constants.CLI_EPILOG,
             ),
         )
