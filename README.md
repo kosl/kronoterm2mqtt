@@ -40,6 +40,7 @@ Clone the sources and just call the CLI to create a Python Virtualenv, e.g.:
 ~/kronoterm2mqtt$ ./cli.py --help
 ```
 The output of `./cli.py --help` looks like:
+
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
 ```
 usage: ./cli.py [-h]
@@ -337,6 +338,7 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-06 - Add release 1.11
   * 2025-06-06 - pip-tools -> uv (#6)
   * 2025-05-10 - Update print-temperatures.py
   * 2025-04-09 - Convert value to signed integer when printing
