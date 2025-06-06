@@ -649,7 +649,7 @@ wheels = [
 
 [[package]]
 name = "ha-services"
-version = "2.10.0"
+version = "2.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cli-base-utilities" },
@@ -661,9 +661,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "tyro" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/88/42/812aa0b25a762a3e51f9bbb828b89bcfb858d158f5c196f33e0ad346b0d8/ha_services-2.10.0.tar.gz", hash = "sha256:95af13ab268a2897ce2e8094239827a97180f0ac9c4d2ab7d1f8f9782a51bf6f", size = 93053, upload-time = "2025-04-09T15:04:32.909Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/36/37/3f9c8003f10d307da9fa9429c0be0d838cf6f3f3707704bb75ce935c5794/ha_services-2.9.0.tar.gz", hash = "sha256:ac724753579e02d6d97fd847628600b5e9b0577c993098d05fd8310d57ef911d", size = 90835, upload-time = "2025-04-08T17:55:32.966Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/42/31/7944ec03ad94f1cdf713a3fe7638bd1cad0ed23e5d2ed11702f9692de23b/ha_services-2.10.0-py3-none-any.whl", hash = "sha256:7ae0a50cb154ea0ec96ad6f8ade43146232e9d2d5408e1944811b3a80097e16d", size = 51235, upload-time = "2025-04-09T15:04:31.177Z" },
+    { url = "https://files.pythonhosted.org/packages/f9/96/e79f742ae5efe0fdb6da67ff4f5fd02bf87f4761f5d68f78960497159acb/ha_services-2.9.0-py3-none-any.whl", hash = "sha256:81a9db7f25e74f89d40c50005e0071f92e21215252caed065ecab8a613d29677", size = 48095, upload-time = "2025-04-08T17:55:31.171Z" },
 ]
 
 [[package]]
@@ -832,7 +832,7 @@ dev = [
 requires-dist = [
     { name = "bx-py-utils" },
     { name = "cli-base-utilities" },
-    { name = "ha-services" },
+    { name = "ha-services", specifier = "<=2.9.0" },
     { name = "pymodbus", extras = ["serial"], specifier = ">=3.8.0" },
     { name = "rich" },
     { name = "tyro" },
