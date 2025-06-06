@@ -337,22 +337,8 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
-  * 2025-06-06 - Update README
-  * 2025-06-06 - Move readme history back to cli_app
-  * 2025-06-06 - Limit ha-services to 2.9.0 due to switches callback problems
-  * 2025-06-05 - Further code style fixes
-  * 2025-06-05 - Code style fixes reported by flake8
-  * 2025-06-05 - Applied .venv/bin/autopep8 --in-place --aggressive --max-line-length=119
-  * 2025-06-05 - Fix code style
-  * 2025-06-05 - Change safety to pip-audit
-  * 2025-06-04 - Default fixes for expander
-  * 2025-06-04 - Update history
-  * 2025-06-04 - Update for history
-  * 2025-06-04 - cli_dev pip->uv
-  * 2025-06-03 - Add update README history command
-  * 2025-06-03 - pip -> uv for cli_app
+  * 2025-06-06 - pip-tools -> uv (#6)
   * 2025-05-10 - Update print-temperatures.py
-  * 2025-04-18 - pip->uv
   * 2025-04-09 - Convert value to signed integer when printing
   * 2025-04-08 - Test for DS1820 parasitic or external power at start start
   * 2025-04-08 - Upgrade to latest pymodbus and other vulnerable libraries
