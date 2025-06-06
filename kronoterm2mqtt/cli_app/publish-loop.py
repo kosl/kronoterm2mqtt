@@ -1,31 +1,23 @@
 import asyncio
+import logging
 import time
 
-import rich_click as click
-from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+from cli_base.cli_tools.verbosity import setup_logging
+from cli_base.tyro_commands import TyroVerbosityArgType
+from ha_services.mqtt4homeassistant.data_classes import MqttSettings
+from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from rich import print  # noqa
 
-import kronoterm2mqtt
-from kronoterm2mqtt.cli_app import cli
+from kronoterm2mqtt.cli_app import app
 from kronoterm2mqtt.mqtt_handler import KronotermMqttHandler
 from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
-from ha_services.mqtt4homeassistant.mqtt import get_connected_client
-import logging
-
-from ha_services.mqtt4homeassistant.components.sensor import Sensor
-from ha_services.mqtt4homeassistant.device import MainMqttDevice, MqttDevice
-from ha_services.mqtt4homeassistant.mqtt import get_connected_client
-
-import kronoterm2mqtt
-from kronoterm2mqtt.user_settings import UserSettings
 
 
 logger = logging.getLogger(__name__)
 
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def test_mqtt_connection(verbosity: int):
+@app.command
+def test_mqtt_connection(verbosity: TyroVerbosityArgType):
     """
     Test connection to MQTT Server
     """
@@ -40,9 +32,8 @@ def test_mqtt_connection(verbosity: int):
     print('\n[green]Test succeed[/green], bye ;)')
 
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def publish_loop(verbosity: int):
+@app.command
+def publish_loop(verbosity: TyroVerbosityArgType):
     """
     Publish KRONOTERM registers to Home Assistant MQTT
     """

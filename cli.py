@@ -8,6 +8,7 @@
 """
 
 import hashlib
+import os
 import shlex
 import subprocess
 import sys
@@ -41,18 +42,18 @@ if sys.platform == 'win32':  # wtf
     BIN_NAME = 'Scripts'
     FILE_EXT = '.exe'
 else:
-    # Files under Linux/Mac and all other than Windows, e.g.: .../.venv/bin/python
+    # Files under Linux/Mac and all other than Windows, e.g.: .../.venv/bin/python3
     BIN_NAME = 'bin'
     FILE_EXT = ''
 
 BASE_PATH = Path(__file__).parent
 VENV_PATH = BASE_PATH / '.venv-app'
 BIN_PATH = VENV_PATH / BIN_NAME
-PYTHON_PATH = BIN_PATH / f'python{FILE_EXT}'
+PYTHON_PATH = BIN_PATH / f'python3{FILE_EXT}'
 PIP_PATH = BIN_PATH / f'pip{FILE_EXT}'
-PIP_SYNC_PATH = BIN_PATH / f'pip-sync{FILE_EXT}'
+UV_PATH = BIN_PATH / f'uv{FILE_EXT}'
 
-DEP_LOCK_PATH = BASE_PATH / 'requirements.txt'
+DEP_LOCK_PATH = BASE_PATH / 'uv.lock'
 DEP_HASH_PATH = VENV_PATH / '.dep_hash'
 
 # script file defined in pyproject.toml as [console_scripts]
@@ -87,19 +88,22 @@ def main(argv):
 
     # Create virtual env in ".venv/":
     if not PYTHON_PATH.is_file():
-        print('Create virtual env here:', VENV_PATH.absolute())
+        print(f'Create virtual env here: {VENV_PATH.absolute()}')
         builder = venv.EnvBuilder(symlinks=True, upgrade=True, with_pip=True)
         builder.create(env_dir=VENV_PATH)
+
+    # Set environment variable for uv to use '.venv-app' as project environment:
+    os.environ['UV_PROJECT_ENVIRONMENT'] = str(VENV_PATH.absolute())
+
+    if not PROJECT_SHELL_SCRIPT.is_file() or not venv_up2date():
         # Update pip
         verbose_check_call(PYTHON_PATH, '-m', 'pip', 'install', '-U', 'pip')
 
-    if not PIP_SYNC_PATH.is_file():
-        # Install pip-tools
-        verbose_check_call(PYTHON_PATH, '-m', 'pip', 'install', '-U', 'pip-tools')
+        # Install uv
+        verbose_check_call(PYTHON_PATH, '-m', 'pip', 'install', '-U', 'uv')
 
-    if not PROJECT_SHELL_SCRIPT.is_file() or not venv_up2date():
-        # install requirements via "pip-sync"
-        verbose_check_call(PIP_SYNC_PATH, str(DEP_LOCK_PATH))
+        # install requirements
+        verbose_check_call(UV_PATH, 'sync', '--frozen', '--no-dev')
 
         # install project
         verbose_check_call(PIP_PATH, 'install', '--no-deps', '-e', '.')
@@ -111,7 +115,8 @@ def main(argv):
     except subprocess.CalledProcessError as err:
         sys.exit(err.returncode)
     except KeyboardInterrupt:
-        pass
+        print('Bye!')
+        sys.exit(130)
 
 
 if __name__ == '__main__':

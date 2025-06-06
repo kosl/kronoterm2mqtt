@@ -9,20 +9,21 @@ authors = [
 ]
 requires-python = ">=3.11, <4"
 dependencies = [
-    "ha-services",  # https://github.com/jedie/ha-services
+    "ha-services <= 2.9.0",  # https://github.com/jedie/ha-services
     "cli-base-utilities",  # https://github.com/jedie/cli-base-utilities
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
-    "click",  # https://github.com/pallets/click/
-    "rich-click",  # https://github.com/ewels/rich-click
-    "rich",  # https://github.com/Textualize/rich
+    "tyro",  # https://github.com/brentyi/tyro # https://github.com/brentyi/tyro
+    "rich",  # https://github.com/Textualize/rich # https://github.com/Textualize/rich
     "pymodbus[serial] >= 3.8.0",  # https://github.com/pymodbus-dev/pymodbus/
 ]
-[project.optional-dependencies]
+
+[dependency-groups]
 dev = [
     "manageprojects",  # https://github.com/jedie/manageprojects
     "urllib3", # for bx_py_utils.test_utils.deny_requests.deny_any_real_request() in tests
-    "pip-tools",  # https://github.com/jazzband/pip-tools/
-    "tox",  # https://github.com/tox-dev/tox
+    "uv",  # https://github.com/astral-sh/uv
+    "setuptools",  # https://github.com/pypa/setuptools
+    "nox",  # https://github.com/wntrblm/nox
     "coverage",  # https://github.com/nedbat/coveragepy
     "autopep8",  # https://github.com/hhatto/autopep8
     "pyupgrade",  # https://github.com/asottile/pyupgrade
@@ -31,29 +32,17 @@ dev = [
     "pyflakes",  # https://github.com/PyCQA/pyflakes
     "codespell",  # https://github.com/codespell-project/codespell
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
-    "safety",  # https://github.com/pyupio/safety
+    "pip-audit",  # https://github.com/pypa/pip-audit
     "mypy",  # https://github.com/python/mypy
     "twine",  # https://github.com/pypa/twine
+    "pre-commit",  # https://github.com/pre-commit/pre-commit
     "typeguard",  # https://github.com/agronholm/typeguard/
     "platformio", # https://github.com/platformio/platformio-core
-
-    # https://github.com/akaihola/darker
-    # https://github.com/ikamensh/flynt
-    # https://github.com/pycqa/isort
-    # https://github.com/pygments/pygments
     "darker[flynt, isort, color]",
-
-    #"tomli",  # https://github.com/hukkin/tomli
-    #
-    # tomli only needed for Python <3.11, but see pip bug:
-    # https://github.com/pypa/pip/issues/9644 / https://github.com/jazzband/pip-tools/issues/1866
-    #'tomli;python_version<"3.11"',  # https://github.com/hukkin/tomli
 ]
 
 [project.urls]
 Documentation = "https://github.com/kosl/kronoterm2mqtt"
-
-
 Source = "https://github.com/kosl/kronoterm2mqtt"
 
 [project.scripts]
@@ -71,6 +60,14 @@ include = ["kronoterm2mqtt*"]
 [tool.setuptools.dynamic]
 version = {attr = "kronoterm2mqtt.__version__"}
 
+[tool.cli_base.pip_audit]
+requirements=["requirements.dev.txt"]
+strict=true
+require_hashes=true
+ignore-vuln=[]
+
+[tool.cli_base]
+version_module_name = "kronoterm2mqtt"  # Used by "update-readme-history" git hook
 
 [tool.darker]
 src = ['kronoterm2mqtt']
@@ -82,9 +79,6 @@ diff = false
 check = false
 stdout = false
 isort = true
-lint = [
-    "flake8",
-]
 log_level = "INFO"
 
 
@@ -102,7 +96,7 @@ lines_after_imports=2
 branch = true
 parallel = true
 concurrency = ["multiprocessing"]
-source = ['.']
+source = ['kronoterm2mqtt']
 command_line = '-m unittest --verbose --locals --buffer'
 
 [tool.coverage.report]
@@ -117,25 +111,6 @@ exclude_lines = [
     'if __name__ == .__main__.:',
 ]
 
-
-[tool.tox]  # https://tox.wiki/en/latest/config.html#pyproject-toml
-legacy_tox_ini = """
-[tox]
-isolated_build = True
-envlist = py{312,311}
-skip_missing_interpreters = True
-
-[testenv]
-passenv = *
-skip_install = true
-commands_pre =
-    pip install -U pip-tools
-    pip-sync requirements.dev.txt
-commands =
-    {envpython} -m coverage run --context='{envname}'
-"""
-
-
 [tool.mypy]
 warn_unused_configs = true
 ignore_missing_imports = true
@@ -149,19 +124,16 @@ exclude = ['.venv', 'tests']
 initial_revision = "765b8fb"
 initial_date = 2024-03-12T09:08:01+01:00
 cookiecutter_template = "https://github.com/jedie/cookiecutter_templates/"
-cookiecutter_directory = "piptools-python"
+cookiecutter_directory = "uv-python"
 
 [manageprojects.cookiecutter_context.cookiecutter]
 full_name = "Leon Kos"
 github_username = "kosl"
 author_email = "leon.kos@lecad.fs.uni-lj.si"
 package_name = "kronoterm2mqtt"
-package_version = "0.1.10"
+package_version = "0.1.11"
 package_description = "Sends MQTT events from KRONOTERM device"
 package_url = "https://github.com/kosl/kronoterm2mqtt"
 issues_url = "https://github.com/kosl/kronoterm2mqtt/issues"
 license = "GPL-3.0-or-later"
 _template = "https://github.com/kosl/cookiecutter_templates/"
-
-[tool.cli_base]
-        version_module_name = "kronoterm2mqtt"

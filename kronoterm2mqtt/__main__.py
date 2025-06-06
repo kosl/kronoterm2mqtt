@@ -3,7 +3,6 @@
     through `python -m kronoterm2mqtt`.
 """
 
-
 from kronoterm2mqtt.cli_app import main
 
 

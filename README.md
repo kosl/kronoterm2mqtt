@@ -40,34 +40,45 @@ Clone the sources and just call the CLI to create a Python Virtualenv, e.g.:
 ~/kronoterm2mqtt$ ./cli.py --help
 ```
 The output of `./cli.py --help` looks like:
+[comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
+```
+usage: ./cli.py [-h]
+                {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,
+systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,version}
 
-```sh
-kronoterm2mqtt v0.1.8 bed9746 (/home/leon/kronoterm2mqtt)
-                                                                                            
- Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...                                                
-                                                                                            
-╭─ Options ────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                  │
-╰──────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Commands ───────────────────────────────────────────────────────────────────────────────╮
-│ edit-settings         Edit the settings file. On first call: Create the default one.     │
-│ print-registers       Print RAW modbus register data                                     │
-│ print-settings        Display (anonymized) MQTT server username and password             │
-│ print-values          Print all values from the definition                               │
-│ probe-usb-ports       Probe through the USB ports and print the values from definition   │
-│ publish-loop          Publish KRONOTERM registers to Home Assistant MQTT                 │
-│ systemd-debug         Print Systemd service template + context + rendered file content.  │
-│ systemd-remove        Remove Systemd service file. (May need sudo)                       │
-│ systemd-setup         Write Systemd service file, enable it and (re-)start the service.  │
-│                       (May need sudo)                                                    │
-│ systemd-status        Display status of systemd service. (May need sudo)                 │
-│ systemd-stop          Stops the systemd service. (May need sudo)                         │
-│ test-mqtt-connection  Test connection to MQTT Server                                     │
-│ version               Print version and exit                                             │
-╰──────────────────────────────────────────────────────────────────────────────────────────╯
-                                                                                            
- Project Homepage: https://github.com/kosl/kronoterm2mqtt
- ```
+
+
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help        show this help message and exit                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,systemd-remo │
+│ ve,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,version}                                         │
+│     edit-settings                                                                                                  │
+│                   Edit the settings file. On first call: Create the default one.                                   │
+│     print-registers                                                                                                │
+│                   Print RAW modbus register data                                                                   │
+│     print-settings                                                                                                 │
+│                   Display (anonymized) MQTT server username and password                                           │
+│     print-values  Print all values from the definition                                                             │
+│     probe-usb-ports                                                                                                │
+│                   Probe through the USB ports and print the values from definition                                 │
+│     publish-loop  Publish KRONOTERM registers to Home Assistant MQTT                                               │
+│     systemd-debug                                                                                                  │
+│                   Print Systemd service template + context + rendered file content.                                │
+│     systemd-remove                                                                                                 │
+│                   Remove Systemd service file. (May need sudo)                                                     │
+│     systemd-setup                                                                                                  │
+│                   Write Systemd service file, enable it and (re-)start the service. (May need sudo)                │
+│     systemd-status                                                                                                 │
+│                   Display status of systemd service. (May need sudo)                                               │
+│     systemd-stop  Stops the systemd service. (May need sudo)                                                       │
+│     test-mqtt-connection                                                                                           │
+│                   Test connection to MQTT Server                                                                   │
+│     version       Print version and exit                                                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
 
 ## Setup
 
@@ -266,6 +277,204 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 - [x] `binary_sensor` to decode binary statuses in `enum` like manner combined. For example error messages or "additional activations".
 - [ ] Upgrade [ha-services](https://github.com/jedie/ha-services) with `number` component allowing change of some numeric parameters (set temperatures, etc.).
 - [ ] Display the heat pump state using ThermIQ as an example.
+
+# dev CLI
+
+[comment]: <> (✂✂✂ auto generated dev help start ✂✂✂)
+```
+usage: ./dev-cli.py [-h]
+                    {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firm
+ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update
+-test-snapshot-files,version}
+
+
+
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help        show this help message and exit                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,fir │
+│ mware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapsh │
+│ ot-files,version}                                                                                                  │
+│     check-code-style                                                                                               │
+│                   Check code style by calling darker + flake8                                                      │
+│     coverage      Run tests and show coverage report.                                                              │
+│     expander-loop                                                                                                  │
+│                   Runs Custom expander control of a solar pump                                                     │
+│     expander-motors                                                                                                │
+│                   Rotates all 4 motors by closing (counterclockwise) or opening (clockwise) for 120 seconds        │
+│     expander-relay                                                                                                 │
+│                   Switches on or off selected relay                                                                │
+│     expander-temperatures                                                                                          │
+│                   Print temperatures read from Custom expander                                                     │
+│     firmware-compile                                                                                               │
+│                   Compiles firmware for Etera GPIO expander with PlatformIO compiler                               │
+│     firmware-flash                                                                                                 │
+│                   Flashes compiled firmware to Etera GPIO expander                                                 │
+│     fix-code-style                                                                                                 │
+│                   Fix code style of all cli_base source code files via darker                                      │
+│     install       Install requirements and 'kronoterm2mqtt' via pip as editable.                                   │
+│     mypy          Run Mypy (configured in pyproject.toml)                                                          │
+│     nox           Run nox                                                                                          │
+│     pip-audit     Run pip-audit check against current requirements files                                           │
+│     publish       Build and upload this project to PyPi                                                            │
+│     test          Run unittests                                                                                    │
+│     update        Update "requirements*.txt" dependencies files                                                    │
+│     update-readme-history                                                                                          │
+│                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
+│                   README.md was updated otherwise with 0. Also, callable via e.g.:                                 │
+│                       python -m cli_base update-readme-history -v                                                  │
+│     update-test-snapshot-files                                                                                     │
+│                   Update all test snapshot files (by remove and recreate all snapshot files)                       │
+│     version       Print version and exit                                                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated dev help end ✂✂✂)
+
+
+# History
+
+[comment]: <> (✂✂✂ auto generated history start ✂✂✂)
+
+* [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-06 - Update README
+  * 2025-06-06 - Move readme history back to cli_app
+  * 2025-06-06 - Limit ha-services to 2.9.0 due to switches callback problems
+  * 2025-06-05 - Further code style fixes
+  * 2025-06-05 - Code style fixes reported by flake8
+  * 2025-06-05 - Applied .venv/bin/autopep8 --in-place --aggressive --max-line-length=119
+  * 2025-06-05 - Fix code style
+  * 2025-06-05 - Change safety to pip-audit
+  * 2025-06-04 - Default fixes for expander
+  * 2025-06-04 - Update history
+  * 2025-06-04 - Update for history
+  * 2025-06-04 - cli_dev pip->uv
+  * 2025-06-03 - Add update README history command
+  * 2025-06-03 - pip -> uv for cli_app
+  * 2025-05-10 - Update print-temperatures.py
+  * 2025-04-18 - pip->uv
+  * 2025-04-09 - Convert value to signed integer when printing
+  * 2025-04-08 - Test for DS1820 parasitic or external power at start start
+  * 2025-04-08 - Upgrade to latest pymodbus and other vulnerable libraries
+  * 2025-04-08 - Align with updated firmware
+  * 2024-12-16 - Fix standby mode for loops
+  * 2024-12-16 - Protect solar collectors agains freezing below -13.45 degrees
+  * 2024-12-16 - feat(expander): Add standby working mode
+  * 2024-11-29 - Temporarily disable intertank logics
+  * 2024-11-28 - feat(expander): Implement expedited heating
+  * 2024-11-28 - refactor(expander): Convert heating loop on/off switch to multi-state working function select
+  * 2024-11-17 - Fix parenthesis typo
+* [v0.1.10](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.9...v0.1.10)
+  * 2024-11-15 - Add Downloads counter fix
+  * 2024-11-15 - Add Downloads counter
+  * 2024-11-15 - Revise python versions
+  * 2024-11-15 - Negative scale handled by signed int conversion
+  * 2024-11-15 - Upgrade and ignore starlette safety issues
+  * 2024-11-15 - Handle all Modbus values as 16 bit signed integers to address negative temperatures
+  * 2024-11-10 - Disabling solar collectors in settings now works with service restart
+* [v0.1.9](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.8...v0.1.9)
+  * 2024-11-08 - Tune expander default for mix-valve control and upgrade virtualenv due to vulnerability ID: 73456
+  * 2024-10-21 - Minor typos
+  * 2024-10-19 - Add dashboard example with apexcharts cards
+  * 2024-10-18 - Add WPG pump TOML example in Slovenian. Contributed by lukapple80
+  * 2024-10-16 - Move settings outside exception loop
+  * 2024-10-16 - Fix unused motor usage Motor #3 close invalid list index out of range
+  * 2024-10-12 - Retry loop after 10 seconds in case of error
+  * 2024-10-11 - WPG TEX pinout added
+  * 2024-10-09 - Add mixing valves sensors
+  * 2024-10-07 - Loop should be continued for all
+  * 2024-10-07 - Close slightly the mixing valve already at the beginning of heating only
+  * 2024-10-07 - Fix issue  Wrong operator used when calculating solar tank and dhw tank temperature delta #1
+  * 2024-09-28 - Swap sensors for Pritličje and Mansarda
+  * 2024-09-28 - Swap sensors for Nadgaražje and Mansarda
+  * 2024-09-27 - Add bitrate and sensor notes
+  * 2024-09-27 - Add WPG-10-K2_HT and Expander updates
+  * 2024-09-27 - Add WPG-10-K2_HT photos and screens provided by Lukapple80
+  * 2024-08-23 - Allow empty unit of measutement
+  * 2024-08-23 - Add context manager to rescue from unexpected crashes by closing the UARTs before restart in a main loop
+  * 2024-08-23 - update_sensors() is not needed fort clarity
+  * 2024-08-19 - Rather use time.monotonic() to measure elapsed time difference
+  * 2024-08-19 - Prefix main_uid to avoid conflicts with other ha_services
+  * 2024-08-16 - Do not clear LSB for other sensors
+  * 2024-08-13 - Udate minimum CLI requirements
+  * 2024-08-13 - systemd-status fix
+  * 2024-08-13 - systemd-setup does everything
+  * 2024-08-13 - Add 0.1.8 MQTT screenshot
+  * 2024-08-13 - Images inline
+* [v0.1.8](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.7...v0.1.8)
+  * 2024-08-13 - Increase precission read of DS1820 to 1/128 degree Celsius
+  * 2024-08-13 - Update to latest requirements
+  * 2024-08-13 - Add intra-tank circulation
+  * 2024-08-13 - Complete mixing valve motor control
+  * 2024-08-12 - When moving with override the previous task raises exception which is normal
+  * 2024-08-12 - Recursively clone
+  * 2024-08-10 - Symlink pyetera_uart_bridge
+  * 2024-08-09 - Create event loop without awaiting https://stackoverflow.com/questions/56318648/how-to-run-an-asyncio-task-without-awaiting
+  * 2024-08-09 - Pass Loop 1 ECO mode offset and state to expander
+  * 2024-08-09 - Add negative scaling sensors
+  * 2024-08-09 - Add HP load as battery percentage
+  * 2024-08-09 - Add expander loop switches
+  * 2024-08-09 - Prepare heat pump values for use in expander
+  * 2024-08-09 - Add hardware wiring test
+
+<details><summary>Expand older history entries ...</summary>
+
+* [v0.1.7](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.6...v0.1.7)
+  * 2024-08-08 - Add Alternative source switch and bit sensor
+  * 2024-08-08 - Add Alternative source switch
+* [v0.1.6](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.5...v0.1.6)
+  * 2024-08-08 - Fix CLI print-values
+* [v0.1.5](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.4...v0.1.5)
+  * 2024-08-08 - Add switch for Circulation of sanitary water
+  * 2024-08-08 - HA screenshot v0.1.5
+  * 2024-08-07 - Add DHW pumps
+  * 2024-08-07 - Add BinarySensor and Enum_sensors
+  * 2024-08-07 - Add tests badge
+* [v0.1.4](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.3...v0.1.4)
+  * 2024-08-07 - Prepare for 0.1.4 release
+* [v0.1.3](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.2...v0.1.3)
+  * 2024-08-07 - Add print values to README
+  * 2024-08-07 - Update deps
+* [v0.1.2](https://github.com/kosl/kronoterm2mqtt/compare/9b1af4c...v0.1.2)
+  * 2024-08-07 - Fix style
+  * 2024-08-07 - Correct loop order according to http://cad.lecad.si/~leon/electronics/thermo/src/ds1820.asm.html
+  * 2024-08-06 - Decode ETERA expander messages
+  * 2024-08-05 - Countdown to verbosity
+  * 2024-08-05 - Add control and bool moodule enable
+  * 2024-08-04 - Add relays to Etera Sensors
+  * 2024-08-03 - When a longer loop command is interrupted the subprocess task unwraps unnecessarily.
+  * 2024-08-03 - Add manual control loop for solar pump
+  * 2024-08-02 - Refrain from bool until https://github.com/jedie/cli-base-utilities/issues/50 is resolved
+  * 2024-08-02 - Fix urls
+  * 2024-08-02 - Upgrade API for pymodbus 3.7.0
+  * 2024-08-02 - Add relays test
+  * 2024-08-01 - Diagnose 1-wire with v1.0.8
+  * 2024-07-31 - Move expander to DEV CLI
+  * 2024-07-31 - Add firmware compile/flash DEV tools
+  * 2024-07-31 - Add exander submodule
+  * 2024-07-31 - Add expander temperatures print
+  * 2024-07-31 - Convert loop to asyncio
+  * 2024-07-29 - Comment out code style check due to timout=300 limit
+  * 2024-07-27 - Add hardware photo
+  * 2024-07-27 - Update README with some basic instructions
+  * 2024-07-26 - Add Home assistant screenshot
+  * 2024-07-26 - Add some undocumented registers
+  * 2024-07-26 - Slugify uid
+  * 2024-07-26 - Add missing device_class to Sensor
+  * 2024-07-26 - Fix typo
+  * 2024-07-26 - Reposition settings
+  * 2024-07-26 - Add sensors to main device
+  * 2024-07-26 - Add custom IO expander board
+  * 2024-07-26 - Add reference
+  * 2024-07-25 - Add Custom module source code
+  * 2024-07-25 - Add ETERA expander module
+  * 2024-07-24 - Initial version
+
+</details>
+
+
+[comment]: <> (✂✂✂ auto generated history end ✂✂✂)
+
 
 ## References
 

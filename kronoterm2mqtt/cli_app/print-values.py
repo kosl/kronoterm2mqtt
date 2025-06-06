@@ -1,9 +1,8 @@
 import logging
 from decimal import Decimal
 
-import rich_click
-import rich_click as click
-from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+from cli_base.cli_tools.verbosity import setup_logging
+from cli_base.tyro_commands import TyroVerbosityArgType
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
 from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
@@ -12,12 +11,12 @@ from rich import print  # noqa; noqa
 from rich.pretty import pprint
 
 from kronoterm2mqtt.api import get_modbus_client
-from kronoterm2mqtt.cli_app import cli
-#from kronoterm2mqtt.probe_usb_ports import print_parameter_values, probe_one_port
+from kronoterm2mqtt.cli_app import app
+from kronoterm2mqtt.constants import MODBUS_SLAVE_ID
+
+# from kronoterm2mqtt.probe_usb_ports import print_parameter_values, probe_one_port
 from kronoterm2mqtt.user_settings import HeatPump, get_user_settings
 
-from kronoterm2mqtt.api import get_modbus_client
-from kronoterm2mqtt.constants import MODBUS_SLAVE_ID
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +31,10 @@ def probe_one_port(heat_pump, definitions, verbosity):
     print_parameter_values(client, parameters, verbosity)
 
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-@click.option('--max-port', default=10, help='Maximum USB port number')
-@click.option('--port-template', default='/dev/ttyUSB{i}', help='USB device path template')
-def probe_usb_ports(verbosity: int, max_port: int, port_template: str):
+@app.command
+# @Click.option('--max-port', default=10, help='Maximum USB port number')
+# @click.option('--port-template', default='/dev/ttyUSB{i}', help='USB device path template')
+def probe_usb_ports(verbosity: TyroVerbosityArgType, max_port: int = 10, port_template: str = '/dev/ttyUSB{i}'):
     """
     Probe through the USB ports and print the values from definition
     """
@@ -57,10 +55,10 @@ def probe_usb_ports(verbosity: int, max_port: int, port_template: str):
             print(f'ERROR: {err}')
 
 
-def print_parameter_values(client, parameters,  verbosity):
+def print_parameter_values(client, parameters, verbosity):
     for parameter in parameters:
         print(f'{parameter["name"]:>30}', end=' ')
-        address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
+        address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
         if verbosity:
             print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
         response = client.read_holding_registers(address=address, count=1, slave=MODBUS_SLAVE_ID)
@@ -69,18 +67,17 @@ def print_parameter_values(client, parameters,  verbosity):
         else:
             assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
             value = response.registers[0]
-            #if count > 1:
+            # if count > 1:
             #    value += response.registers[1] * 65536
 
             scale = Decimal(str(parameter['scale']))
-            value = (value - (value >> 15 << 16)) * scale # Convert value to signed integer
+            value = (value - (value >> 15 << 16)) * scale  # Convert value to signed integer
             print(f'{value} [blue]{parameter.get("unit_of_measurement", "")}')
     print('\n')
 
-            
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def print_values(verbosity: int):
+
+@app.command
+def print_values(verbosity: TyroVerbosityArgType):
     """
     Print all values from the definition
     """
@@ -99,9 +96,8 @@ def print_values(verbosity: int):
     print_parameter_values(client, parameters, verbosity)
 
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def print_registers(verbosity: int):
+@app.command
+def print_registers(verbosity: TyroVerbosityArgType):
     """
     Print RAW modbus register data
     """

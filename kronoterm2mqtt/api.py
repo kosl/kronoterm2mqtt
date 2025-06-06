@@ -1,23 +1,6 @@
-import dataclasses
 import logging
-from decimal import Decimal
-
-from cli_base.systemd.data_classes import BaseSystemdServiceInfo, BaseSystemdServiceTemplateContext
-
-import ha_services
-from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
-from ha_services.mqtt4homeassistant.components.select import Select
-from ha_services.mqtt4homeassistant.components.sensor import Sensor
-from ha_services.mqtt4homeassistant.components.switch import Switch
-from ha_services.mqtt4homeassistant.data_classes import MqttSettings
-from ha_services.mqtt4homeassistant.device import MainMqttDevice, MqttDevice
-from ha_services.mqtt4homeassistant.mqtt import get_connected_client
-
 
 from pymodbus.client import ModbusSerialClient
-from pymodbus.exceptions import ModbusException
-from pymodbus.pdu import ExceptionResponse
-from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
 from rich.pretty import pprint
 
 from kronoterm2mqtt.user_settings import HeatPump

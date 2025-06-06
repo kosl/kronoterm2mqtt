@@ -1,14 +1,14 @@
 import sys
-import rich_click as click
 from pathlib import Path
 
-import kronoterm2mqtt
-from kronoterm2mqtt.cli_dev import PACKAGE_ROOT, cli
-from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
-from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+from cli_base.tyro_commands import TyroVerbosityArgType
 
-@cli.command()
+from kronoterm2mqtt.cli_dev import app
+from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
+
+
+@app.command
 def firmware_compile():
     """
     Compiles firmware for Etera GPIO expander with PlatformIO compiler
@@ -16,11 +16,10 @@ def firmware_compile():
     bin_path = Path(sys.executable).parent
 
     verbose_check_call(bin_path / 'pio', 'run', cwd="etera-uart-bridge/pio-eub-firmware")
-    
 
-@cli.command()
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def firmware_flash(verbosity: int):
+
+@app.command
+def firmware_flash(verbosity: TyroVerbosityArgType):
     """
     Flashes compiled firmware to Etera GPIO expander
     """
@@ -28,6 +27,18 @@ def firmware_flash(verbosity: int):
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
     port = user_settings.custom_expander.port
 
-    verbose_check_call('avrdude', '-v', '-p', 'atmega328p', '-c', 'arduino',
-                       '-P', port, '-b',  '57600', '-D',
-                       '-U', 'flash:w:etera-uart-bridge/pio-eub-firmware/.pio/build/nanoatmega328/firmware.hex:i')
+    verbose_check_call(
+        'avrdude',
+        '-v',
+        '-p',
+        'atmega328p',
+        '-c',
+        'arduino',
+        '-P',
+        port,
+        '-b',
+        '57600',
+        '-D',
+        '-U',
+        'flash:w:etera-uart-bridge/pio-eub-firmware/.pio/build/nanoatmega328/firmware.hex:i',
+    )

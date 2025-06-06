@@ -1,27 +1,24 @@
-import logging
-import time
 import asyncio
 import itertools
-
+import logging
 from decimal import Decimal
-from ha_services.mqtt4homeassistant.components.sensor import Sensor
+
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
+from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.switch import Switch
-from ha_services.mqtt4homeassistant.device import  MqttDevice
+from ha_services.mqtt4homeassistant.device import MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
-
-from kronoterm2mqtt.api import get_modbus_client
-
-import kronoterm2mqtt
-from kronoterm2mqtt.constants import BASE_PATH, DEFAULT_DEVICE_MANUFACTURER, MODBUS_SLAVE_ID
-from kronoterm2mqtt.user_settings import UserSettings, HeatPump
-from kronoterm2mqtt.expander import ExpanderMqttHandler
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
-from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
-from pymodbus.pdu.register_message import WriteSingleRegisterResponse
+from pymodbus.pdu.register_message import ReadHoldingRegistersResponse, WriteSingleRegisterResponse
+
+import kronoterm2mqtt
+from kronoterm2mqtt.api import get_modbus_client
+from kronoterm2mqtt.constants import DEFAULT_DEVICE_MANUFACTURER, MODBUS_SLAVE_ID
+from kronoterm2mqtt.expander import ExpanderMqttHandler
+from kronoterm2mqtt.user_settings import UserSettings
 
 
 logger = logging.getLogger(__name__)
@@ -36,13 +33,17 @@ class KronotermMqttHandler:
         self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
         self.mqtt_client.loop_start()
         self.modbus_client = None
-        self.expander = ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity) if self.user_settings.custom_expander.module_enabled else None
+        self.expander = (
+            ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity)
+            if self.user_settings.custom_expander.module_enabled
+            else None
+        )
         self.main_device = None
         self.sensors = dict()
         self.binary_sensors = dict()
         self.enum_sensors = dict()
         self.address_ranges = list()
-        self.registers  = dict()
+        self.registers = dict()
         self.dhw_circulation_switch: Switch = None
         self.additional_source_switch: Switch = None
 
@@ -58,8 +59,6 @@ class KronotermMqttHandler:
         if self.modbus_client:
             self.modbus_client.close()
 
-
-
     async def init_device(self, event_loop, verbosity: int):
         """
         Create sensors from definitions.toml add it to device for later
@@ -73,21 +72,21 @@ class KronotermMqttHandler:
             sw_version=kronoterm2mqtt.__version__,
             config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
         )
-        
+
         if self.expander is not None:
             await self.expander.init_device(event_loop, self.main_device, verbosity)
 
         definitions = self.heat_pump.get_definitions(verbosity)
-        
+
         parameters = definitions['sensor']
 
         for parameter in parameters:
             if verbosity > 1:
                 print(f'Creating sensor {parameter}')
 
-            address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
+            address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
             scale = parameter['scale']
-            precision = len(str(scale)[str(scale).rfind('.')+1:]) if scale < 1 else 0
+            precision = len(str(scale)[str(scale).rfind('.') + 1 :]) if scale < 1 else 0  # noqa
             self.sensors[address] = (
                 Sensor(
                     device=self.main_device,
@@ -95,7 +94,9 @@ class KronotermMqttHandler:
                     uid=slugify(parameter['name'], '_').lower(),
                     device_class=parameter['device_class'],
                     state_class=parameter['state_class'] if len(parameter['state_class']) else None,
-                    unit_of_measurement=parameter['unit_of_measurement'] if len(parameter['unit_of_measurement']) else None,
+                    unit_of_measurement=(
+                        parameter['unit_of_measurement'] if len(parameter['unit_of_measurement']) else None
+                    ),
                     suggested_display_precision=precision,
                 ),
                 Decimal(str(parameter['scale'])),
@@ -103,7 +104,7 @@ class KronotermMqttHandler:
 
         binary_sensor_definitions = definitions['binary_sensor']
         for parameter in binary_sensor_definitions:
-            address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
+            address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
             self.binary_sensors[address] = (
                 BinarySensor(
                     device=self.main_device,
@@ -115,7 +116,7 @@ class KronotermMqttHandler:
             )
         enum_sensor_definitions = definitions['enum_sensor']
         for parameter in enum_sensor_definitions:
-            address = parameter['register'] - 1 # KRONOTERM MA_numbering is one-based in documentation!
+            address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
             self.enum_sensors[address] = (
                 Sensor(
                     device=self.main_device,
@@ -132,20 +133,19 @@ class KronotermMqttHandler:
             name='Circulation of sanitary water',
             uid='dhw_circulation_switch',
             callback=self.dhw_circulation_callback,
-            )
+        )
         self.additional_source_switch = Switch(
             device=self.main_device,
             name='Additional Source',
             uid='additional_source_switch',
             callback=self.additional_source_callback,
-            )
-            
+        )
 
         # Prepare ranges of registers for faster reads in blocks
         addresses = set(self.sensors.keys())
         addresses = addresses.union(set(self.binary_sensors.keys()))
-        addresses.add(2327) # DHW circulation switch
-        addresses.add(2015) # Additional source switch
+        addresses.add(2327)  # DHW circulation switch
+        addresses.add(2015)  # Additional source switch
         addresses = sorted(addresses.union(set(self.enum_sensors.keys())))
         self.address_ranges = list(self.ranges(list(addresses)))
         if self.verbosity:
@@ -180,16 +180,14 @@ class KronotermMqttHandler:
             assert isinstance(response, WriteSingleRegisterResponse), f'{response=}'
         component.set_state(new_state)
         component.publish_state(client)
-    
-
 
     def ranges(self, i: list) -> list:
         """Prepare intervals of modbus addresses for fetching register groups
         See https://stackoverflow.com/questions/4628333
         """
-        for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
-            b = list(b)
-            yield b[0][1], b[-1][1]
+        for _, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+            b = list(b)  # noqa
+            yield b[0][1], b[-1][1]  # noqa
 
     def read_heat_pump_register_blocks(self):
         """In order to minimize Modbus communication the register
@@ -198,21 +196,22 @@ class KronotermMqttHandler:
         """
         for address_start, address_end in self.address_ranges:
             count = address_end - address_start + 1
-            response = self.modbus_client.read_holding_registers(address=address_start, count=count, slave=MODBUS_SLAVE_ID)
+            response = self.modbus_client.read_holding_registers(
+                address=address_start, count=count, slave=MODBUS_SLAVE_ID
+            )
             if isinstance(response, (ExceptionResponse, ModbusIOException)):
                 logger.error(f'Error: {response}')
             else:
                 assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
                 for i in range(count):
                     value = response.registers[i]
-                    self.registers[address_start+i] = value - (value >> 15 << 16) # Convert value to signed integer
+                    self.registers[address_start + i] = value - (value >> 15 << 16)  # Convert value to signed integer
         if self.verbosity:
             print(f"Registers: {self.registers}")
 
-        
     async def publish_loop(self):
 
-        #setup_logging(verbosity=verbosity)
+        # setup_logging(verbosity=verbosity)
 
         definitions = self.heat_pump.get_definitions(self.verbosity)
 
@@ -221,20 +220,19 @@ class KronotermMqttHandler:
         logger.info(f'Publishing Home Assistant MQTT discovery for {self.device_name}')
 
         event_loop = asyncio.get_event_loop()
-        
+
         if self.main_device is None:
             await self.init_device(event_loop, self.verbosity)
 
-        switches =  { 2327: self.dhw_circulation_switch,
-                      2015: self.additional_source_switch}
-        
+        switches = {2327: self.dhw_circulation_switch, 2015: self.additional_source_switch}
+
         print("Kronoterm to MQTT publish loop started...")
         while True:
             self.read_heat_pump_register_blocks()
             for address in self.sensors:
                 sensor, scale = self.sensors[address]
                 value = self.registers[address]
-                value = float(scale)*value
+                value = float(scale) * value
                 sensor.set_state(value)
                 sensor.publish(self.mqtt_client)
             for address in self.binary_sensors:
@@ -247,25 +245,26 @@ class KronotermMqttHandler:
             for address in self.enum_sensors:
                 sensor, options = self.enum_sensors[address]
                 value = self.registers[address]
-                for index, key in enumerate(options['keys']):
+                for _index, key in enumerate(options['keys']):
                     if value == key:
                         break
-                sensor.set_state(options['values'][index])
+                sensor.set_state(options['values'][_index])
                 sensor.publish(self.mqtt_client)
 
             for address, switch in switches.items():
                 switch.set_state(switch.ON if self.registers[address] else switch.OFF)
                 switch.publish(self.mqtt_client)
-                    
+
             if self.expander is not None:
                 await self.expander.update_sensors_and_control(
-                    outside_temperature=0.1*self.registers[2102], # outside temperature
-                    current_desired_dhw_temperature=0.1*self.registers[2023], # Current desired DHW temperature
-                    additional_source_enabled=self.registers[2015] > 0, # Additional source activated
-                    loop_circulation_status=self.registers[2044] > 0, # Loop 1 circulation pump status
-                    loop_temperature_offset_in_eco_mode=0.1*self.registers[2046], # Loop 1 temperature offset in ECO mode
-                    loop_operation_status_on_schedule=self.registers[2043], # Loop 1 operation status on schedule
-                    working_function=self.registers[2000], # Heat pump heating=0, standby=5
+                    outside_temperature=0.1 * self.registers[2102],  # outside temperature
+                    current_desired_dhw_temperature=0.1 * self.registers[2023],  # Current desired DHW temperature
+                    additional_source_enabled=self.registers[2015] > 0,  # Additional source activated
+                    loop_circulation_status=self.registers[2044] > 0,  # Loop 1 circulation pump status
+                    # Loop 1 temperature offset in ECO mode
+                    loop_temperature_offset_in_eco_mode=0.1 * self.registers[2046],
+                    loop_operation_status_on_schedule=self.registers[2043],  # Loop 1 operation status on schedule
+                    working_function=self.registers[2000],  # Heat pump heating=0, standby=5
                 )
 
             if self.verbosity:
@@ -276,4 +275,3 @@ class KronotermMqttHandler:
                     print(i, end='...', flush=True)
             else:
                 await asyncio.sleep(10)
-
