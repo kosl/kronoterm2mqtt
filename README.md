@@ -336,6 +336,7 @@ ersion}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-06 - Move readme history back to cli_app
   * 2025-06-06 - Limit ha-services to 2.9.0 due to switches callback problems
   * 2025-06-05 - Further code style fixes
   * 2025-06-05 - Code style fixes reported by flake8
