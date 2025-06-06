@@ -288,8 +288,8 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 ```
 usage: ./dev-cli.py [-h]
                     {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firm
-ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update
--test-snapshot-files,version}
+ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-test-snapshot-files,v
+ersion}
 
 
 
@@ -298,8 +298,7 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,fir │
-│ mware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapsh │
-│ ot-files,version}                                                                                                  │
+│ mware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-test-snapshot-files,version}      │
 │     check-code-style                                                                                               │
 │                   Check code style by calling darker + flake8                                                      │
 │     coverage      Run tests and show coverage report.                                                              │
@@ -324,10 +323,6 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 │     publish       Build and upload this project to PyPi                                                            │
 │     test          Run unittests                                                                                    │
 │     update        Update "requirements*.txt" dependencies files                                                    │
-│     update-readme-history                                                                                          │
-│                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
-│                   README.md was updated otherwise with 0. Also, callable via e.g.:                                 │
-│                       python -m cli_base update-readme-history -v                                                  │
 │     update-test-snapshot-files                                                                                     │
 │                   Update all test snapshot files (by remove and recreate all snapshot files)                       │
 │     version       Print version and exit                                                                           │
@@ -341,6 +336,7 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-06 - Limit ha-services to 2.9.0 due to switches callback problems
   * 2025-06-05 - Further code style fixes
   * 2025-06-05 - Code style fixes reported by flake8
   * 2025-06-05 - Applied .venv/bin/autopep8 --in-place --aggressive --max-line-length=119
@@ -353,6 +349,7 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
   * 2025-06-04 - cli_dev pip->uv
   * 2025-06-03 - Add update README history command
   * 2025-06-03 - pip -> uv for cli_app
+  * 2025-05-10 - Update print-temperatures.py
   * 2025-04-18 - pip->uv
   * 2025-04-09 - Convert value to signed integer when printing
   * 2025-04-08 - Test for DS1820 parasitic or external power at start start
