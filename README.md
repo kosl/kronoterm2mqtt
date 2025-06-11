@@ -337,7 +337,9 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...main)
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
+  * 2025-06-06 - Fix comment
   * 2025-06-06 - Add release 1.11
   * 2025-06-06 - pip-tools -> uv (#6)
   * 2025-05-10 - Update print-temperatures.py
@@ -389,6 +391,9 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
   * 2024-08-13 - systemd-setup does everything
   * 2024-08-13 - Add 0.1.8 MQTT screenshot
   * 2024-08-13 - Images inline
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.1.8](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.7...v0.1.8)
   * 2024-08-13 - Increase precission read of DS1820 to 1/128 degree Celsius
   * 2024-08-13 - Update to latest requirements
@@ -404,9 +409,6 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
   * 2024-08-09 - Add expander loop switches
   * 2024-08-09 - Prepare heat pump values for use in expander
   * 2024-08-09 - Add hardware wiring test
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.1.7](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.6...v0.1.7)
   * 2024-08-08 - Add Alternative source switch and bit sensor
   * 2024-08-08 - Add Alternative source switch
