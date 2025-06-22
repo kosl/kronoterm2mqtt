@@ -338,6 +338,7 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...main)
+  * 2025-06-11 - Fix vournerable library
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
   * 2025-06-06 - Fix comment
   * 2025-06-06 - Add release 1.11
