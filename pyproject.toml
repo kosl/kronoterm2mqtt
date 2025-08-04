@@ -37,7 +37,7 @@ dev = [
     "twine",  # https://github.com/pypa/twine
     "pre-commit",  # https://github.com/pre-commit/pre-commit
     "typeguard",  # https://github.com/agronholm/typeguard/
-    "platformio", # https://github.com/platformio/platformio-core
+    #"platformio", # https://github.com/platformio/platformio-core
     "darker[flynt, isort, color]",
 ]
 
