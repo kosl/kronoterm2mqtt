@@ -337,7 +337,8 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...main)
+* [v0.1.12](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...v0.1.12)
+  * 2025-08-06 - Upgrade to pymodbus 3.10
   * 2025-08-04 - Bump versions and disable plaformio (for now) to resolve pip-audit on starlette
   * 2025-06-22 - Fix vournerable library
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
