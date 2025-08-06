@@ -61,7 +61,7 @@ def print_parameter_values(client, parameters, verbosity):
         address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
         if verbosity:
             print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
-        response = client.read_holding_registers(address=address, count=1, slave=MODBUS_SLAVE_ID)
+        response = client.read_holding_registers(address=address, count=1, device_id=MODBUS_SLAVE_ID)
         if isinstance(response, (ExceptionResponse, ModbusIOException)):
             print('Error:', response)
         else:
@@ -118,7 +118,7 @@ def print_registers(verbosity: TyroVerbosityArgType):
     while error_count < 5:
         print(f'[blue]Read register[/blue] dec: {address:02} hex: {address:04x} ->', end=' ')
 
-        response = client.read_holding_registers(address=address, count=1, slave=MODBUS_SLAVE_ID)
+        response = client.read_holding_registers(address=address, count=1, device_id=MODBUS_SLAVE_ID)
         if isinstance(response, (ExceptionResponse, ModbusIOException)):
             print('Error:', response)
             error_count += 1

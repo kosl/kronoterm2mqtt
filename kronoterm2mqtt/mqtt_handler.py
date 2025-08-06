@@ -159,7 +159,7 @@ class KronotermMqttHandler:
         logger.info(f'{component.name} state changed: {old_state!r} -> {new_state!r}')
 
         value = 1 if new_state == 'ON' else 0
-        response = self.modbus_client.write_register(address=2327, value=value, slave=MODBUS_SLAVE_ID)
+        response = self.modbus_client.write_register(address=2327, value=value, device_id=MODBUS_SLAVE_ID)
         if isinstance(response, (ExceptionResponse, ModbusIOException)):
             logger.error(f'Error: {response}')
         else:
@@ -173,7 +173,7 @@ class KronotermMqttHandler:
         logger.info(f'{component.name} state changed: {old_state!r} -> {new_state!r}')
 
         value = 1 if new_state == 'ON' else 0
-        response = self.modbus_client.write_register(address=2015, value=value, slave=MODBUS_SLAVE_ID)
+        response = self.modbus_client.write_register(address=2015, value=value, device_id=MODBUS_SLAVE_ID)
         if isinstance(response, (ExceptionResponse, ModbusIOException)):
             logger.error(f'Error: {response}')
         else:
@@ -197,7 +197,7 @@ class KronotermMqttHandler:
         for address_start, address_end in self.address_ranges:
             count = address_end - address_start + 1
             response = self.modbus_client.read_holding_registers(
-                address=address_start, count=count, slave=MODBUS_SLAVE_ID
+                address=address_start, count=count, device_id=MODBUS_SLAVE_ID
             )
             if isinstance(response, (ExceptionResponse, ModbusIOException)):
                 logger.error(f'Error: {response}')

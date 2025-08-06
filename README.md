@@ -338,11 +338,12 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...main)
+  * 2025-08-04 - Bump versions and disable plaformio (for now) to resolve pip-audit on starlette
   * 2025-06-22 - Fix vournerable library
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
   * 2025-06-06 - Fix comment
   * 2025-06-06 - Add release 1.11
-  * 2025-06-06 - pip-tools -> uv (#6)
+  * 2025-06-06 - pip-tools -> uv
   * 2025-05-10 - Update print-temperatures.py
   * 2025-04-09 - Convert value to signed integer when printing
   * 2025-04-08 - Test for DS1820 parasitic or external power at start start

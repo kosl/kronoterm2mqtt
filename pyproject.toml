@@ -14,7 +14,7 @@ dependencies = [
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
     "tyro",  # https://github.com/brentyi/tyro # https://github.com/brentyi/tyro
     "rich",  # https://github.com/Textualize/rich # https://github.com/Textualize/rich
-    "pymodbus[serial] >= 3.8.0",  # https://github.com/pymodbus-dev/pymodbus/
+    "pymodbus[serial] >= 3.10.0",  # https://github.com/pymodbus-dev/pymodbus/
 ]
 
 [dependency-groups]
