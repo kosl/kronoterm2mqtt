@@ -337,6 +337,8 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...main)
+  * 2025-08-12 - Update for vulnerabilities
 * [v0.1.12](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...v0.1.12)
   * 2025-08-06 - Bump version for modbus change
   * 2025-08-06 - Upgrade to pymodbus 3.10
@@ -366,6 +368,9 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
   * 2024-11-15 - Upgrade and ignore starlette safety issues
   * 2024-11-15 - Handle all Modbus values as 16 bit signed integers to address negative temperatures
   * 2024-11-10 - Disabling solar collectors in settings now works with service restart
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.1.9](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.8...v0.1.9)
   * 2024-11-08 - Tune expander default for mix-valve control and upgrade virtualenv due to vulnerability ID: 73456
   * 2024-10-21 - Minor typos
@@ -395,9 +400,6 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
   * 2024-08-13 - systemd-setup does everything
   * 2024-08-13 - Add 0.1.8 MQTT screenshot
   * 2024-08-13 - Images inline
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.1.8](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.7...v0.1.8)
   * 2024-08-13 - Increase precission read of DS1820 to 1/128 degree Celsius
   * 2024-08-13 - Update to latest requirements

@@ -48,5 +48,6 @@ def publish_loop(verbosity: TyroVerbosityArgType):
             print('Timeout... Retrying in 10 seconds...')
         except Exception as e:
             print(f'Error: {e}', type(e))
-            print('Retrying in 10 seconds...')
+            logger.error(f'Unhandled Exception: {e} {type(e)}')
+            exit(1)
         time.sleep(10)
