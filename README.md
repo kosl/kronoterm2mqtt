@@ -334,6 +334,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...main)
+  * 2025-09-23 - Use ruff instead of darker
   * 2025-09-23 - Add unhandled exceptions to exit(1)
   * 2025-08-12 - Update for vulnerabilities
 * [v0.1.12](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...v0.1.12)

@@ -33,7 +33,7 @@ dev = [
     "twine",  # https://github.com/pypa/twine
     "pre-commit",  # https://github.com/pre-commit/pre-commit
     "typeguard",  # https://github.com/agronholm/typeguard/
-#    "platformio", # https://github.com/platformio/platformio-core
+    "platformio>=6.1.18", # https://github.com/platformio/platformio-core
 ]
 
 [project.urls]
@@ -58,7 +58,7 @@ path = "kronoterm2mqtt/__init__.py"
 requirements=["requirements.dev.txt"]
 strict=true
 require_hashes=true
-ignore-vuln=[]
+ignore-vuln=["GHSA-2c2j-9gv5-cj73"]
 
 [tool.cli_base]
 version_module_name = "kronoterm2mqtt"  # Used by "update-readme-history" git hook
@@ -133,4 +133,4 @@ package_description = "Sends MQTT events from KRONOTERM device"
 package_url = "https://github.com/kosl/kronoterm2mqtt"
 issues_url = "https://github.com/kosl/kronoterm2mqtt/issues"
 license = "GPL-3.0-or-later"
-_template = "https://github.com/kosl/cookiecutter_templates/"
+_template = "https://github.com/jedie/cookiecutter_templates/"
