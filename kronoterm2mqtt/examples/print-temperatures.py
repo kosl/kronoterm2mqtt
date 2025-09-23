@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import pymodbus.client
+
+
 pymodbus.pymodbus_apply_logging_config("DEBUG")
 client = pymodbus.client.ModbusSerialClient("/dev/ttyUSB0", baudrate=115200)
 try:

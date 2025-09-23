@@ -1,7 +1,7 @@
+from enum import Enum
 import logging
 import sys
 import time
-from enum import Enum
 from typing import List
 
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor

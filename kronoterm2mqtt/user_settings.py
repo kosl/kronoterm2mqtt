@@ -9,8 +9,8 @@ from ha_services.mqtt4homeassistant.data_classes import MqttSettings
 from rich import print  # noqa
 from rich.pretty import pprint
 
-
 from kronoterm2mqtt.constants import BASE_PATH
+
 
 try:
     import tomllib  # New in Python 3.11

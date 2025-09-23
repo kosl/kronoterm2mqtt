@@ -1,5 +1,6 @@
-from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
 import asyncio
+
+from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
 
 
 async def main():
@@ -75,5 +76,6 @@ async def main():
         example_temp(),
         etera.run_forever()
     )
+
 
 asyncio.run(main())

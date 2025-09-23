@@ -284,9 +284,9 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
 [comment]: <> (✂✂✂ auto generated dev help start ✂✂✂)
 ```
 usage: ./dev-cli.py [-h]
-                    {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firm
-ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update
--test-snapshot-files,version}
+                    {coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,firm
+ware-flash,install,lint,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapshot-files,versio
+n}
 
 
 
@@ -294,11 +294,8 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 │ -h, --help        show this help message and exit                                                                  │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ {check-code-style,coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,fir │
-│ mware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapsh │
-│ ot-files,version}                                                                                                  │
-│     check-code-style                                                                                               │
-│                   Check code style by calling darker + flake8                                                      │
+│ {coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,firmware-flash,insta │
+│ ll,lint,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapshot-files,version}           │
 │     coverage      Run tests and show coverage report.                                                              │
 │     expander-loop                                                                                                  │
 │                   Runs Custom expander control of a solar pump                                                     │
@@ -312,15 +309,14 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 │                   Compiles firmware for Etera GPIO expander with PlatformIO compiler                               │
 │     firmware-flash                                                                                                 │
 │                   Flashes compiled firmware to Etera GPIO expander                                                 │
-│     fix-code-style                                                                                                 │
-│                   Fix code style of all cli_base source code files via darker                                      │
 │     install       Install requirements and 'kronoterm2mqtt' via pip as editable.                                   │
+│     lint          Check/fix code style by running: ruff check --fix"                                               │
 │     mypy          Run Mypy (configured in pyproject.toml)                                                          │
 │     nox           Run nox                                                                                          │
 │     pip-audit     Run pip-audit check against current requirements files                                           │
 │     publish       Build and upload this project to PyPi                                                            │
 │     test          Run unittests                                                                                    │
-│     update        Update "requirements*.txt" dependencies files                                                    │
+│     update        Update dependencies (uv.lock) and git pre-commit hooks                                           │
 │     update-readme-history                                                                                          │
 │                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
 │                   README.md was updated otherwise with 0. Also, callable via e.g.:                                 │
@@ -338,6 +334,7 @@ ware-compile,firmware-flash,fix-code-style,install,mypy,nox,pip-audit,publish,te
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...main)
+  * 2025-09-23 - Add unhandled exceptions to exit(1)
   * 2025-08-12 - Update for vulnerabilities
 * [v0.1.12](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...v0.1.12)
   * 2025-08-06 - Bump version for modbus change

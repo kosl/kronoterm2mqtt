@@ -1,7 +1,7 @@
 import asyncio
+from decimal import Decimal
 import itertools
 import logging
-from decimal import Decimal
 
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.sensor import Sensor

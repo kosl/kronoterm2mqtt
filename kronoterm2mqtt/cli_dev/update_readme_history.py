@@ -1,6 +1,6 @@
 import logging
-import sys
 from pathlib import Path
+import sys
 
 from cli_base.cli_tools import git_history
 from cli_base.cli_tools.verbosity import setup_logging

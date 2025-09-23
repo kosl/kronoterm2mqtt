@@ -10,11 +10,11 @@ authors = [
 requires-python = ">=3.11, <4"
 dependencies = [
     "ha-services <= 2.9.0",  # https://github.com/jedie/ha-services
-    "cli-base-utilities",  # https://github.com/jedie/cli-base-utilities
+    "cli-base-utilities>=0.17.0",  # https://github.com/jedie/cli-base-utilities
+    "pymodbus[serial] >= 3.10.0",  # https://github.com/pymodbus-dev/pymodbus/
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
     "tyro",  # https://github.com/brentyi/tyro # https://github.com/brentyi/tyro
     "rich",  # https://github.com/Textualize/rich # https://github.com/Textualize/rich
-    "pymodbus[serial] >= 3.10.0",  # https://github.com/pymodbus-dev/pymodbus/
 ]
 
 [dependency-groups]
@@ -22,14 +22,10 @@ dev = [
     "manageprojects",  # https://github.com/jedie/manageprojects
     "urllib3", # for bx_py_utils.test_utils.deny_requests.deny_any_real_request() in tests
     "uv",  # https://github.com/astral-sh/uv
-    "setuptools",  # https://github.com/pypa/setuptools
+    "hatchling",  # https://github.com/pypa/hatch/tree/master/backend
     "nox",  # https://github.com/wntrblm/nox
     "coverage",  # https://github.com/nedbat/coveragepy
-    "autopep8",  # https://github.com/hhatto/autopep8
-    "pyupgrade",  # https://github.com/asottile/pyupgrade
-    "flake8",  # https://github.com/pycqa/flake8
-    "flake8-bugbear",  # https://github.com/PyCQA/flake8-bugbear
-    "pyflakes",  # https://github.com/PyCQA/pyflakes
+    "ruff", # https://github.com/astral-sh/ruff
     "codespell",  # https://github.com/codespell-project/codespell
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
     "pip-audit",  # https://github.com/pypa/pip-audit
@@ -37,8 +33,7 @@ dev = [
     "twine",  # https://github.com/pypa/twine
     "pre-commit",  # https://github.com/pre-commit/pre-commit
     "typeguard",  # https://github.com/agronholm/typeguard/
-    #"platformio", # https://github.com/platformio/platformio-core
-    "darker[flynt, isort, color]",
+#    "platformio", # https://github.com/platformio/platformio-core
 ]
 
 [project.urls]
@@ -50,15 +45,14 @@ kronoterm2mqtt_app = "kronoterm2mqtt.__main__:main"
 kronoterm2mqtt_dev = "kronoterm2mqtt.cli_dev:main"
 
 [build-system]
-requires = ["setuptools>=61.0", "setuptools_scm>=7.1"]
-build-backend = "setuptools.build_meta"
+requires =  ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["kronoterm2mqtt*"]
+[tool.hatch.build.targets.wheel]
+packages = ["kronoterm2mqtt"]
 
-[tool.setuptools.dynamic]
-version = {attr = "kronoterm2mqtt.__version__"}
+[tool.hatch.version]
+path = "kronoterm2mqtt/__init__.py"
 
 [tool.cli_base.pip_audit]
 requirements=["requirements.dev.txt"]
@@ -69,28 +63,31 @@ ignore-vuln=[]
 [tool.cli_base]
 version_module_name = "kronoterm2mqtt"  # Used by "update-readme-history" git hook
 
-[tool.darker]
-src = ['kronoterm2mqtt']
-revision = "origin/main..."
-line_length = 119
-color = true
-skip_string_normalization = true
-diff = false
-check = false
-stdout = false
-isort = true
-log_level = "INFO"
+[tool.ruff]
+# https://docs.astral.sh/ruff/configuration/
+line-length = 120
+exclude = [
+  ".*/",
+]
 
+[tool.ruff.lint]
+preview = true  # Needed for some of the rules
+extend-select = [
+    "E", # pycodestyle: https://docs.astral.sh/ruff/rules/#error-e
+    "I", # isort: https://docs.astral.sh/ruff/rules/#isort-i
+]
+ignore = [
+    "E402", # https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/
+    "E731", # https://docs.astral.sh/ruff/rules/lambda-assignment/
+]
 
-[tool.isort]
-# https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
-atomic=true
-profile='black'
-skip_glob=['.*', '*/htmlcov/*']
-known_first_party=['kronoterm2mqtt']
-line_length=119
-lines_after_imports=2
+[tool.ruff.lint.isort]
+# https://docs.astral.sh/ruff/rules/#isort-i
+lines-after-imports = 2
+force-sort-within-sections = true
 
+[tool.ruff.format]
+quote-style = "single"
 
 [tool.coverage.run]
 branch = true
