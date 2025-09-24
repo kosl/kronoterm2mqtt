@@ -131,3 +131,23 @@ device_class = "duration"
 state_class = "total_increasing"
 unit_of_measurement = "h"
 scale = 1
+
+[[switch]]
+register = 2328
+name = "Cirkulacija sanitarne vode"
+
+[[switch]]
+register = 2015
+name = "Hitro gretje bojlerja"
+
+[[switch]]
+register = 2016
+name = "Dodatni vir"
+
+[[select]]
+register = 2026
+name = "Delovanje bojlerja"
+default_option = "On"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["Izklop", "Vklop", "Po časovnici"]

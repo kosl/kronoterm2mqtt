@@ -7,7 +7,14 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/kronoterm2mqtt)](https://github.com/kosl/kronoterm2mqtt/blob/main/pyproject.toml)
 [![License GPL-3.0-or-later](https://img.shields.io/pypi/l/kronoterm2mqtt)](https://github.com/kosl/kronoterm2mqtt/blob/main/LICENSE)
 
-Gets information from the Kronoterm heat pump connected to Modbus TEX
+Kronoterm Heat Pump -> Modbus -> RS485-USB-Adapter -> kronoterm2mqtt -> MQTT -> Home Assistant
+
+or
+
+Kronoterm Heat Pump -> modbus -> Modbus/TCP module -> kronoterm2mqtt -> MQTT -> Home Assistant
+
+
+Gets information from a Kronoterm heat pump connected to Modbus TEX
 interface. While this should work for all Kronoterm heat pumps the
 software was verified to run on ETERA ground source heat pump with
 Heat pump manager V3.13-1 and WPG-10-K2 HT ground source heat pump
@@ -101,8 +108,13 @@ it will be skipped during definitions scan. There are quite some
 number of disabled sensors that can be shown and the TOML file can get
 more sensors if required. Note that you need to have at least one of
 each sensor type enabled in your TOML file (`[[enum_sensor]]`,
-`[[sensor]]]`, `[[binary_sensor]]`). Switches are harcoded and can
-only be commented out or expanded in the `mqtt_handler.py`
+`[[sensor]]]`, `[[binary_sensor]]`). Controls (`[[switch]]`,
+`[[select]]`) are optional and can be disabled completely.
+
+Note: It's a good idea to use the `/dev/serial/by-path/{your-device-id}`
+path as serial port, instead of `/dev/ttyUSB1`
+Call `udevadm info -n /dev/ttyUSB*` to get information about all USB
+serial devices and `ls -l /dev/serial/by-path/` to see the existing links.
 
 ### print-values
 ```sh
@@ -334,6 +346,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...main)
+  * 2025-09-24 - ruff format .
   * 2025-09-23 - Reintroduce platformio with ignored starlette 0.6.2 vulnerability
   * 2025-09-23 - Use ruff instead of darker
   * 2025-09-23 - Add unhandled exceptions to exit(1)

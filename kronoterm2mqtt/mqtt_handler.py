@@ -4,6 +4,7 @@ import itertools
 import logging
 
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
+from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.switch import Switch
 from ha_services.mqtt4homeassistant.device import MqttDevice
@@ -38,19 +39,21 @@ class KronotermMqttHandler:
             if self.user_settings.custom_expander.module_enabled
             else None
         )
-        self.main_device = None
-        self.sensors = dict()
-        self.binary_sensors = dict()
-        self.enum_sensors = dict()
-        self.address_ranges = list()
-        self.registers = dict()
-        self.dhw_circulation_switch: Switch = None
-        self.additional_source_switch: Switch = None
+        self.main_device: Optional[MqttDevice] = None
+        self.sensors: Dict[int, Tuple[Sensor, Decimal]] = dict()
+        self.binary_sensors:Dict[int, Dict[int, BinarySensor]] = dict()
+        self.enum_sensors: Dict[int, Tuple[Sensor, Dict[str, List[Any]]]]  = dict()
+        self.address_ranges: List[Tuple[int, int]] = list()
+        self.registers: Dict[int] = dict()
+        self.switches: Dict[int, Switch] = dict()
+        self.selects: Dict[int, Tuple[Select, Dict[str, List[Any]]]] = dict()
 
     def __enter__(self):
+        """Enter the context manager."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit the context manager, cleaning up resources."""
         if exc_type:
             return False
 
@@ -105,14 +108,12 @@ class KronotermMqttHandler:
         binary_sensor_definitions = definitions['binary_sensor']
         for parameter in binary_sensor_definitions:
             address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
-            self.binary_sensors[address] = (
-                BinarySensor(
-                    device=self.main_device,
-                    name=parameter['name'],
-                    uid=slugify(parameter['name'], '_').lower(),
-                    device_class=parameter['device_class'] if len(parameter['device_class']) else None,
-                ),
-                parameter.get('bit'),
+            bit = parameter.get('bit')
+            self.binary_sensors.setdefault(address, {})[bit] = BinarySensor(
+                device=self.main_device,
+                name=parameter['name'],
+                uid=slugify(parameter['name'], '_').lower(),
+                device_class=parameter['device_class'] if len(parameter['device_class']) else None,
             )
         enum_sensor_definitions = definitions['enum_sensor']
         for parameter in enum_sensor_definitions:
@@ -128,57 +129,108 @@ class KronotermMqttHandler:
                 *parameter['options'],
             )
 
-        self.dhw_circulation_switch = Switch(
-            device=self.main_device,
-            name='Circulation of sanitary water',
-            uid='dhw_circulation_switch',
-            callback=self.dhw_circulation_callback,
-        )
-        self.additional_source_switch = Switch(
-            device=self.main_device,
-            name='Additional Source',
-            uid='additional_source_switch',
-            callback=self.additional_source_callback,
-        )
+        if 'switch' in definitions:
+            switch_definitions = definitions['switch']
+            for parameter in switch_definitions:
+                address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
+                switch = Switch(
+                    device=self.main_device,
+                    name=parameter['name'],
+                    uid=slugify(parameter['name'], '_').lower(),
+                    callback=self.switch_callback,
+                )
+                self.switches[address] = switch
 
-        # Prepare ranges of registers for faster reads in blocks
-        addresses = set(self.sensors.keys())
-        addresses = addresses.union(set(self.binary_sensors.keys()))
-        addresses.add(2327)  # DHW circulation switch
-        addresses.add(2015)  # Additional source switch
-        addresses = sorted(addresses.union(set(self.enum_sensors.keys())))
+        if 'select' in definitions:
+            select_definitions = definitions['select']
+            for parameter in select_definitions:
+                address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
+                options = parameter['options'][0]  # Get first options object
+                select = Select(
+                    device=self.main_device,
+                    name=parameter['name'],
+                    uid=slugify(parameter['name'], '_').lower(),
+                    default_option=parameter['default_option'],
+                    options=tuple(options['values']),
+                    callback=self.select_callback,
+                )
+                self.selects[address] = (select, options)
+
+        # Prepare ranges of registers for faster Modbus reads in blocks
+        addresses = sorted(
+            list(self.sensors.keys())
+            + list(self.binary_sensors.keys())
+            + list(self.enum_sensors.keys())
+            + list(self.switches.keys())
+            + list(self.selects.keys())
+        )
         self.address_ranges = list(self.ranges(list(addresses)))
         if self.verbosity:
-            print(f'Addresses: {len(addresses)} Ranges: {len(self.address_ranges)}')
+            print(f'Addresses: {addresses} Ranges: {len(self.address_ranges)}')
 
-    def dhw_circulation_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
-        """Switches on (manually) circulation of sanitary water for 5 minutes.
-        The switch turnes off automatically after 5 minutes and the DHW circulation pump stops.
-        Note that register 2028 is not documented!
+    def switch_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
+        """
+        Generic callback for switch state changes.
         """
         logger.info(f'{component.name} state changed: {old_state!r} -> {new_state!r}')
 
-        value = 1 if new_state == 'ON' else 0
-        response = self.modbus_client.write_register(address=2327, value=value, device_id=MODBUS_SLAVE_ID)
-        if isinstance(response, (ExceptionResponse, ModbusIOException)):
-            logger.error(f'Error: {response}')
-        else:
-            assert isinstance(response, WriteSingleRegisterResponse), f'{response=}'
-        component.set_state(new_state)
-        component.publish_state(client)
+        # Find the address for this switch
+        address = None
+        for addr, switch in self.switches.items():
+            if switch == component:
+                address = addr
+                break
 
-    def additional_source_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
-        """Switches on (manually) additional heating source."""
+        if address is None:
+            logger.error(f'Could not find address for switch {component.name}')
+            return
+
+        value = 1 if new_state == 'ON' else 0
+        success = self.modbus_client.write_register(address=address, value=value, device_id=MODBUS_SLAVE_ID)
+
+        if success:
+            component.set_state(new_state)
+            component.publish_state(client)
+        else:
+            logger.error(f'Failed to write register for {component.name}')
+
+    def select_callback(self, *, client: Client, component: Select, old_state: str, new_state: str):
+        """
+        Generic callback for select state changes.
+        """
         logger.info(f'{component.name} state changed: {old_state!r} -> {new_state!r}')
 
-        value = 1 if new_state == 'ON' else 0
-        response = self.modbus_client.write_register(address=2015, value=value, device_id=MODBUS_SLAVE_ID)
-        if isinstance(response, (ExceptionResponse, ModbusIOException)):
-            logger.error(f'Error: {response}')
+        # Find the address and options for this select
+        address = None
+        options = None
+        for addr, (select, select_options) in self.selects.items():
+            if select == component:
+                address = addr
+                options = select_options
+                break
+
+        if address is None or options is None:
+            logger.error(f'Could not find address or options for select {component.name}')
+            return
+
+        # Convert display value to register value
+        value = None
+        for index, display_value in enumerate(options['values']):
+            if display_value == new_state:
+                value = options['keys'][index]
+                break
+
+        if value is None:
+            logger.error(f'Could not find register value for display value {new_state}')
+            return
+
+        success = self.modbus_client.write_register(address=address, value=value, device_id=MODBUS_SLAVE_ID)
+
+        if success:
+            component.set_state(new_state)
+            component.publish_state(client)
         else:
-            assert isinstance(response, WriteSingleRegisterResponse), f'{response=}'
-        component.set_state(new_state)
-        component.publish_state(client)
+            logger.error(f'Failed to write register for {component.name}')
 
     def ranges(self, i: list) -> list:
         """Prepare intervals of modbus addresses for fetching register groups
@@ -222,8 +274,6 @@ class KronotermMqttHandler:
         if self.main_device is None:
             await self.init_device(event_loop, self.verbosity)
 
-        switches = {2327: self.dhw_circulation_switch, 2015: self.additional_source_switch}
-
         print('Kronoterm to MQTT publish loop started...')
         while True:
             self.read_heat_pump_register_blocks()
@@ -234,12 +284,12 @@ class KronotermMqttHandler:
                 sensor.set_state(value)
                 sensor.publish(self.mqtt_client)
             for address in self.binary_sensors:
-                sensor, bit = self.binary_sensors[address]
-                value = self.registers[address]
-                if bit is not None:
-                    value &= 1 << bit
-                sensor.set_state(sensor.ON if value else sensor.OFF)
-                sensor.publish(self.mqtt_client)
+                for bit, sensor in self.binary_sensors[address].items():
+                    value = self.registers[address]
+                    if bit is not None:
+                        value &= 1 << bit
+                    sensor.set_state(sensor.ON if value else sensor.OFF)
+                    sensor.publish(self.mqtt_client)
             for address in self.enum_sensors:
                 sensor, options = self.enum_sensors[address]
                 value = self.registers[address]
@@ -248,10 +298,22 @@ class KronotermMqttHandler:
                         break
                 sensor.set_state(options['values'][_index])
                 sensor.publish(self.mqtt_client)
-
-            for address, switch in switches.items():
+            for address, switch in self.switches.items():
                 switch.set_state(switch.ON if self.registers[address] else switch.OFF)
                 switch.publish(self.mqtt_client)
+                for address, (select, _) in self.selects.items():
+                    if address in self.registers and address in self.selects:
+                        _, options = self.selects[address]
+                        register_value = self.registers[address]
+                        # Convert register value to display value
+                        display_value = None
+                        for index, key in enumerate(options['keys']):
+                            if register_value == key:
+                                display_value = options['values'][index]
+                                break
+                        if display_value is not None:
+                            select.set_state(display_value)
+                            select.publish(self.mqtt_client)
 
             if self.expander is not None:
                 await self.expander.update_sensors_and_control(

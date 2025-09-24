@@ -244,7 +244,7 @@ register = 2006
 name = "Error/warning status"
 [[enum_sensor.options]]
 keys = [0, 1, 2]
-values = ["no error", "opozorilo", "error", "notification"]
+values = ["no error", "warning", "error", "notification"]
 
 [[enum_sensor]]
 register = 2007
@@ -299,3 +299,22 @@ name = "Circulation Pump for DHW tank"
 device_class = "running"
 bit = 1
 
+[[switch]]
+register = 2328
+name = "Circulation of sanitary water"
+
+[[switch]]
+register = 2015
+name = "Fast DHW heating"
+
+[[switch]]
+register = 2016
+name = "Additional Source"
+
+[[select]]
+register = 2026
+name = "Domestic Hot Water Operation"
+default_option = "On"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["Off", "On", "Scheduled"]
