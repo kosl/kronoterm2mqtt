@@ -1,6 +1,6 @@
 """
-    kronoterm2mqtt
-    Sends MQTT events from Keronoterm heat pump
+kronoterm2mqtt
+Sends MQTT events from Keronoterm heat pump
 """
 
 __version__ = '0.1.12'

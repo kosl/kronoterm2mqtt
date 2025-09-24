@@ -15,7 +15,7 @@ def firmware_compile():
     """
     bin_path = Path(sys.executable).parent
 
-    verbose_check_call(bin_path / 'pio', 'run', cwd="etera-uart-bridge/pio-eub-firmware")
+    verbose_check_call(bin_path / 'pio', 'run', cwd='etera-uart-bridge/pio-eub-firmware')
 
 
 @app.command

@@ -70,12 +70,7 @@ async def main():
             finally:
                 await asyncio.sleep(1)
 
-    await asyncio.gather(
-        example_motors(),
-        example_relays(),
-        example_temp(),
-        etera.run_forever()
-    )
+    await asyncio.gather(example_motors(), example_relays(), example_temp(), etera.run_forever())
 
 
 asyncio.run(main())

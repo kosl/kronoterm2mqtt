@@ -1,5 +1,5 @@
 """
-    CLI for usage
+CLI for usage
 """
 
 import logging

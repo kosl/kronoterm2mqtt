@@ -26,6 +26,7 @@ class HeatPump:
     """
     The "definitions_name" is the prefix of "kronoterm2mqtt/definitions/*.toml" files!
     """
+
     definitions_name: str = 'kronoterm_ksm'
     device_name: str = 'Heat Pump'  # Appearing in MQTT as Device
     model: str = 'ETERA'  # Just for MQTT device Model info
@@ -82,28 +83,28 @@ class CustomEteraExpander:
     inter_tank_pump_relay_id: int = 5
     sensor_names: list = dataclasses.field(
         default_factory=lambda: [
-            "Spalnice",
-            "Mansarda",
-            "Nadgaražje",
-            "Pritličje",
-            "Kolektorji",
-            "Solarni zgoraj",
-            "Solarni spodaj",
-            "Bojler",
-            "Cirkulacija",
+            'Spalnice',
+            'Mansarda',
+            'Nadgaražje',
+            'Pritličje',
+            'Kolektorji',
+            'Solarni zgoraj',
+            'Solarni spodaj',
+            'Bojler',
+            'Cirkulacija',
         ]
     )
     # empty string means relay is not used (disabled)
     relay_names: list = dataclasses.field(
         default_factory=lambda: [
-            "Črpalka spalnic",
-            "Črpalka mansarde",
-            "Črpalka nadgaražja",
-            "",
-            "Črpalka kolektorjev",
-            "Cirkulacija med bojlerjema",
-            "",
-            "",
+            'Črpalka spalnic',
+            'Črpalka mansarde',
+            'Črpalka nadgaražja',
+            '',
+            'Črpalka kolektorjev',
+            'Cirkulacija med bojlerjema',
+            '',
+            '',
         ]
     )
 
@@ -158,7 +159,7 @@ class UserSettings:
     custom_expander: dataclasses = dataclasses.field(default_factory=CustomEteraExpander)
 
     def __post_init__(self):
-        """ Modify the MQTT defaults"""
+        """Modify the MQTT defaults"""
         self.mqtt.main_uid = 'kronoterm'
         self.mqtt.host = 'mqtt.your-server.tld'
 

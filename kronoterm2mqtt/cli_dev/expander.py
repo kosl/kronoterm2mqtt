@@ -12,6 +12,7 @@ from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
 # import logging
 # logger = logging.getLogger(__name__)
 
+
 async def etera_reset_handler():
     print('Device just reset...')
 
@@ -28,8 +29,9 @@ def expander_temperatures(verbosity: TyroVerbosityArgType):
 
     port = user_settings.custom_expander.port
 
-    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
-                            on_device_message_handler=etera_message_handler)
+    etera = EteraUartBridge(
+        port, on_device_reset_handler=etera_reset_handler, on_device_message_handler=etera_message_handler
+    )
 
     print('Starting temperature read from custom expander')
 
@@ -59,15 +61,15 @@ def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True):
 
     port = user_settings.custom_expander.port
 
-    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
-                            on_device_message_handler=etera_message_handler)
+    etera = EteraUartBridge(
+        port, on_device_reset_handler=etera_reset_handler, on_device_message_handler=etera_message_handler
+    )
 
     duration = 120
 
     print(f'Moving all motors for {duration} seconds at custom expander')
 
     async def move_motors(opening, duration: int):
-
         await etera.ready()
         # await etera.move_motor(1, EteraUartBridge.Direction.CLOCKWISE, 120 * 1000) # clockwise for 120 seconds
 
@@ -115,13 +117,13 @@ def expander_relay(verbosity: TyroVerbosityArgType, relay: int = 0, on: bool = T
 
     port = user_settings.custom_expander.port
 
-    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
-                            on_device_message_handler=etera_message_handler)
+    etera = EteraUartBridge(
+        port, on_device_reset_handler=etera_reset_handler, on_device_message_handler=etera_message_handler
+    )
 
     print(f'Switching relay {relay} to {on}')
 
     async def switch_relay(relay, on: bool):
-
         await etera.ready()
 
         try:
@@ -145,8 +147,9 @@ def expander_loop(verbosity: TyroVerbosityArgType):
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
     relay = user_settings.custom_expander.solar_pump_relay_id
     port = user_settings.custom_expander.port
-    etera = EteraUartBridge(port, on_device_reset_handler=etera_reset_handler,
-                            on_device_message_handler=etera_message_handler)
+    etera = EteraUartBridge(
+        port, on_device_reset_handler=etera_reset_handler, on_device_message_handler=etera_message_handler
+    )
 
     print('Starting manual control of a solar pump')
 
@@ -175,7 +178,6 @@ def expander_loop(verbosity: TyroVerbosityArgType):
                 await asyncio.sleep(60)
 
     async def loop():
-        await asyncio.gather(etera.run_forever(),
-                             temperature_loop()
-                             )
+        await asyncio.gather(etera.run_forever(), temperature_loop())
+
     asyncio.run(loop())

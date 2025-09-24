@@ -1,5 +1,5 @@
 """
-    CLI for development
+CLI for development
 """
 
 import importlib

@@ -22,7 +22,6 @@ def assert_cli_help_in_readme(text_block: str, marker: str):
 
 
 class ReadmeTestCase(BaseTestCase):
-
     def test_main_help(self):
         with NoColorEnvRich():
             stdout = invoke(cli_bin=PACKAGE_ROOT / 'cli.py', args=['--help'], strip_line_prefix='usage: ')

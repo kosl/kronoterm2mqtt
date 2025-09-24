@@ -149,7 +149,7 @@ class KronotermMqttHandler:
         addresses = sorted(addresses.union(set(self.enum_sensors.keys())))
         self.address_ranges = list(self.ranges(list(addresses)))
         if self.verbosity:
-            print(f"Addresses: {len(addresses)} Ranges: {len(self.address_ranges)}")
+            print(f'Addresses: {len(addresses)} Ranges: {len(self.address_ranges)}')
 
     def dhw_circulation_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
         """Switches on (manually) circulation of sanitary water for 5 minutes.
@@ -168,8 +168,7 @@ class KronotermMqttHandler:
         component.publish_state(client)
 
     def additional_source_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
-        """Switches on (manually) additional heating source.
-        """
+        """Switches on (manually) additional heating source."""
         logger.info(f'{component.name} state changed: {old_state!r} -> {new_state!r}')
 
         value = 1 if new_state == 'ON' else 0
@@ -207,10 +206,9 @@ class KronotermMqttHandler:
                     value = response.registers[i]
                     self.registers[address_start + i] = value - (value >> 15 << 16)  # Convert value to signed integer
         if self.verbosity:
-            print(f"Registers: {self.registers}")
+            print(f'Registers: {self.registers}')
 
     async def publish_loop(self):
-
         # setup_logging(verbosity=verbosity)
 
         definitions = self.heat_pump.get_definitions(self.verbosity)
@@ -226,7 +224,7 @@ class KronotermMqttHandler:
 
         switches = {2327: self.dhw_circulation_switch, 2015: self.additional_source_switch}
 
-        print("Kronoterm to MQTT publish loop started...")
+        print('Kronoterm to MQTT publish loop started...')
         while True:
             self.read_heat_pump_register_blocks()
             for address in self.sensors:
