@@ -2,6 +2,7 @@ import asyncio
 from decimal import Decimal
 import itertools
 import logging
+from typing import Any, Dict, List, Optional, Tuple
 
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
@@ -13,7 +14,7 @@ from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
-from pymodbus.pdu.register_message import ReadHoldingRegistersResponse, WriteSingleRegisterResponse
+from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
 
 import kronoterm2mqtt
 from kronoterm2mqtt.api import get_modbus_client
@@ -41,8 +42,8 @@ class KronotermMqttHandler:
         )
         self.main_device: Optional[MqttDevice] = None
         self.sensors: Dict[int, Tuple[Sensor, Decimal]] = dict()
-        self.binary_sensors:Dict[int, Dict[int, BinarySensor]] = dict()
-        self.enum_sensors: Dict[int, Tuple[Sensor, Dict[str, List[Any]]]]  = dict()
+        self.binary_sensors: Dict[int, Dict[int, BinarySensor]] = dict()
+        self.enum_sensors: Dict[int, Tuple[Sensor, Dict[str, List[Any]]]] = dict()
         self.address_ranges: List[Tuple[int, int]] = list()
         self.registers: Dict[int] = dict()
         self.switches: Dict[int, Switch] = dict()

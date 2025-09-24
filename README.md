@@ -11,7 +11,7 @@ Kronoterm Heat Pump -> Modbus -> RS485-USB-Adapter -> kronoterm2mqtt -> MQTT -> 
 
 or
 
-Kronoterm Heat Pump -> modbus -> Modbus/TCP module -> kronoterm2mqtt -> MQTT -> Home Assistant
+Kronoterm Heat Pump -> Modbus -> Modbus/TCP module -> kronoterm2mqtt -> MQTT -> Home Assistant
 
 
 Gets information from a Kronoterm heat pump connected to Modbus TEX
@@ -90,9 +90,9 @@ systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,ve
 
 ## Setup
 
-Once having hardware (Modbus wiring) correctly installed the steps to get running are:
+Once having hardware (Modbus RS485 wiring or Modbus/TCP module) correctly installed the steps to get running are:
 
-1. `./cli-app.py edit-setting` to configure MQTT host and credentials, heat pump model and RS485 port.
+1. `./cli-app.py edit-setting` to configure MQTT host and credentials, heat pump model and port.
 2. `./cli-app.py test-mqtt-connection` to check that Mosquitto broker accepts connections.
 4. `./cli-app.py print-values` to see the actual registers from the heat pump converted to correct units.
 3. Install and configure MQTT integration in Home assistant
@@ -225,6 +225,23 @@ parity = "N"
 stopbits = 1
 ~~~
 
+### Adapt with Modbus/TCP WiFi module
+Example Modbus/TCP Wifi module such as [Protoss PW11](http://www.hi-flying.com/pw11).
+Search online for Modbus Gateway TCP/IP to RTU.
+![Protoss PW11 WiFi module](images/protoss-pw11-adapt.jpeg)
+Setting port as Host IP address or host name with optional :port selects
+TCP client as in example below. Note that RTU settings are to be setup in the module web interface!
+~~~
+[heat_pump]
+# The "definitions_name" is the prefix of "kronoterm2mqtt/definitions/*.toml" files!
+definitions_name = "kronoterm_ksm"
+device_name = "Heat Pump"
+port = "192.168.1.112:502"
+model = "ADAPT"
+slave_id = 20
+timeout = 0.5
+~~~
+
 ### Home Assistant
 
 Home Assistant -> Settings -> Devices & Services -> MQTT screenshot
@@ -346,6 +363,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...main)
+  * 2025-09-24 - Add switch, select and fix binary sensor
   * 2025-09-24 - ruff format .
   * 2025-09-23 - Reintroduce platformio with ignored starlette 0.6.2 vulnerability
   * 2025-09-23 - Use ruff instead of darker
