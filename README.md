@@ -229,9 +229,11 @@ stopbits = 1
 Example Modbus/TCP Wifi module such as [Protoss PW11](http://www.hi-flying.com/pw11).
 Search online for Modbus Gateway TCP/IP to RTU.
 ![Protoss PW11 WiFi module](images/protoss-pw11-adapt.jpeg)
+![ADAPT TEX interface](images/adapt-tex.jpeg)
+![ADAPT wiring](images/adapt-modbus-tcp.jpeg)
 Setting port as Host IP address or host name with optional :port selects
 TCP client as in example below. Note that RTU settings are to be setup in the module web interface!
-~~~
+~~~toml
 [heat_pump]
 # The "definitions_name" is the prefix of "kronoterm2mqtt/definitions/*.toml" files!
 definitions_name = "kronoterm_ksm"
@@ -363,6 +365,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.1.13](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...v0.1.13)
+  * 2025-09-24 - Fix indent
   * 2025-09-24 - Add Modbus/TCP client with WiFi module
   * 2025-09-24 - Add switch, select and fix binary sensor
   * 2025-09-24 - ruff format .
