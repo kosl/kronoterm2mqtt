@@ -362,7 +362,8 @@ n}
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...main)
+* [v0.1.13](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...v0.1.13)
+  * 2025-09-24 - Add Modbus/TCP client with WiFi module
   * 2025-09-24 - Add switch, select and fix binary sensor
   * 2025-09-24 - ruff format .
   * 2025-09-23 - Reintroduce platformio with ignored starlette 0.6.2 vulnerability

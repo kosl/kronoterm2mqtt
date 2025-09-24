@@ -34,7 +34,7 @@ def get_modbus_client(heat_pump: HeatPump, definitions: dict, verbosity: int) ->
         client = ModbusTcpClient(host=host, port=port)
         
     if verbosity > 1:
-       print('connected:', client.connect())
-       print(client)
+        print('connected:', client.connect())
+        print(client)
 
     return client
