@@ -12,10 +12,10 @@ from ha_services.mqtt4homeassistant.device import MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
-from rich import print  # noqa
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
 from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
+from rich import print  # noqa
 
 import kronoterm2mqtt
 from kronoterm2mqtt.api import get_modbus_client

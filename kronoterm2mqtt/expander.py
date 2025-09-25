@@ -61,7 +61,6 @@ class ExpanderMqttHandler:
             self.etera._s.close()
             print('\nClosing Etera Expander', end='...', flush=True)
 
-
     async def init_device(self, event_loop, main_device: MqttDevice, verbosity: int):
         """Create sensors and add it as subdevice for later update in
         the publish process"""
@@ -95,8 +94,8 @@ class ExpanderMqttHandler:
                     state_class='measurement',
                     unit_of_measurement='°C',
                     suggested_display_precision=2,
-                    min_value = -40.0, # At solar collectors
-                    max_value = 160.0, 
+                    min_value=-40.0,  # At solar collectors
+                    max_value=160.0, 
                 )
             )
         for name in self.user_settings.custom_expander.relay_names:

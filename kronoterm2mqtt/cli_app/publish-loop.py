@@ -1,8 +1,6 @@
 import asyncio
 import logging
-import time
 
-from ha_services.exceptions import InvalidStateValue
 from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.tyro_commands import TyroVerbosityArgType
 from ha_services.mqtt4homeassistant.data_classes import MqttSettings
