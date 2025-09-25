@@ -365,6 +365,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...main)
+  * 2025-09-25 - Fix style
   * 2025-09-25 - Remove main retry loop since the component subscription can be duplicated somehow
   * 2025-09-25 - Upgrade to ha-services with Sensor.value -> Sensor.state change
   * 2025-09-25 - 0.1.13 release
