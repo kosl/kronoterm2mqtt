@@ -9,7 +9,7 @@ authors = [
 ]
 requires-python = ">=3.11, <4"
 dependencies = [
-    "ha-services <= 2.9.0",  # https://github.com/jedie/ha-services
+    "ha-services >= 2.10.0",  # https://github.com/jedie/ha-services
     "cli-base-utilities>=0.17.0",  # https://github.com/jedie/cli-base-utilities
     "pymodbus[serial] >= 3.10.0",  # https://github.com/pymodbus-dev/pymodbus/
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils

@@ -563,7 +563,7 @@ wheels = [
 
 [[package]]
 name = "ha-services"
-version = "2.9.0"
+version = "2.13.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cli-base-utilities" },
@@ -575,9 +575,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "tyro" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/36/37/3f9c8003f10d307da9fa9429c0be0d838cf6f3f3707704bb75ce935c5794/ha_services-2.9.0.tar.gz", hash = "sha256:ac724753579e02d6d97fd847628600b5e9b0577c993098d05fd8310d57ef911d", size = 90835, upload-time = "2025-04-08T17:55:32.966Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/15/1a/b6618e4988379ed94a415308dff25196d1bdaae725507ee4c2769004ecc0/ha_services-2.13.0.tar.gz", hash = "sha256:326825f606e69ab989f44fab2465cf76c041bbee09d16cc26e7bf9a8e73f6045", size = 102792, upload-time = "2025-08-20T06:32:12.231Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f9/96/e79f742ae5efe0fdb6da67ff4f5fd02bf87f4761f5d68f78960497159acb/ha_services-2.9.0-py3-none-any.whl", hash = "sha256:81a9db7f25e74f89d40c50005e0071f92e21215252caed065ecab8a613d29677", size = 48095, upload-time = "2025-04-08T17:55:31.171Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/47/e9b589447354a2a2b5e80ebb221c4b3d741cfce3f3e17522fa1b3d75119c/ha_services-2.13.0-py3-none-any.whl", hash = "sha256:771afd5216fb63c972a3c01db97b29870ec9d5b2c5f7b4a1c47bccf7159c26bc", size = 53419, upload-time = "2025-08-20T06:32:10.453Z" },
 ]
 
 [[package]]
@@ -747,7 +747,7 @@ dev = [
 requires-dist = [
     { name = "bx-py-utils" },
     { name = "cli-base-utilities", specifier = ">=0.17.0" },
-    { name = "ha-services", specifier = "<=2.9.0" },
+    { name = "ha-services", specifier = ">=2.10.0" },
     { name = "pymodbus", extras = ["serial"], specifier = ">=3.10.0" },
     { name = "rich" },
     { name = "tyro" },
@@ -1273,11 +1273,11 @@ wheels = [
 
 [[package]]
 name = "pymodbus"
-version = "3.11.2"
+version = "3.11.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d1/28/34f667085cb162ac68be849e4ea1ced4c54d97b7d8099c11b27ec1cf2fa1/pymodbus-3.11.2.tar.gz", hash = "sha256:132712baf79cae339aac694739b14551bab69b2a078570cb1350b1db0cccdba7", size = 162372, upload-time = "2025-09-10T10:02:53.089Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2e/3b/599f812b03147f1eee357f0eb62f1753ff5bfc099da9aced63ecf6f32560/pymodbus-3.11.3.tar.gz", hash = "sha256:10c2902838ad5a233baefb64b1c1fb064fa762b22b221bf35191bf39f01449a8", size = 162906, upload-time = "2025-09-25T13:06:51.729Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/90/bc7d13710d45ffce70452e5c2e43f7b4d5b23d7424271268d1b363ac5461/pymodbus-3.11.2-py3-none-any.whl", hash = "sha256:0b446173059a881dae46753cebaab3ad72b39f7e3417a60ead394d09d0f6c8fe", size = 164237, upload-time = "2025-09-10T10:02:50.93Z" },
+    { url = "https://files.pythonhosted.org/packages/48/be/65c44a34dd9ac38104819a6182ac9df55dd10b9505ef1dc2ea1d46cb2cbb/pymodbus-3.11.3-py3-none-any.whl", hash = "sha256:fcb84f3389325fc37a644229abf1f31f6704a86265ff3f5ad6ec550c2f243aa1", size = 164377, upload-time = "2025-09-25T13:06:48.587Z" },
 ]
 
 [package.optional-dependencies]

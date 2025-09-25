@@ -150,7 +150,7 @@ class ExpanderMqttHandler:
                 int(duration * 1000),
                 override=override,
             )
-            position = self.mixing_valve_sensors[heating_loop_number].value
+            position = self.mixing_valve_sensors[heating_loop_number].state
             position -= duration / 120.0 * 100
             if position < 0:
                 position = 0
@@ -166,7 +166,7 @@ class ExpanderMqttHandler:
             await self.etera.move_motor(
                 heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration * 1000), override=override
             )
-            position = self.mixing_valve_sensors[heating_loop_number].value
+            position = self.mixing_valve_sensors[heating_loop_number].state
             position += duration / 120.0 * 100
             if position > 100:
                 position = 100
@@ -312,8 +312,8 @@ class ExpanderMqttHandler:
 
             relay = self.relays[settings.inter_tank_pump_relay_id]
             if additional_source_enabled and settings.intra_tank_circulation_operation:
-                dhw_temperature = self.sensors[7].value  # noqa
-                solar_tank_temperature = self.sensors[5].value  # noqa
+                dhw_temperature = self.sensors[7].state  # noqa
+                solar_tank_temperature = self.sensors[5].state  # noqa
                 # if dhw_temperature < current_desired_dhw_temperature:
                 #    dt = solar_tank_temperature - dhw_temperature
                 #    if abs(dt) > settings.solar_pump_difference_on:
@@ -345,7 +345,7 @@ class ExpanderMqttHandler:
                                 relay.set_state(relay.ON)
                                 await self.etera.set_relay(heat_loop, True)
                             # Move motors according to the last reading
-                            loop_temperature = self.sensors[heat_loop].value
+                            loop_temperature = self.sensors[heat_loop].state
                             if loop_temperature > 40.0:  # rapid loop shutdown
                                 self.loop_states[heat_loop].set_state('Izklop')
                                 await self.etera.set_relay(heat_loop, False)
