@@ -300,6 +300,30 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
  - fold-entity-row
 
 
+## Systemd with Mosquitto in Docker
+
+To cleanly start at boot without restarts one may need to wait a while by probing
+the port until available with additional setup for Mosquitto to serve. Updated
+`/etc/systemd/system/kronoterm2mqtt.service` should look like 
+~~~systemd
+[Unit]
+Description=kronoterm2mqtt
+After=syslog.target network.target docker.service 
+
+[Service]
+User=kronoterm
+Group=kronoterm
+WorkingDirectory=/home/kronoterm/kronoterm2mqtt
+ExecStartPre=/bin/bash -c 'until </dev/tcp/localhost/1883; do sleep 1; done 2> /dev/null; sleep 20'
+ExecStart=/home/kronoterm/kronoterm2mqtt/.venv-app/bin/kronoterm2mqtt_app publish-loop
+
+Restart=on-failure
+RestartSec=5s
+SyslogIdentifier=kronoterm2mqtt
+
+[Install]
+WantedBy=multi-user.target
+~~~
 
 ## TODO
 
@@ -365,6 +389,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...main)
+  * 2025-09-25 - Add current heating power sensor
   * 2025-09-25 - Fix style
   * 2025-09-25 - Remove main retry loop since the component subscription can be duplicated somehow
   * 2025-09-25 - Upgrade to ha-services with Sensor.value -> Sensor.state change
