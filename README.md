@@ -365,6 +365,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...main)
+  * 2025-09-25 - Upgrade to ha-services with Sensor.value -> Sensor.state change
   * 2025-09-25 - 0.1.13 release
   * 2025-09-24 - Add ADAPT images
 * [v0.1.13](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...v0.1.13)

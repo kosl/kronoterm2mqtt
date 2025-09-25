@@ -2,6 +2,7 @@ import asyncio
 import logging
 import time
 
+from ha_services.exceptions import InvalidStateValue
 from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.tyro_commands import TyroVerbosityArgType
 from ha_services.mqtt4homeassistant.data_classes import MqttSettings
@@ -40,14 +41,14 @@ def publish_loop(verbosity: TyroVerbosityArgType):
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
 
-    while True:
-        try:
-            with KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity) as kronoterm_mqtt_handler:
-                asyncio.run(kronoterm_mqtt_handler.publish_loop())
-        except TimeoutError:
-            print('Timeout... Retrying in 10 seconds...')
-        except Exception as e:
-            print(f'Error: {e}', type(e))
-            logger.error(f'Unhandled Exception: {e} {type(e)}')
-            exit(1)
-        time.sleep(10)
+    try:
+        print('[green]Starting Kronoterm 2 MQTT[/green]')
+        with KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity) as mqtt_handler:
+            asyncio.run(mqtt_handler.publish_loop())
+    except KeyboardInterrupt:
+        raise
+    except Exception as e:
+        print(f'Error: {e}', type(e))
+        logger.exception(f'Unhandled Exception: {e} {type(e)}')
+        exit(1)
+

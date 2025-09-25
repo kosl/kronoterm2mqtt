@@ -4,6 +4,7 @@ import sys
 import time
 from typing import List
 
+from ha_services.exceptions import InvalidStateValue
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
@@ -54,17 +55,12 @@ class ExpanderMqttHandler:
         EXPEDITED = 'Pospešeno 5h'
         STANDBY = 'Standby'
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type:
-            return False
-
-        if self.config.verbosity:
-            print('\nClosing Etera Expander"', end='...')
+    def stop(self):
+        """Closes open connections"""
         if self.etera:
-            self.etera._s.close()  # TODO add context manager or close to etera library
+            self.etera._s.close()
+            print('\nClosing Etera Expander', end='...', flush=True)
+
 
     async def init_device(self, event_loop, main_device: MqttDevice, verbosity: int):
         """Create sensors and add it as subdevice for later update in
@@ -99,6 +95,8 @@ class ExpanderMqttHandler:
                     state_class='measurement',
                     unit_of_measurement='°C',
                     suggested_display_precision=2,
+                    min_value = -40.0, # At solar collectors
+                    max_value = 160.0, 
                 )
             )
         for name in self.user_settings.custom_expander.relay_names:
@@ -424,8 +422,12 @@ class ExpanderMqttHandler:
 
             self.last_working_function = working_function
             # Expander control end
-        except EteraUartBridge.DeviceException as e:
-            print('Get temperatures error', e)
+        except EteraUartBridge.DeviceException as err:
+            logger.error('Etera Expander error %s', err)
+            raise
+        except InvalidStateValue as err:
+            logger.warning('Skiping due to invalid state: %s', err)
+            raise
         for relay in self.relays:
             if relay is not None:
                 relay.publish(self.mqtt_client)

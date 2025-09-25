@@ -12,6 +12,7 @@ from ha_services.mqtt4homeassistant.device import MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
+from rich import print  # noqa
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
 from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
@@ -55,13 +56,19 @@ class KronotermMqttHandler:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit the context manager, cleaning up resources."""
-        if exc_type:
-            return False
+        if self.verbosity:
+            print('\nClosing MQTT and Modbus client.', end='...')
 
-        if self.config.verbosity:
-            print('\nClosing MQTT and Modbus client"', end='...')
+        if self.expander:
+            self.expander.stop()
+            print('expander stopped', flush=True)
+
         if self.modbus_client:
             self.modbus_client.close()
+            
+        if self.mqtt_client:
+            self.mqtt_client.loop_stop()
+            self.mqtt_client.disconnect()
 
     async def init_device(self, event_loop, verbosity: int):
         """
@@ -259,7 +266,7 @@ class KronotermMqttHandler:
                     value = response.registers[i]
                     self.registers[address_start + i] = value - (value >> 15 << 16)  # Convert value to signed integer
         if self.verbosity:
-            print(f'Registers: {self.registers}')
+            logger.info(f'Registers: {self.registers}')
 
     async def publish_loop(self):
         # setup_logging(verbosity=verbosity)
@@ -275,7 +282,7 @@ class KronotermMqttHandler:
         if self.main_device is None:
             await self.init_device(event_loop, self.verbosity)
 
-        print('Kronoterm to MQTT publish loop started...')
+        print('Kronoterm to MQTT publish loop started...', flush=True)
         while True:
             self.read_heat_pump_register_blocks()
             for address in self.sensors:
@@ -329,8 +336,7 @@ class KronotermMqttHandler:
                 )
 
             if self.verbosity:
-                print('\n', flush=True)
-                print('Wait', end='...')
+                print('\nWait', end='...', flush=True)
                 for i in range(10, 0, -1):
                     await asyncio.sleep(1)
                     print(i, end='...', flush=True)
