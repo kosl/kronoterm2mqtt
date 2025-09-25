@@ -364,6 +364,9 @@ n}
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...main)
+  * 2025-09-25 - Taskgroup fails when ha_services == 2.10
+  * 2025-09-24 - Add ADAPT images
 * [v0.1.13](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...v0.1.13)
   * 2025-09-24 - Fix indent
   * 2025-09-24 - Add Modbus/TCP client with WiFi module
@@ -394,6 +397,9 @@ n}
   * 2024-11-28 - feat(expander): Implement expedited heating
   * 2024-11-28 - refactor(expander): Convert heating loop on/off switch to multi-state working function select
   * 2024-11-17 - Fix parenthesis typo
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.1.10](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.9...v0.1.10)
   * 2024-11-15 - Add Downloads counter fix
   * 2024-11-15 - Add Downloads counter
@@ -402,9 +408,6 @@ n}
   * 2024-11-15 - Upgrade and ignore starlette safety issues
   * 2024-11-15 - Handle all Modbus values as 16 bit signed integers to address negative temperatures
   * 2024-11-10 - Disabling solar collectors in settings now works with service restart
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.1.9](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.8...v0.1.9)
   * 2024-11-08 - Tune expander default for mix-valve control and upgrade virtualenv due to vulnerability ID: 73456
   * 2024-10-21 - Minor typos
