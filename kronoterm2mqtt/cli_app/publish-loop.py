@@ -42,12 +42,19 @@ def publish_loop(verbosity: TyroVerbosityArgType):
 
     while True:
         try:
-            with KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity) as kronoterm_mqtt_handler:
-                asyncio.run(kronoterm_mqtt_handler.publish_loop())
-        except TimeoutError:
-            print('Timeout... Retrying in 10 seconds...')
-        except Exception as e:
-            print(f'Error: {e}', type(e))
-            logger.error(f'Unhandled Exception: {e} {type(e)}')
-            exit(1)
+            with KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity) as mqtt_handler:
+                asyncio.run(mqtt_handler.publish_loop())
+        except* Exception as eg:
+                    print("Group failed")
+                    for exc in eg.exceptions:
+                        print(" -", type(exc).__name__, exc)
+
+#        except TimeoutError:
+#            print('\nTimeout... Retrying in 10 seconds...')
+#        except KeyboardInterrupt:
+#            print("\nReceived keyboard interrupt, shutting down")
+#        except Exception as e:
+#            print(f'Error: {e}', type(e))
+#            logger.error(f'Unhandled Exception: {e} {type(e)}')
+#            exit(1)
         time.sleep(10)

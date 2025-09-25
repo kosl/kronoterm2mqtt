@@ -3,6 +3,7 @@ from decimal import Decimal
 import itertools
 import logging
 from typing import Any, Dict, List, Optional, Tuple
+import time
 
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
@@ -35,7 +36,7 @@ class KronotermMqttHandler:
         self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
         self.mqtt_client.loop_start()
         self.modbus_client = None
-        self.expander = (
+        self.expander: Optional[ExpanderMqttHandler] = (
             ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity)
             if self.user_settings.custom_expander.module_enabled
             else None
@@ -55,15 +56,17 @@ class KronotermMqttHandler:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit the context manager, cleaning up resources."""
+        if self.verbosity:
+            print('\nClosing MQTT and Modbus client.', end='...')
+        if self.modbus_client:
+            self.modbus_client.close()            
+        if self.mqtt_client:
+            self.mqtt_client.loop_stop()
+            self.mqtt_client.disconnect()
         if exc_type:
             return False
 
-        if self.config.verbosity:
-            print('\nClosing MQTT and Modbus client"', end='...')
-        if self.modbus_client:
-            self.modbus_client.close()
-
-    async def init_device(self, event_loop, verbosity: int):
+    async def init_device(self):
         """
         Create sensors from definitions.toml add it to device for later
         update in publish process.
@@ -78,14 +81,14 @@ class KronotermMqttHandler:
         )
 
         if self.expander is not None:
-            await self.expander.init_device(event_loop, self.main_device, verbosity)
+            await self.expander.init_device(self.main_device)
 
-        definitions = self.heat_pump.get_definitions(verbosity)
+        definitions = self.heat_pump.get_definitions(self.verbosity)
 
         parameters = definitions['sensor']
 
         for parameter in parameters:
-            if verbosity > 1:
+            if self.verbosity > 1:
                 print(f'Creating sensor {parameter}')
 
             address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
@@ -166,7 +169,7 @@ class KronotermMqttHandler:
             + list(self.selects.keys())
         )
         self.address_ranges = list(self.ranges(list(addresses)))
-        if self.verbosity:
+        if self.verbosity > 1:
             print(f'Addresses: {addresses} Ranges: {len(self.address_ranges)}')
 
     def switch_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
@@ -258,11 +261,11 @@ class KronotermMqttHandler:
                 for i in range(count):
                     value = response.registers[i]
                     self.registers[address_start + i] = value - (value >> 15 << 16)  # Convert value to signed integer
-        if self.verbosity:
+        if self.verbosity > 1:
             print(f'Registers: {self.registers}')
 
     async def publish_loop(self):
-        # setup_logging(verbosity=verbosity)
+        # setup_logging(verbosity=self.verbosity)
 
         definitions = self.heat_pump.get_definitions(self.verbosity)
 
@@ -270,10 +273,8 @@ class KronotermMqttHandler:
 
         logger.info(f'Publishing Home Assistant MQTT discovery for {self.device_name}')
 
-        event_loop = asyncio.get_event_loop()
-
         if self.main_device is None:
-            await self.init_device(event_loop, self.verbosity)
+            await self.init_device()
 
         print('Kronoterm to MQTT publish loop started...')
         while True:
@@ -317,16 +318,23 @@ class KronotermMqttHandler:
                             select.publish(self.mqtt_client)
 
             if self.expander is not None:
-                await self.expander.update_sensors_and_control(
-                    outside_temperature=0.1 * self.registers[2102],  # outside temperature
-                    current_desired_dhw_temperature=0.1 * self.registers[2023],  # Current desired DHW temperature
-                    additional_source_enabled=self.registers[2015] > 0,  # Additional source activated
-                    loop_circulation_status=self.registers[2044] > 0,  # Loop 1 circulation pump status
-                    # Loop 1 temperature offset in ECO mode
-                    loop_temperature_offset_in_eco_mode=0.1 * self.registers[2046],
-                    loop_operation_status_on_schedule=self.registers[2043],  # Loop 1 operation status on schedule
-                    working_function=self.registers[2000],  # Heat pump heating=0, standby=5
-                )
+                try:
+                    await self.expander.update_sensors_and_control(
+                      outside_temperature=0.1 * self.registers[2102],  # outside temperature
+                      current_desired_dhw_temperature=0.1 * self.registers[2023],  # Current desired DHW temperature
+                      additional_source_enabled=self.registers[2015] > 0,  # Additional source activated
+                      loop_circulation_status=self.registers[2044] > 0,  # Loop 1 circulation pump status
+                      # Loop 1 temperature offset in ECO mode
+                      loop_temperature_offset_in_eco_mode=0.1 * self.registers[2046],
+                      loop_operation_status_on_schedule=self.registers[2043],  # Loop 1 operation status on schedule
+                      working_function=self.registers[2000],  # Heat pump heating=0, standby=5
+                    )
+                #except asyncio.CancelledError:
+                #    print('Expander update cancelled!')
+                except* Exception as eg:
+                    print("Group failed")
+                    for exc in eg.exceptions:
+                        print(" -", type(exc).__name__, exc)
 
             if self.verbosity:
                 print('\n', flush=True)
@@ -336,3 +344,4 @@ class KronotermMqttHandler:
                     print(i, end='...', flush=True)
             else:
                 await asyncio.sleep(10)
+                

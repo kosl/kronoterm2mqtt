@@ -1,3 +1,4 @@
+import asyncio
 from enum import Enum
 import logging
 import sys
@@ -35,7 +36,7 @@ async def etera_message_handler(message: bytes):
 class ExpanderMqttHandler:
     def __init__(self, mqtt_client, user_settings: UserSettings, verbosity: int):
         self.etera = None
-        self.event_loop = None
+        self.etera_taskgroup = None
         self.mqtt_client = mqtt_client
         self.user_settings = user_settings
         self.verbosity = verbosity
@@ -55,29 +56,34 @@ class ExpanderMqttHandler:
         STANDBY = 'Standby'
 
     def __enter__(self):
+        """Enter the context manager."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type:
+        """Exit the context manager, cleaning up resources."""
+        # if self.verbosity:
+        print('\nClosing Etera Expander"', end='...')
+        if self.taskgroup:
+            self.taskgroup.cancel()  # Cancel all running tasks
+        if self.etera:  # close UART
+            self.etera._s.close()  # TODO add context manager or close to etera library
+        if exc_type: 
             return False
 
-        if self.config.verbosity:
-            print('\nClosing Etera Expander"', end='...')
-        if self.etera:
-            self.etera._s.close()  # TODO add context manager or close to etera library
-
-    async def init_device(self, event_loop, main_device: MqttDevice, verbosity: int):
+    async def init_device(self, main_device: MqttDevice):
         """Create sensors and add it as subdevice for later update in
         the publish process"""
 
         port = self.user_settings.custom_expander.port
         print(f'Custom expander is using port {port}')
 
+        self.taskgroup = asyncio.TaskGroup()
+        await self.taskgroup.__aenter__()
+        
         self.etera = EteraUartBridge(
             port, on_device_reset_handler=etera_reset_handler, on_device_message_handler=etera_message_handler
         )
-        self.event_loop = event_loop
-        self.event_loop.create_task(self.etera.run_forever())
+        self.taskgroup.create_task(self.etera.run_forever())
         await self.etera.ready()
 
         self.mqtt_device = MqttDevice(
@@ -138,11 +144,11 @@ class ExpanderMqttHandler:
                 self.mixing_valve_sensors.append(mixing_valve_sensor)
                 mixing_valve_sensor.set_state(0)
                 mixing_valve_sensor.publish(self.mqtt_client)
-                event_loop.create_task(self.mixing_valve_motor_close(i, 120))
+                self.taskgroup.create_task(self.mixing_valve_motor_close(i, 120))
                 self.mixing_valve_timer.append(time.monotonic())
                 self.expedited_heating_timer.append(None)
 
-    async def mixing_valve_motor_close(self, heating_loop_number: int, duration: float, override: bool = True):
+    async def mixing_valve_motor_close(self, heating_loop_number: int, duration: float, override: bool = False):
         try:
             await self.etera.move_motor(
                 heating_loop_number,
@@ -161,7 +167,7 @@ class ExpanderMqttHandler:
         except EteraUartBridge.DeviceException as e:
             print(f'Motor #{heating_loop_number} move error', e)
 
-    async def mixing_valve_motor_open(self, heating_loop_number: int, duration: float, override: bool = True):
+    async def mixing_valve_motor_open(self, heating_loop_number: int, duration: float, override: bool = False):
         try:
             await self.etera.move_motor(
                 heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration * 1000), override=override
@@ -349,8 +355,8 @@ class ExpanderMqttHandler:
                             if loop_temperature > 40.0:  # rapid loop shutdown
                                 self.loop_states[heat_loop].set_state('Izklop')
                                 await self.etera.set_relay(heat_loop, False)
-                                self.event_loop.create_task(
-                                    self.mixing_valve_motor_close(heat_loop, 120, override=True)
+                                self.taskgroup.create_task(
+                                    self.mixing_valve_motor_close(heat_loop, 120, override=False)
                                 )
                                 print(
                                     f'Undefloor temperature #{heat_loop} too high ({loop_temperature})'
@@ -361,7 +367,7 @@ class ExpanderMqttHandler:
                                 self.last_working_function > 0 and working_function == 0
                             ):  # Start of heating detected, close the valve
                                 self.mixing_valve_timer[heat_loop] = time.monotonic()  # reset timer
-                                self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 12))
+                                self.taskgroup.create_task(self.mixing_valve_motor_close(heat_loop, 12))
                                 continue  # to next loop
                             if (
                                 time.monotonic() - self.mixing_valve_timer[heat_loop] > MIXING_VALVE_HOLD_TIME
@@ -384,7 +390,7 @@ class ExpanderMqttHandler:
                                     ) * 3.0  # 3 seconds for 1K
                                     if move_duration > 12:
                                         move_duration = 12  # limit move
-                                    self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, move_duration))
+                                    self.taskgroup.create_task(self.mixing_valve_motor_close(heat_loop, move_duration))
 
                                 else:  # open the mixing valve since target_loop_temperature > loop_temperature
                                     move_duration = (
@@ -392,7 +398,7 @@ class ExpanderMqttHandler:
                                     ) * 3.0  # 3 seconds for 1K
                                     if move_duration > 10:
                                         move_duration = 10  # limit move
-                                    self.event_loop.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
+                                    self.taskgroup.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
                                 if self.verbosity > 1:
                                     underfloor_temp_correction = target_loop_temperature - temp_at_zero
                                     print(
@@ -405,8 +411,8 @@ class ExpanderMqttHandler:
                         else:  # Loop is switched OFF (disabled) and we close the valve and the pump if needed
                             if relay.is_on:
                                 relay.set_state(relay.OFF)
-                                self.event_loop.create_task(
-                                    self.mixing_valve_motor_close(heat_loop, 120, override=True)
+                                self.taskgroup.create_task(
+                                    self.mixing_valve_motor_close(heat_loop, 120, override=False)
                                 )
                                 await self.etera.set_relay(heat_loop, False)
 
@@ -415,7 +421,7 @@ class ExpanderMqttHandler:
                     relay = self.relays[heat_loop]
                     if relay is not None:
                         if self.loop_states[heat_loop].state == self.WorkingMode.OFF.value and relay.is_on:
-                            self.event_loop.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=True))
+                            self.taskgroup.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=False))
                         if relay.is_on:  # We stop the pumps for now
                             relay.set_state(relay.OFF)
                             await self.etera.set_relay(heat_loop, False)
@@ -425,7 +431,10 @@ class ExpanderMqttHandler:
             self.last_working_function = working_function
             # Expander control end
         except EteraUartBridge.DeviceException as e:
-            print('Get temperatures error', e)
+            print(f'Get temperatures error {e}')
+            raise
+        except asyncio.CancelledError:
+            print('AsyncIO CancelledError on update_sensors_and_control temperatures')
         for relay in self.relays:
             if relay is not None:
                 relay.publish(self.mqtt_client)
