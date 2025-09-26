@@ -156,7 +156,7 @@ class ExpanderMqttHandler:
                 int(duration * 1000),
                 override=override,
             )
-            position = self.mixing_valve_sensors[heating_loop_number].value
+            position = self.mixing_valve_sensors[heating_loop_number].state
             position -= duration / 120.0 * 100
             if position < 0:
                 position = 0
@@ -172,7 +172,7 @@ class ExpanderMqttHandler:
             await self.etera.move_motor(
                 heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration * 1000), override=override
             )
-            position = self.mixing_valve_sensors[heating_loop_number].value
+            position = self.mixing_valve_sensors[heating_loop_number].state
             position += duration / 120.0 * 100
             if position > 100:
                 position = 100
