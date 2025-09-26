@@ -1,8 +1,10 @@
 import asyncio
+from asyncio.exceptions import CancelledError
 import logging
 
 from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.tyro_commands import TyroVerbosityArgType
+from ha_services.exceptions import InvalidStateValue
 from ha_services.mqtt4homeassistant.data_classes import MqttSettings
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from rich import print  # noqa
@@ -39,14 +41,19 @@ def publish_loop(verbosity: TyroVerbosityArgType):
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
 
-    try:
-        print('[green]Starting Kronoterm 2 MQTT[/green]')
-        with KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity) as mqtt_handler:
-            asyncio.run(mqtt_handler.publish_loop())
-    except KeyboardInterrupt:
-        raise
-    except Exception as e:
-        print(f'Error: {e}', type(e))
-        logger.exception(f'Unhandled Exception: {e} {type(e)}')
-        exit(1)
+    while True:
+        try:
+            print('[green]Starting Kronoterm 2 MQTT[/green]')
+            with KronotermMqttHandler(user_settings=user_settings, verbosity=verbosity) as mqtt_handler:
+                asyncio.run(mqtt_handler.publish_loop())
+        except KeyboardInterrupt:
+            raise
+        except (InvalidStateValue, CancelledError) as e:
+            logging.error(f'Kronoterm2MQTT loop failed. {e}. Restating...')
+        except Exception as e:
+            print(f'Error: {e}', type(e))
+            logger.exception(f'Unhandled Exception: {e} {type(e)}')
+            exit(1)
+
+
 

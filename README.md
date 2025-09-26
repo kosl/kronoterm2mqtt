@@ -389,6 +389,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...main)
+  * 2025-09-25 - Note on systemd Mosquitto
   * 2025-09-25 - Add current heating power sensor
   * 2025-09-25 - Fix style
   * 2025-09-25 - Remove main retry loop since the component subscription can be duplicated somehow

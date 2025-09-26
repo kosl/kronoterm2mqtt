@@ -8,7 +8,7 @@ from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.switch import Switch
-from ha_services.mqtt4homeassistant.device import MqttDevice
+from ha_services.mqtt4homeassistant.device import BaseMqttDevice, MqttDevice
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
@@ -69,6 +69,9 @@ class KronotermMqttHandler:
         if self.mqtt_client:
             self.mqtt_client.loop_stop()
             self.mqtt_client.disconnect()
+            
+        BaseMqttDevice.device_uids = set()  # Reset
+        BaseMqttDevice.components = {}  # Global registry of all components
 
     async def init_device(self, event_loop, verbosity: int):
         """

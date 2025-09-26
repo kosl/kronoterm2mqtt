@@ -84,6 +84,7 @@ class ExpanderMqttHandler:
             sw_version='1.1.3',
             config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
         )
+
         for name in self.user_settings.custom_expander.sensor_names:
             self.sensors.append(
                 Sensor(
@@ -94,8 +95,8 @@ class ExpanderMqttHandler:
                     state_class='measurement',
                     unit_of_measurement='°C',
                     suggested_display_precision=2,
-                    min_value=-40.0,  # At solar collectors
-                    max_value=160.0, 
+                    min_value=-35.0,  # At solar collectors
+                    max_value=140.0, 
                 )
             )
         for name in self.user_settings.custom_expander.relay_names:
@@ -426,7 +427,6 @@ class ExpanderMqttHandler:
             raise
         except InvalidStateValue as err:
             logger.warning('Skiping due to invalid state: %s', err)
-            raise
         for relay in self.relays:
             if relay is not None:
                 relay.publish(self.mqtt_client)
