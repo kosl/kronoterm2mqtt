@@ -134,7 +134,7 @@ class KronotermMqttHandler:
                     device=self.main_device,
                     name=parameter['name'],
                     uid=slugify(parameter['name'], '_').lower(),
-                    device_class='enum',
+                    device_class=None,
                     state_class=None,
                 ),
                 *parameter['options'],

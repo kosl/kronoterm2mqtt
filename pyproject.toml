@@ -13,8 +13,8 @@ dependencies = [
     "cli-base-utilities>=0.17.0",  # https://github.com/jedie/cli-base-utilities
     "pymodbus[serial] >= 3.10.0",  # https://github.com/pymodbus-dev/pymodbus/
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
-    "tyro",  # https://github.com/brentyi/tyro # https://github.com/brentyi/tyro
-    "rich",  # https://github.com/Textualize/rich # https://github.com/Textualize/rich
+    "tyro",  # https://github.com/brentyi/tyro
+    "rich",  # https://github.com/Textualize/rich
 ]
 
 [dependency-groups]
