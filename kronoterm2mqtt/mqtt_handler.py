@@ -3,7 +3,6 @@ from decimal import Decimal
 import itertools
 import logging
 from typing import Any, Dict, List, Optional, Tuple
-import time
 
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
@@ -135,7 +134,7 @@ class KronotermMqttHandler:
                     device=self.main_device,
                     name=parameter['name'],
                     uid=slugify(parameter['name'], '_').lower(),
-                    device_class='enum',
+                    device_class=None,
                     state_class=None,
                 ),
                 *parameter['options'],
@@ -337,12 +336,8 @@ class KronotermMqttHandler:
                       loop_operation_status_on_schedule=self.registers[2043],  # Loop 1 operation status on schedule
                       working_function=self.registers[2000],  # Heat pump heating=0, standby=5
                     )
-                #except asyncio.CancelledError:
-                #    print('Expander update cancelled!')
-                except* Exception as eg:
-                    print("Group failed")
-                    for exc in eg.exceptions:
-                        print(" -", type(exc).__name__, exc)
+                except asyncio.CancelledError:
+                    print('Expander update cancelled!')
 
             if self.verbosity:
                 print('\nWait', end='...', flush=True)
