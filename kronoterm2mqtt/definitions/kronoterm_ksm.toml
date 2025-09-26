@@ -131,6 +131,13 @@ state_class = "measurement"
 unit_of_measurement = "W"
 scale = 1.0
 
+[[sensor]]
+register = 2329
+name = "Current heating power"
+device_class = "power"
+state_class = "measurement"
+unit_of_measurement = "W"
+scale = 1.0
 
 
 [[sensor]]

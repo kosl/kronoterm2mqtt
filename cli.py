@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 """
-bootstrap CLI
-~~~~~~~~~~~~~
+    bootstrap CLI
+    ~~~~~~~~~~~~~
 
-Just call this file, and the magic happens ;)
+    Just call this file, and the magic happens ;)
 """
 
 import hashlib

@@ -5,6 +5,7 @@ import sys
 import time
 from typing import List
 
+from ha_services.exceptions import InvalidStateValue
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
@@ -55,20 +56,16 @@ class ExpanderMqttHandler:
         EXPEDITED = 'Pospešeno 5h'
         STANDBY = 'Standby'
 
-    def __enter__(self):
-        """Enter the context manager."""
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Exit the context manager, cleaning up resources."""
-        # if self.verbosity:
-        print('\nClosing Etera Expander"', end='...')
-        if self.taskgroup:
-            self.taskgroup.cancel()  # Cancel all running tasks
-        if self.etera:  # close UART
-            self.etera._s.close()  # TODO add context manager or close to etera library
-        if exc_type: 
-            return False
+    def stop(self):
+        """Closes open connections"""
+        if self.etera:
+            self.etera._s.close()
+            print('\nClosing Etera Expander', end='...', flush=True)
+#        if self.taskgroup: # Cancel all running tasks
+#            for task in list(self.taskgroup._tasks):
+#                task.cancel()  
+#        if self.etera:  # close UART
+#            self.etera._s.close()  # TODO add context manager or close to etera library
 
     async def init_device(self, main_device: MqttDevice):
         """Create sensors and add it as subdevice for later update in
@@ -95,6 +92,7 @@ class ExpanderMqttHandler:
             sw_version='1.1.3',
             config_throttle_sec=self.user_settings.mqtt.publish_config_throttle_seconds,
         )
+
         for name in self.user_settings.custom_expander.sensor_names:
             self.sensors.append(
                 Sensor(
@@ -105,6 +103,8 @@ class ExpanderMqttHandler:
                     state_class='measurement',
                     unit_of_measurement='°C',
                     suggested_display_precision=2,
+                    min_value=-35.0,  # At solar collectors
+                    max_value=140.0, 
                 )
             )
         for name in self.user_settings.custom_expander.relay_names:
@@ -318,8 +318,8 @@ class ExpanderMqttHandler:
 
             relay = self.relays[settings.inter_tank_pump_relay_id]
             if additional_source_enabled and settings.intra_tank_circulation_operation:
-                dhw_temperature = self.sensors[7].value  # noqa
-                solar_tank_temperature = self.sensors[5].value  # noqa
+                dhw_temperature = self.sensors[7].state  # noqa
+                solar_tank_temperature = self.sensors[5].state  # noqa
                 # if dhw_temperature < current_desired_dhw_temperature:
                 #    dt = solar_tank_temperature - dhw_temperature
                 #    if abs(dt) > settings.solar_pump_difference_on:
@@ -351,7 +351,7 @@ class ExpanderMqttHandler:
                                 relay.set_state(relay.ON)
                                 await self.etera.set_relay(heat_loop, True)
                             # Move motors according to the last reading
-                            loop_temperature = self.sensors[heat_loop].value
+                            loop_temperature = self.sensors[heat_loop].state
                             if loop_temperature > 40.0:  # rapid loop shutdown
                                 self.loop_states[heat_loop].set_state('Izklop')
                                 await self.etera.set_relay(heat_loop, False)
@@ -430,11 +430,11 @@ class ExpanderMqttHandler:
 
             self.last_working_function = working_function
             # Expander control end
-        except EteraUartBridge.DeviceException as e:
-            print(f'Get temperatures error {e}')
+        except EteraUartBridge.DeviceException as err:
+            logger.error('Etera Expander error %s', err)
             raise
-        except asyncio.CancelledError:
-            print('AsyncIO CancelledError on update_sensors_and_control temperatures')
+        except InvalidStateValue as err:
+            logger.warning('Skiping due to invalid state: %s', err)
         for relay in self.relays:
             if relay is not None:
                 relay.publish(self.mqtt_client)

@@ -300,6 +300,30 @@ If the test above fails, try to change port or baudrate to 19200 by editing `kro
  - fold-entity-row
 
 
+## Systemd with Mosquitto in Docker
+
+To cleanly start at boot without restarts one may need to wait a while by probing
+the port until available with additional setup for Mosquitto to serve. Updated
+`/etc/systemd/system/kronoterm2mqtt.service` should look like 
+~~~systemd
+[Unit]
+Description=kronoterm2mqtt
+After=syslog.target network.target docker.service 
+
+[Service]
+User=kronoterm
+Group=kronoterm
+WorkingDirectory=/home/kronoterm/kronoterm2mqtt
+ExecStartPre=/bin/bash -c 'until </dev/tcp/localhost/1883; do sleep 1; done 2> /dev/null; sleep 20'
+ExecStart=/home/kronoterm/kronoterm2mqtt/.venv-app/bin/kronoterm2mqtt_app publish-loop
+
+Restart=on-failure
+RestartSec=5s
+SyslogIdentifier=kronoterm2mqtt
+
+[Install]
+WantedBy=multi-user.target
+~~~
 
 ## TODO
 
@@ -364,8 +388,27 @@ n}
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...main)
+* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.14...main)
+  * 2025-09-26 - Fix sensor value->state
+  * 2025-09-26 - Release 0.1.14
+  * 2025-09-26 - Cleanup of the MQTT global device ids and components for running within a loop
+  * 2025-09-25 - Note on systemd Mosquitto
+  * 2025-09-25 - Add current heating power sensor
+  * 2025-09-25 - Fix style
+  * 2025-09-25 - Remove main retry loop since the component subscription can be duplicated somehow
+  * 2025-09-25 - Upgrade to ha-services with Sensor.value -> Sensor.state change
+  * 2025-09-25 - Update readme
   * 2025-09-25 - Taskgroup fails when ha_services == 2.10
+  * 2025-09-25 - 0.1.13 release
+* [v0.1.14](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...v0.1.14)
+  * 2025-09-26 - Release 0.1.14
+  * 2025-09-26 - Cleanup of the MQTT global device ids and components for running within a loop
+  * 2025-09-25 - Note on systemd Mosquitto
+  * 2025-09-25 - Add current heating power sensor
+  * 2025-09-25 - Fix style
+  * 2025-09-25 - Remove main retry loop since the component subscription can be duplicated somehow
+  * 2025-09-25 - Upgrade to ha-services with Sensor.value -> Sensor.state change
+  * 2025-09-25 - 0.1.13 release
   * 2025-09-24 - Add ADAPT images
 * [v0.1.13](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...v0.1.13)
   * 2025-09-24 - Fix indent
@@ -381,6 +424,9 @@ n}
   * 2025-08-06 - Upgrade to pymodbus 3.10
   * 2025-08-04 - Bump versions and disable plaformio (for now) to resolve pip-audit on starlette
   * 2025-06-22 - Fix vournerable library
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
   * 2025-06-06 - Fix comment
   * 2025-06-06 - Add release 1.11
@@ -397,9 +443,6 @@ n}
   * 2024-11-28 - feat(expander): Implement expedited heating
   * 2024-11-28 - refactor(expander): Convert heating loop on/off switch to multi-state working function select
   * 2024-11-17 - Fix parenthesis typo
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.1.10](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.9...v0.1.10)
   * 2024-11-15 - Add Downloads counter fix
   * 2024-11-15 - Add Downloads counter
