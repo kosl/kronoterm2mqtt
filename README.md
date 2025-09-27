@@ -388,18 +388,17 @@ n}
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.14...main)
+* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.15...main)
+  * 2025-09-27 - Add some wait time in order to USB adapter correctly restarts
+  * 2025-09-26 - Fix enum validation and release new package
+  * 2025-09-26 - Fix Invalid: device_class='enum' !
+  * 2025-09-26 - device_class of enum is None
   * 2025-09-26 - Fix sensor value->state
-  * 2025-09-26 - Release 0.1.14
-  * 2025-09-26 - Cleanup of the MQTT global device ids and components for running within a loop
-  * 2025-09-25 - Note on systemd Mosquitto
-  * 2025-09-25 - Add current heating power sensor
-  * 2025-09-25 - Fix style
-  * 2025-09-25 - Remove main retry loop since the component subscription can be duplicated somehow
-  * 2025-09-25 - Upgrade to ha-services with Sensor.value -> Sensor.state change
   * 2025-09-25 - Update readme
   * 2025-09-25 - Taskgroup fails when ha_services == 2.10
-  * 2025-09-25 - 0.1.13 release
+* [v0.1.15](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.14...v0.1.15)
+  * 2025-09-26 - Fix enum validation and release new package
+  * 2025-09-26 - Fix Invalid: device_class='enum' !
 * [v0.1.14](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...v0.1.14)
   * 2025-09-26 - Release 0.1.14
   * 2025-09-26 - Cleanup of the MQTT global device ids and components for running within a loop
@@ -419,14 +418,14 @@ n}
   * 2025-09-23 - Use ruff instead of darker
   * 2025-09-23 - Add unhandled exceptions to exit(1)
   * 2025-08-12 - Update for vulnerabilities
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.1.12](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...v0.1.12)
   * 2025-08-06 - Bump version for modbus change
   * 2025-08-06 - Upgrade to pymodbus 3.10
   * 2025-08-04 - Bump versions and disable plaformio (for now) to resolve pip-audit on starlette
   * 2025-06-22 - Fix vournerable library
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
   * 2025-06-06 - Fix comment
   * 2025-06-06 - Add release 1.11
