@@ -61,11 +61,6 @@ class ExpanderMqttHandler:
         if self.etera:
             self.etera._s.close()
             print('\nClosing Etera Expander', end='...', flush=True)
-#        if self.taskgroup: # Cancel all running tasks
-#            for task in list(self.taskgroup._tasks):
-#                task.cancel()  
-#        if self.etera:  # close UART
-#            self.etera._s.close()  # TODO add context manager or close to etera library
 
     async def init_device(self, main_device: MqttDevice):
         """Create sensors and add it as subdevice for later update in
@@ -148,7 +143,7 @@ class ExpanderMqttHandler:
                 self.mixing_valve_timer.append(time.monotonic())
                 self.expedited_heating_timer.append(None)
 
-    async def mixing_valve_motor_close(self, heating_loop_number: int, duration: float, override: bool = False):
+    async def mixing_valve_motor_close(self, heating_loop_number: int, duration: float, override: bool = True):
         try:
             await self.etera.move_motor(
                 heating_loop_number,
@@ -167,7 +162,7 @@ class ExpanderMqttHandler:
         except EteraUartBridge.DeviceException as e:
             print(f'Motor #{heating_loop_number} move error', e)
 
-    async def mixing_valve_motor_open(self, heating_loop_number: int, duration: float, override: bool = False):
+    async def mixing_valve_motor_open(self, heating_loop_number: int, duration: float, override: bool = True):
         try:
             await self.etera.move_motor(
                 heating_loop_number, EteraUartBridge.Direction.CLOCKWISE, int(duration * 1000), override=override
@@ -356,7 +351,7 @@ class ExpanderMqttHandler:
                                 self.loop_states[heat_loop].set_state('Izklop')
                                 await self.etera.set_relay(heat_loop, False)
                                 self.taskgroup.create_task(
-                                    self.mixing_valve_motor_close(heat_loop, 120, override=False)
+                                    self.mixing_valve_motor_close(heat_loop, 120, override=True)
                                 )
                                 print(
                                     f'Undefloor temperature #{heat_loop} too high ({loop_temperature})'
@@ -412,7 +407,7 @@ class ExpanderMqttHandler:
                             if relay.is_on:
                                 relay.set_state(relay.OFF)
                                 self.taskgroup.create_task(
-                                    self.mixing_valve_motor_close(heat_loop, 120, override=False)
+                                    self.mixing_valve_motor_close(heat_loop, 120, override=True)
                                 )
                                 await self.etera.set_relay(heat_loop, False)
 
@@ -421,7 +416,7 @@ class ExpanderMqttHandler:
                     relay = self.relays[heat_loop]
                     if relay is not None:
                         if self.loop_states[heat_loop].state == self.WorkingMode.OFF.value and relay.is_on:
-                            self.taskgroup.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=False))
+                            self.taskgroup.create_task(self.mixing_valve_motor_close(heat_loop, 120, override=True))
                         if relay.is_on:  # We stop the pumps for now
                             relay.set_state(relay.OFF)
                             await self.etera.set_relay(heat_loop, False)
