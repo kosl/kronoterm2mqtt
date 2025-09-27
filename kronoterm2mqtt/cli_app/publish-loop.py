@@ -50,7 +50,7 @@ def publish_loop(verbosity: TyroVerbosityArgType):
         except KeyboardInterrupt:
             raise
         except (InvalidStateValue, CancelledError) as e:
-            logging.error(f'Kronoterm2MQTT loop failed. {e}. Restating in 5 seconds ...')
+            logging.error(f'Kronoterm2MQTT loop failed. USB problem? {e}. Restating in 5 seconds ...')
             time.sleep(5)
         except Exception as e:
             print(f'Error: {e}', type(e))
