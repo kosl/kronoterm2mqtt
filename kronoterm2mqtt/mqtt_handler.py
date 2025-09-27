@@ -336,8 +336,9 @@ class KronotermMqttHandler:
                       loop_operation_status_on_schedule=self.registers[2043],  # Loop 1 operation status on schedule
                       working_function=self.registers[2000],  # Heat pump heating=0, standby=5
                     )
-                except asyncio.CancelledError:
-                    print('Expander update cancelled!')
+                except asyncio.CancelledError as e:
+                    logger.warning(f'Expander update cancelled! {e}')
+                    raise
 
             if self.verbosity:
                 print('\nWait', end='...', flush=True)
