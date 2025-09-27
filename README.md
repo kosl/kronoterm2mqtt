@@ -389,7 +389,15 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.15...main)
+  * 2025-09-27 - Taskgroup correctly handles USB gliches
+  * 2025-09-27 - Override motor move back again
+  * 2025-09-27 - Add some wait time in order to USB adapter correctly restarts
+  * 2025-09-27 - Move event loop to expander only and remove verbosity from args
   * 2025-09-26 - Add pooling interval to user settings
+  * 2025-09-26 - device_class of enum is None
+  * 2025-09-26 - Fix sensor value->state
+  * 2025-09-25 - Update readme
+  * 2025-09-25 - Taskgroup fails when ha_services == 2.10
 * [v0.1.15](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.14...v0.1.15)
   * 2025-09-26 - Fix enum validation and release new package
   * 2025-09-26 - Fix Invalid: device_class='enum' !

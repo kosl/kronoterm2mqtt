@@ -36,7 +36,7 @@ class KronotermMqttHandler:
         self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
         self.mqtt_client.loop_start()
         self.modbus_client = None
-        self.expander = (
+        self.expander: Optional[ExpanderMqttHandler] = (
             ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity)
             if self.user_settings.custom_expander.module_enabled
             else None
@@ -88,7 +88,7 @@ class KronotermMqttHandler:
         )
 
         if self.expander is not None:
-            await self.expander.init_device(self.main_device, self.verbosity)
+            await self.expander.init_device(self.main_device)
 
         definitions = self.heat_pump.get_definitions(self.verbosity)
 
@@ -176,7 +176,7 @@ class KronotermMqttHandler:
             + list(self.selects.keys())
         )
         self.address_ranges = list(self.ranges(list(addresses)))
-        if self.verbosity:
+        if self.verbosity > 1:
             print(f'Addresses: {addresses} Ranges: {len(self.address_ranges)}')
 
     def switch_callback(self, *, client: Client, component: Switch, old_state: str, new_state: str):
@@ -268,11 +268,11 @@ class KronotermMqttHandler:
                 for i in range(count):
                     value = response.registers[i]
                     self.registers[address_start + i] = value - (value >> 15 << 16)  # Convert value to signed integer
-        if self.verbosity:
+        if self.verbosity > 1:
             logger.info(f'Registers: {self.registers}')
 
     async def publish_loop(self):
-        # setup_logging(verbosity=verbosity)
+        # setup_logging(verbosity=self.verbosity)
 
         definitions = self.heat_pump.get_definitions(self.verbosity)
 
@@ -325,16 +325,20 @@ class KronotermMqttHandler:
                             select.publish(self.mqtt_client)
 
             if self.expander is not None:
-                await self.expander.update_sensors_and_control(
-                    outside_temperature=0.1 * self.registers[2102],  # outside temperature
-                    current_desired_dhw_temperature=0.1 * self.registers[2023],  # Current desired DHW temperature
-                    additional_source_enabled=self.registers[2015] > 0,  # Additional source activated
-                    loop_circulation_status=self.registers[2044] > 0,  # Loop 1 circulation pump status
-                    # Loop 1 temperature offset in ECO mode
-                    loop_temperature_offset_in_eco_mode=0.1 * self.registers[2046],
-                    loop_operation_status_on_schedule=self.registers[2043],  # Loop 1 operation status on schedule
-                    working_function=self.registers[2000],  # Heat pump heating=0, standby=5
-                )
+                try:
+                    await self.expander.update_sensors_and_control(
+                      outside_temperature=0.1 * self.registers[2102],  # outside temperature
+                      current_desired_dhw_temperature=0.1 * self.registers[2023],  # Current desired DHW temperature
+                      additional_source_enabled=self.registers[2015] > 0,  # Additional source activated
+                      loop_circulation_status=self.registers[2044] > 0,  # Loop 1 circulation pump status
+                      # Loop 1 temperature offset in ECO mode
+                      loop_temperature_offset_in_eco_mode=0.1 * self.registers[2046],
+                      loop_operation_status_on_schedule=self.registers[2043],  # Loop 1 operation status on schedule
+                      working_function=self.registers[2000],  # Heat pump heating=0, standby=5
+                    )
+                except asyncio.CancelledError as e:
+                    logger.warning(f'Expander update cancelled! {e}')
+                    raise
 
             if self.verbosity:
                 print('\nWait', end='...', flush=True)

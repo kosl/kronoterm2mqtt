@@ -1,6 +1,7 @@
 import asyncio
 from asyncio.exceptions import CancelledError
 import logging
+import time
 
 from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.tyro_commands import TyroVerbosityArgType
@@ -49,11 +50,10 @@ def publish_loop(verbosity: TyroVerbosityArgType):
         except KeyboardInterrupt:
             raise
         except (InvalidStateValue, CancelledError) as e:
-            logging.error(f'Kronoterm2MQTT loop failed. {e}. Restating...')
+            logging.error(f'Kronoterm2MQTT loop failed. USB problem? {e}. Restating in 5 seconds ...')
+            time.sleep(5)
         except Exception as e:
             print(f'Error: {e}', type(e))
             logger.exception(f'Unhandled Exception: {e} {type(e)}')
             exit(1)
-
-
 
