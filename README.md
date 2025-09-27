@@ -389,6 +389,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.15...main)
+  * 2025-09-27 - Add a note on USB problem at exception
   * 2025-09-27 - Taskgroup correctly handles USB gliches
   * 2025-09-27 - Override motor move back again
   * 2025-09-27 - Add some wait time in order to USB adapter correctly restarts
