@@ -184,10 +184,10 @@ class ExpanderMqttHandler:
 
         logger.info(f'Loop number {loop_number} ({component.name}) state changed: {old_state!r} -> {new_state!r}')
         # if new_state == 'OFF': # close the valve immediately
-        #     self.event_loop.create_task(self.etera.set_relay(loop_number, False))
-        #     self.event_loop.create_task(self.mixing_valve_motor_close(loop_number, 120*1000, override=True))
+        #     self.taskgroup.create_task(self.etera.set_relay(loop_number, False))
+        #     self.taskgroup.create_task(self.mixing_valve_motor_close(loop_number, 120*1000, override=True))
         # else: # ON
-        #     self.event_loop.create_task(self.etera.set_relay(loop_number, True))
+        #     self.taskgroup.create_task(self.etera.set_relay(loop_number, True))
 
         try:
             new_state_e = self.WorkingMode(new_state)

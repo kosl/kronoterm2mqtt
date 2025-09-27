@@ -396,6 +396,7 @@ n}
   * 2025-09-26 - Fix sensor value->state
   * 2025-09-25 - Update readme
   * 2025-09-25 - Taskgroup fails when ha_services == 2.10
+  * 2025-09-26 - Add pooling interval to user settings
 * [v0.1.15](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.14...v0.1.15)
   * 2025-09-26 - Fix enum validation and release new package
   * 2025-09-26 - Fix Invalid: device_class='enum' !

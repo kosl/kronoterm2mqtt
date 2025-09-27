@@ -341,9 +341,8 @@ class KronotermMqttHandler:
 
             if self.verbosity:
                 print('\nWait', end='...', flush=True)
-                for i in range(10, 0, -1):
+                for i in range(self.user_settings.heat_pump.pooling_interval, 0, -1):
                     await asyncio.sleep(1)
                     print(i, end='...', flush=True)
             else:
-                await asyncio.sleep(10)
-                
+                await asyncio.sleep(self.user_settings.heat_pump.pooling_interval)
