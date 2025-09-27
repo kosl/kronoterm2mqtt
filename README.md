@@ -388,6 +388,8 @@ n}
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.15...main)
+  * 2025-09-26 - Add pooling interval to user settings
 * [v0.1.15](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.14...v0.1.15)
   * 2025-09-26 - Fix enum validation and release new package
   * 2025-09-26 - Fix Invalid: device_class='enum' !
@@ -410,14 +412,14 @@ n}
   * 2025-09-23 - Use ruff instead of darker
   * 2025-09-23 - Add unhandled exceptions to exit(1)
   * 2025-08-12 - Update for vulnerabilities
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.1.12](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...v0.1.12)
   * 2025-08-06 - Bump version for modbus change
   * 2025-08-06 - Upgrade to pymodbus 3.10
   * 2025-08-04 - Bump versions and disable plaformio (for now) to resolve pip-audit on starlette
   * 2025-06-22 - Fix vournerable library
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.1.11](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.10...v0.1.11)
   * 2025-06-06 - Fix comment
   * 2025-06-06 - Add release 1.11

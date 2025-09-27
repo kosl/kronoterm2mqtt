@@ -32,7 +32,7 @@ class HeatPump:
     model: str = 'ETERA'  # Just for MQTT device Model info
     port: str = '/dev/ttyUSB0'
     timeout: float = 0.5
-    pooling_interval: int = 10 # Sensor update in seconds
+    pooling_interval: int = 10  # Sensor update in seconds
 
     def get_definitions(self, verbosity) -> dict:
         definition_file_path = BASE_PATH / 'definitions' / f'{self.definitions_name}.toml'

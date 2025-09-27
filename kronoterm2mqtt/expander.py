@@ -1,3 +1,4 @@
+import asyncio
 from enum import Enum
 import logging
 import sys
@@ -61,7 +62,7 @@ class ExpanderMqttHandler:
             self.etera._s.close()
             print('\nClosing Etera Expander', end='...', flush=True)
 
-    async def init_device(self, event_loop, main_device: MqttDevice, verbosity: int):
+    async def init_device(self, main_device: MqttDevice, verbosity: int):
         """Create sensors and add it as subdevice for later update in
         the publish process"""
 
@@ -71,7 +72,7 @@ class ExpanderMqttHandler:
         self.etera = EteraUartBridge(
             port, on_device_reset_handler=etera_reset_handler, on_device_message_handler=etera_message_handler
         )
-        self.event_loop = event_loop
+        self.event_loop = asyncio.get_event_loop()
         self.event_loop.create_task(self.etera.run_forever())
         await self.etera.ready()
 
@@ -136,7 +137,7 @@ class ExpanderMqttHandler:
                 self.mixing_valve_sensors.append(mixing_valve_sensor)
                 mixing_valve_sensor.set_state(0)
                 mixing_valve_sensor.publish(self.mqtt_client)
-                event_loop.create_task(self.mixing_valve_motor_close(i, 120))
+                self.event_loop.create_task(self.mixing_valve_motor_close(i, 120))
                 self.mixing_valve_timer.append(time.monotonic())
                 self.expedited_heating_timer.append(None)
 

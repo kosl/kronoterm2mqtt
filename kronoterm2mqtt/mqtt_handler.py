@@ -73,7 +73,7 @@ class KronotermMqttHandler:
         BaseMqttDevice.device_uids = set()  # Reset
         BaseMqttDevice.components = {}  # Global registry of all components
 
-    async def init_device(self, event_loop, verbosity: int):
+    async def init_device(self):
         """
         Create sensors from definitions.toml add it to device for later
         update in publish process.
@@ -88,14 +88,14 @@ class KronotermMqttHandler:
         )
 
         if self.expander is not None:
-            await self.expander.init_device(event_loop, self.main_device, verbosity)
+            await self.expander.init_device(self.main_device, self.verbosity)
 
-        definitions = self.heat_pump.get_definitions(verbosity)
+        definitions = self.heat_pump.get_definitions(self.verbosity)
 
         parameters = definitions['sensor']
 
         for parameter in parameters:
-            if verbosity > 1:
+            if self.verbosity > 1:
                 print(f'Creating sensor {parameter}')
 
             address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
@@ -280,10 +280,8 @@ class KronotermMqttHandler:
 
         logger.info(f'Publishing Home Assistant MQTT discovery for {self.device_name}')
 
-        event_loop = asyncio.get_event_loop()
-
         if self.main_device is None:
-            await self.init_device(event_loop, self.verbosity)
+            await self.init_device()
 
         print('Kronoterm to MQTT publish loop started...', flush=True)
         while True:
