@@ -149,7 +149,7 @@ Loop 1 temperature offset in ECO mode -6550.7 °C
 install it in a virtual environment such as:
 
 ```sh
-python -m venv venv
+python3 -m venv venv
 venv/bin/pip install kronoterm2mqtt
 venv/bin/kronoterm2mqtt_app edit-settings
 venv/bin/kronoterm2mqtt_app print-values
@@ -266,12 +266,12 @@ B, GND). The cheapest "USB to RS485 Converter" with GND will work when
 connected to TEX (Modbus) port located in the Kronoterm heat pump
 processor board (KSM). I recommend Raspberry Pi 3B+ with Home
 Assistant to be used inside the heat pump. Otherwise, you will need to
-have a long 3-wire twisted cable to it or some dongle.  Before running
-`kronoterm2mqtt` it is advisable to run simple example provided to
-debug and test the communication as shown below.
+have a long 3-wire twisted cable to it or use some Modbus/TCP module.
+Before running `kronoterm2mqtt` it is advisable to run simple example
+provided to debug and test the communication as shown below.
 
 ~~~sh
-$ python -m venv venv
+$ python3 -m venv venv
 $ venv/bin/pip install pymodbus pyserial
 $ venv/bin/python kronoterm2mqtt/examples/print-temperatures.py
 2024-08-09 10:11:35,553 DEBUG logging:103 Current transaction state - IDLE
@@ -293,18 +293,14 @@ KRONOTERM Temperatures: ['28.8°C', '48.3°C', '24.7°C', '29.3°C', '30.3°C', 
 ~~~
 If the test above fails, try to change port or baudrate to 19200 by editing `kronoterm2mqtt/examples/print-temperatures.py`.
 
-## Home assistant Heat pump card
-
- - Lovelace HTML Jinja2 Template card (html-template-card)
- - Numberbox Card (numberbox-card)
- - fold-entity-row
-
 
 ## Systemd with Mosquitto in Docker
 
-To cleanly start at boot without restarts one may need to wait a while by probing
-the port until available with additional setup for Mosquitto to serve. Updated
-`/etc/systemd/system/kronoterm2mqtt.service` should look like 
+To cleanly start at boot without restarts one may need to wait a while
+by probing the port until available with additional setup for
+`localhost` Mosquitto to serve. Updated
+`/etc/systemd/system/kronoterm2mqtt.service` should look like
+
 ~~~systemd
 [Unit]
 Description=kronoterm2mqtt
@@ -388,6 +384,8 @@ n}
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2025-09-28 - Glued image of HASS screenshots
 * [v0.1.16](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.15...v0.1.16)
   * 2025-09-27 - Release 0.1.16
   * 2025-09-27 - Add a note on USB problem at exception
@@ -413,6 +411,9 @@ n}
   * 2025-09-25 - Upgrade to ha-services with Sensor.value -> Sensor.state change
   * 2025-09-25 - 0.1.13 release
   * 2025-09-24 - Add ADAPT images
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.1.13](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...v0.1.13)
   * 2025-09-24 - Fix indent
   * 2025-09-24 - Add Modbus/TCP client with WiFi module
@@ -422,9 +423,6 @@ n}
   * 2025-09-23 - Use ruff instead of darker
   * 2025-09-23 - Add unhandled exceptions to exit(1)
   * 2025-08-12 - Update for vulnerabilities
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.1.12](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.11...v0.1.12)
   * 2025-08-06 - Bump version for modbus change
   * 2025-08-06 - Upgrade to pymodbus 3.10
@@ -557,6 +555,6 @@ n}
 
 ## References
 
-- `Navodila za priklop in uporabo CNS sistema.pdf` Kronoterm Modbus RTU description (in Slovene) obtained from Kronoterm support
-- `Installation and Operating Manual for BMS System.pdf` Kronoterm Modbus V3.13-1 RTU description obtained from Kronoterm support
-- `1122-16-17-4021-05_Modbus_BMS_TT3000web.pdf` Modbus naslovi za BMS; Regulacija TT3000 (in Slovene) obtained from Kronoterm support
+- [Navodila za priklop in uporabo CNS sistema.pdf](https://github.com/user-attachments/files/22581626/Navodila.za.priklop.in.uporabo.CNS.sistema.pdf) Kronoterm Modbus RTU description (in Slovene) obtained from Kronoterm support
+- [Installation and Operating Manual for BMS System.pdf](https://github.com/user-attachments/files/17962066/Installation.and.Operating.Manual.for.BMS.System.pdf) Kronoterm Modbus V3.13-1 RTU description obtained from Kronoterm support
+- [1122-16-17-4021-05_Modbus_BMS_TT3000web.pdf](https://github.com/user-attachments/files/17962067/22-16-17-4021-05_Modbus_BMS_TT3000web.pdf) Modbus naslovi za BMS; Regulacija TT3000 (in Slovene) obtained from Kronoterm support
