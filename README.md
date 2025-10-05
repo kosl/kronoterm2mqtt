@@ -385,6 +385,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2025-09-28 - Link to docs under issue #2
   * 2025-09-28 - Glued image of HASS screenshots
 * [v0.1.16](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.15...v0.1.16)
   * 2025-09-27 - Release 0.1.16
