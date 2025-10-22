@@ -100,7 +100,7 @@ class KronotermMqttHandler:
 
             address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
             scale = parameter['scale']
-            precision = len(str(scale)[str(scale).rfind('.') + 1 :]) if scale < 1 else 0  # noqa
+            precision = abs(Decimal(str(scale)).as_tuple().exponent)
             self.sensors[address] = (
                 Sensor(
                     device=self.main_device,
@@ -288,8 +288,7 @@ class KronotermMqttHandler:
             self.read_heat_pump_register_blocks()
             for address in self.sensors:
                 sensor, scale = self.sensors[address]
-                value = self.registers[address]
-                value = float(scale) * value
+                value = float(scale * Decimal(self.registers[address]))
                 sensor.set_state(value)
                 sensor.publish(self.mqtt_client)
             for address in self.binary_sensors:
