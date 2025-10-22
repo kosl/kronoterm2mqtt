@@ -385,6 +385,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2025-10-22 - Correct decimal rounding for scaled sensor e.g. 132*0.1->13,2
   * 2025-10-05 - Ignore pip 15.2 audit GHSA-4xh5-x5gv-qwph problem
   * 2025-09-28 - Link to docs under issue #2
   * 2025-09-28 - Glued image of HASS screenshots

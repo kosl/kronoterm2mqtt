@@ -99,8 +99,8 @@ class KronotermMqttHandler:
                 print(f'Creating sensor {parameter}')
 
             address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
-            scale = parameter['scale']
-            precision = abs(Decimal(str(scale)).as_tuple().exponent)
+            scale = Decimal(str(parameter['scale']))
+            precision = abs(scale.as_tuple().exponent)
             self.sensors[address] = (
                 Sensor(
                     device=self.main_device,
@@ -113,7 +113,7 @@ class KronotermMqttHandler:
                     ),
                     suggested_display_precision=precision,
                 ),
-                Decimal(str(parameter['scale'])),
+                scale,
             )
 
         binary_sensor_definitions = definitions['binary_sensor']
