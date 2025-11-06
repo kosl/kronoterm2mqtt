@@ -58,7 +58,7 @@ path = "kronoterm2mqtt/__init__.py"
 requirements=["requirements.dev.txt"]
 strict=true
 require_hashes=true
-ignore-vuln=["GHSA-2c2j-9gv5-cj73", "GHSA-4xh5-x5gv-qwph"]
+ignore-vuln=["GHSA-2c2j-9gv5-cj73", "GHSA-4xh5-x5gv-qwph", "GHSA-7f5h-v6xp-fcq8"] # starlette 0.46
 
 [tool.cli_base]
 version_module_name = "kronoterm2mqtt"  # Used by "update-readme-history" git hook

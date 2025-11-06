@@ -385,6 +385,8 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2025-10-27 - Update uv
+  * 2025-10-23 - Add ignore .log files
   * 2025-10-22 - Simpify scale as Decimal
   * 2025-10-22 - Correct decimal rounding for scaled sensor e.g. 132*0.1->13,2
   * 2025-10-05 - Ignore pip 15.2 audit GHSA-4xh5-x5gv-qwph problem
