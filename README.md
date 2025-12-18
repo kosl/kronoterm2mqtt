@@ -385,6 +385,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2025-11-06 - Ignore starlette vulnerabilities
   * 2025-10-27 - Update uv
   * 2025-10-23 - Add ignore .log files
   * 2025-10-22 - Simpify scale as Decimal
