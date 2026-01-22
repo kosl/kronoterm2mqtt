@@ -369,6 +369,7 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2026-01-22 - Update requirements
   * 2026-01-22 - Update README
   * 2025-12-18 - Update libs
   * 2025-11-06 - Ignore starlette vulnerabilities
