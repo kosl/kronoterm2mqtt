@@ -317,6 +317,8 @@ WantedBy=multi-user.target
 - [x] `binary_sensor` to decode binary statuses in `enum` like manner combined. For example error messages or "additional activations".
 - [ ] Upgrade [ha-services](https://github.com/jedie/ha-services) with `number` component allowing change of some numeric parameters (set temperatures, etc.).
 - [ ] Display the heat pump state using ThermIQ as an example.
+- [ ] Expander should full cycle mixing motors when DHW is working.
+- [ ] Add save state to settings and sensors for computed reference temperatures
 
 # dev CLI
 
@@ -369,6 +371,7 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2026-01-22 - Correct Expander CLI to use constructor async
   * 2026-01-22 - Update requirements
   * 2026-01-22 - Update README
   * 2025-12-18 - Update libs

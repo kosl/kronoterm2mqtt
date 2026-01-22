@@ -49,16 +49,14 @@ def expander_temperatures(verbosity: TyroVerbosityArgType):
 
 
 @app.command
-def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True):
-    """Rotates all 4 motors by closing (counterclockwise) or opening (clockwise) for 120 seconds"""
+def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True, duration: int = 120):
+    """Rotates all 4 motors by closing (counterclockwise) or opening (clockwise) for duration seconds"""
     setup_logging(verbosity=verbosity)
     user_settings: UserSettings = get_user_settings(verbosity=verbosity)
 
     port = user_settings.custom_expander.port
 
-    duration = 120
-
-    print(f'Moving all motors for {duration} seconds at custom expander')
+    print(f'{"Opening" if opening else "Closing"} all motors for {duration} seconds at custom expander')
 
     async def move_motors():
         etera = EteraUartBridge(port,
