@@ -50,41 +50,29 @@ The output of `./cli.py --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
 ```
-usage: ./cli.py [-h]
-                {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,
-systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,version}
+usage: ./cli.py [-h] {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,systemd-remove,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,version}
 
 
 
-╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ -h, --help        show this help message and exit                                                                  │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ {edit-settings,print-registers,print-settings,print-values,probe-usb-ports,publish-loop,systemd-debug,systemd-remo │
-│ ve,systemd-setup,systemd-status,systemd-stop,test-mqtt-connection,version}                                         │
-│     edit-settings                                                                                                  │
-│                   Edit the settings file. On first call: Create the default one.                                   │
-│     print-registers                                                                                                │
-│                   Print RAW modbus register data                                                                   │
-│     print-settings                                                                                                 │
-│                   Display (anonymized) MQTT server username and password                                           │
-│     print-values  Print all values from the definition                                                             │
-│     probe-usb-ports                                                                                                │
-│                   Probe through the USB ports and print the values from definition                                 │
-│     publish-loop  Publish KRONOTERM registers to Home Assistant MQTT                                               │
-│     systemd-debug                                                                                                  │
-│                   Print Systemd service template + context + rendered file content.                                │
-│     systemd-remove                                                                                                 │
-│                   Remove Systemd service file. (May need sudo)                                                     │
-│     systemd-setup                                                                                                  │
-│                   Write Systemd service file, enable it and (re-)start the service. (May need sudo)                │
-│     systemd-status                                                                                                 │
-│                   Display status of systemd service. (May need sudo)                                               │
-│     systemd-stop  Stops the systemd service. (May need sudo)                                                       │
-│     test-mqtt-connection                                                                                           │
-│                   Test connection to MQTT Server                                                                   │
-│     version       Print version and exit                                                                           │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ options ───────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help                show this help message and exit                                                   │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ───────────────────────────────────────────────────────────────────────────────────────────────╮
+│ (required)                                                                                                  │
+│   • edit-settings         Edit the settings file. On first call: Create the default one.                    │
+│   • print-registers       Print RAW modbus register data                                                    │
+│   • print-settings        Display (anonymized) MQTT server username and password                            │
+│   • print-values          Print all values from the definition                                              │
+│   • probe-usb-ports       Probe through the USB ports and print the values from definition                  │
+│   • publish-loop          Publish KRONOTERM registers to Home Assistant MQTT                                │
+│   • systemd-debug         Print Systemd service template + context + rendered file content.                 │
+│   • systemd-remove        Remove Systemd service file. (May need sudo)                                      │
+│   • systemd-setup         Write Systemd service file, enable it and (re-)start the service. (May need sudo) │
+│   • systemd-status        Display status of systemd service. (May need sudo)                                │
+│   • systemd-stop          Stops the systemd service. (May need sudo)                                        │
+│   • test-mqtt-connection  Test connection to MQTT Server                                                    │
+│   • version               Print version and exit                                                            │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
 
@@ -334,48 +322,44 @@ WantedBy=multi-user.target
 
 [comment]: <> (✂✂✂ auto generated dev help start ✂✂✂)
 ```
-usage: ./dev-cli.py [-h]
-                    {coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,firm
-ware-flash,install,lint,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapshot-files,versio
-n}
+usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,firmware-flash,install,lint,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapshot-files,version}
 
 
 
-╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ -h, --help        show this help message and exit                                                                  │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ {coverage,expander-loop,expander-motors,expander-relay,expander-temperatures,firmware-compile,firmware-flash,insta │
-│ ll,lint,mypy,nox,pip-audit,publish,test,update,update-readme-history,update-test-snapshot-files,version}           │
-│     coverage      Run tests and show coverage report.                                                              │
-│     expander-loop                                                                                                  │
-│                   Runs Custom expander control of a solar pump                                                     │
-│     expander-motors                                                                                                │
-│                   Rotates all 4 motors by closing (counterclockwise) or opening (clockwise) for 120 seconds        │
-│     expander-relay                                                                                                 │
-│                   Switches on or off selected relay                                                                │
-│     expander-temperatures                                                                                          │
-│                   Print temperatures read from Custom expander                                                     │
-│     firmware-compile                                                                                               │
-│                   Compiles firmware for Etera GPIO expander with PlatformIO compiler                               │
-│     firmware-flash                                                                                                 │
-│                   Flashes compiled firmware to Etera GPIO expander                                                 │
-│     install       Install requirements and 'kronoterm2mqtt' via pip as editable.                                   │
-│     lint          Check/fix code style by running: ruff check --fix"                                               │
-│     mypy          Run Mypy (configured in pyproject.toml)                                                          │
-│     nox           Run nox                                                                                          │
-│     pip-audit     Run pip-audit check against current requirements files                                           │
-│     publish       Build and upload this project to PyPi                                                            │
-│     test          Run unittests                                                                                    │
-│     update        Update dependencies (uv.lock) and git pre-commit hooks                                           │
-│     update-readme-history                                                                                          │
-│                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
-│                   README.md was updated otherwise with 0. Also, callable via e.g.:                                 │
-│                       python -m cli_base update-readme-history -v                                                  │
-│     update-test-snapshot-files                                                                                     │
-│                   Update all test snapshot files (by remove and recreate all snapshot files)                       │
-│     version       Print version and exit                                                                           │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ options ────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help     show this help message and exit                                                                       │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ (required)                                                                                                           │
+│   • coverage   Run tests and show coverage report.                                                                   │
+│   • expander-loop                                                                                                    │
+│                Runs Custom expander control of a solar pump                                                          │
+│   • expander-motors                                                                                                  │
+│                Rotates all 4 motors by closing (counterclockwise) or opening (clockwise) for 120 seconds             │
+│   • expander-relay                                                                                                   │
+│                Switches on or off selected relay                                                                     │
+│   • expander-temperatures                                                                                            │
+│                Print temperatures read from Custom expander                                                          │
+│   • firmware-compile                                                                                                 │
+│                Compiles firmware for Etera GPIO expander with PlatformIO compiler                                    │
+│   • firmware-flash                                                                                                   │
+│                Flashes compiled firmware to Etera GPIO expander                                                      │
+│   • install    Install requirements and 'kronoterm2mqtt' via pip as editable.                                        │
+│   • lint       Check/fix code style by running: ruff check --fix"                                                    │
+│   • mypy       Run Mypy (configured in pyproject.toml)                                                               │
+│   • nox        Run nox                                                                                               │
+│   • pip-audit  Run pip-audit check against current requirements files                                                │
+│   • publish    Build and upload this project to PyPi                                                                 │
+│   • test       Run unittests                                                                                         │
+│   • update     Update dependencies (uv.lock) and git pre-commit hooks                                                │
+│   • update-readme-history                                                                                            │
+│                Update project history base on git commits/tags in README.md Will be exited with 1 if the README.md   │
+│                was updated otherwise with 0. Also, callable via e.g.:                                                │
+│                    python -m cli_base update-readme-history -v                                                       │
+│   • update-test-snapshot-files                                                                                       │
+│                Update all test snapshot files (by remove and recreate all snapshot files)                            │
+│   • version    Print version and exit                                                                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated dev help end ✂✂✂)
 
@@ -385,6 +369,7 @@ n}
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2025-12-18 - Update libs
   * 2025-11-06 - Ignore starlette vulnerabilities
   * 2025-10-27 - Update uv
   * 2025-10-23 - Add ignore .log files
