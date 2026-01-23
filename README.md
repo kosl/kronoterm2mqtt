@@ -319,6 +319,7 @@ WantedBy=multi-user.target
 - [ ] Display the heat pump state using ThermIQ as an example.
 - [ ] Expander should full cycle mixing motors when DHW is working.
 - [ ] Add save state to settings and sensors for computed reference temperatures
+- [ ] Enable/disable heat pump switch.
 
 # dev CLI
 
@@ -371,6 +372,7 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2026-01-22 - Add motor duration for testing and TODO
   * 2026-01-22 - Correct Expander CLI to use constructor async
   * 2026-01-22 - Update requirements
   * 2026-01-22 - Update README
