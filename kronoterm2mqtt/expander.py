@@ -45,6 +45,7 @@ class ExpanderMqttHandler:
         self.mqtt_device: MqttDevice | None = None
         self.sensors: List[Sensor] = list()  # loop[0:4], collector, solar tank up/down, DHW, DHW circulation
         self.relays: List[BinarySensor] = list()
+        self.switch_intertank: Switch = None
         self.loop_states: List[Select] = list()  # Loop names from sensors
         self.mixing_valve_sensors: List[Sensor] = list()  # Position sensors in percentage
         self.mixing_valve_timer: List[float] = list()  # Measuring time from last move
@@ -143,6 +144,12 @@ class ExpanderMqttHandler:
                 self.taskgroup.create_task(self.mixing_valve_motor_close(i, 120))
                 self.mixing_valve_timer.append(time.monotonic())
                 self.expedited_heating_timer.append(None)
+        self.switch_intertank = Switch(
+            device=self.mqtt_device,
+            name='Cirkulacija med bojlerjema',
+            uid='intertank_circulation',
+            initial_state=Switch.OFF,
+        )
 
     async def mixing_valve_motor_close(self, heating_loop_number: int, duration: float, override: bool = True):
         try:
@@ -289,6 +296,7 @@ class ExpanderMqttHandler:
                 sensor.publish(self.mqtt_client)
             for select in self.loop_states:
                 select.publish(self.mqtt_client)
+            self.switch_intertank.publish(self.mqtt_client)
 
             # Expander control start
             collector_temperature = temperatures[settings.solar_sensors[0]]
@@ -313,7 +321,8 @@ class ExpanderMqttHandler:
                         )
 
             relay = self.relays[settings.inter_tank_pump_relay_id]
-            if additional_source_enabled and settings.intra_tank_circulation_operation:
+#            if additional_source_enabled and settings.intra_tank_circulation_operation:
+            if self.switch_intertank.state == Switch.ON:
                 dhw_temperature = self.sensors[7].state  # noqa
                 solar_tank_temperature = self.sensors[5].state  # noqa
                 # if dhw_temperature < current_desired_dhw_temperature:
