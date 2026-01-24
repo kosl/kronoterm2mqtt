@@ -9,6 +9,7 @@ from ha_services.exceptions import InvalidStateValue
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
+from ha_services.mqtt4homeassistant.components.switch import Switch
 from ha_services.mqtt4homeassistant.device import MqttDevice
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
@@ -53,7 +54,7 @@ class ExpanderMqttHandler:
     class WorkingMode(Enum):
         OFF = 'Izklop'
         ON = 'Vklop'
-        EXPEDITED = 'Pospešeno 5h'
+        EXPEDITED = 'Komfortno'
         STANDBY = 'Standby'
 
     def stop(self):
@@ -221,9 +222,9 @@ class ExpanderMqttHandler:
         outside temperature and heating curve coefficient.
         """
 
-        # Expedited heating for 5 hours is set to 30°C
+        # Expedited heating for 5 hours is set to 31°C
         if self.loop_states[loop_number].state == self.WorkingMode.EXPEDITED.value:
-            return 30.0
+            return 31.0
         elif self.loop_states[loop_number].state == self.WorkingMode.STANDBY.value:
             return 10.0
 

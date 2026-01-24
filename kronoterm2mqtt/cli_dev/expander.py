@@ -88,6 +88,7 @@ def expander_motors(verbosity: TyroVerbosityArgType, opening: bool = True, durat
         
     asyncio.run(move_motors())
 
+
 @app.command
 def expander_relay(verbosity: TyroVerbosityArgType, relay: int = 0, on: bool = True):
     """Switches on or off selected relay"""
