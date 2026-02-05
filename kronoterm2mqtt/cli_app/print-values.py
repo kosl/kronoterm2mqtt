@@ -7,8 +7,7 @@ from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
 from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
 from rich import (
-    get_console,  # noqa
-    print,  # noqa; noqa
+    print,
 )
 from rich.pretty import pprint
 

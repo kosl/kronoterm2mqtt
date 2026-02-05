@@ -373,6 +373,7 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2026-01-24 - Add switch for intertank pump
   * 2026-01-23 - More TODO notes
   * 2026-01-22 - Add motor duration for testing and TODO
   * 2026-01-22 - Correct Expander CLI to use constructor async
