@@ -109,11 +109,11 @@ views:
               show_states: true
               colorize_states: true
             series:
-              - entity: sensor.heat_pump_loop_1_temperature
+              - entity: sensor.heat_pump_loop_1_thermostat_temperature
                 name: Temperatura
                 stroke_width: 1
                 color: red
-              - entity: sensor.heat_pump_loop_1_current_desired_temperature
+              - entity: sensor.heat_pump_loop_1_current_desired_temperature_room
                 name: Željena
                 stroke_width: 2
                 color: darkred
@@ -138,11 +138,11 @@ views:
               show_states: true
               colorize_states: true
             series:
-              - entity: sensor.heat_pump_loop_2_temperature
+              - entity: sensor.heat_pump_loop_2_thermostat_temperature
                 name: Temperatura
                 stroke_width: 1
                 color: red
-              - entity: sensor.heat_pump_loop_2_current_desired_temperature
+              - entity: sensor.heat_pump_loop_2_current_desired_temperature_room
                 name: Željena
                 stroke_width: 2
                 color: darkred
@@ -167,11 +167,11 @@ views:
               show_states: true
               colorize_states: true
             series:
-              - entity: sensor.heat_pump_loop_3_temperature
+              - entity: sensor.heat_pump_loop_3_thermostat_temperature
                 name: Temperatura
                 stroke_width: 1
                 color: red
-              - entity: sensor.heat_pump_loop_3_current_desired_temperature
+              - entity: sensor.heat_pump_loop_3_current_desired_temperature_room
                 name: Željena
                 stroke_width: 2
                 color: darkred
@@ -196,11 +196,11 @@ views:
               show_states: true
               colorize_states: true
             series:
-              - entity: sensor.heat_pump_loop_4_temperature
+              - entity: sensor.heat_pump_loop_4_thermostat_temperature
                 name: Temperatura
                 stroke_width: 1
                 color: red
-              - entity: sensor.heat_pump_loop_4_current_desired_temperature
+              - entity: sensor.heat_pump_loop_4_current_desired_temperature_room
                 name: Željena
                 stroke_width: 2
                 color: darkred

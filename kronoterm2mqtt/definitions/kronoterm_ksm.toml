@@ -131,7 +131,7 @@ state_class = "measurement"
 unit_of_measurement = "°C"
 scale = 0.1
 
-[[sensor_disabled]]
+[[sensor]]
 register = 2160
 name = "Loop 1 thermostat temperature"
 device_class = "temperature"
@@ -149,7 +149,7 @@ scale = 0.1
 
 [[sensor]]
 register = 2191
-name = "Loop 1 current desired room temperature"
+name = "Loop 1 current desired temperature room"
 device_class = "temperature"
 state_class = "measurement"
 unit_of_measurement = "°C"
