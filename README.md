@@ -143,6 +143,74 @@ venv/bin/kronoterm2mqtt_app edit-settings
 venv/bin/kronoterm2mqtt_app print-values
 ```
 
+## Docker
+
+kronoterm2mqtt can run inside a Docker container. This is useful when you don't want to install Python dependencies on the host or when deploying on a server without direct USB access (e.g. using Modbus/TCP).
+
+### Quick start
+
+```bash
+git clone --recursive https://github.com/kosl/kronoterm2mqtt.git
+cd kronoterm2mqtt
+```
+
+Create your configuration at `config/kronoterm2mqtt.toml` (see [Setup](#setup) for details), then:
+
+```bash
+docker compose up -d
+```
+
+### Configuration
+
+The `docker-compose.yml` mounts `./config` into the container as the settings directory. Place your `kronoterm2mqtt.toml` there before starting.
+
+To edit settings interactively inside the container:
+
+```bash
+docker compose run --rm kronoterm2mqtt edit-settings
+```
+
+### Testing MQTT connection
+
+```bash
+docker compose run --rm kronoterm2mqtt test-mqtt-connection
+```
+
+### MQTT TLS
+
+To use TLS for MQTT, place your certificate files under `config/certs/` and configure `[mqtt_tls]` in your TOML settings:
+
+```toml
+[mqtt]
+host = "mqtt.example.com"
+port = 8883
+user_name = "myuser"
+password = "mypassword"
+
+[mqtt_tls]
+enabled = true
+ca_certs = "/certs/ca.crt"
+certfile = "/certs/client.crt"
+keyfile = "/certs/client.key"
+```
+
+The `docker-compose.yml` mounts `./config/certs` to `/certs` inside the container.
+
+### Serial devices (Modbus RTU)
+
+If using a USB RS485 adapter, uncomment the `devices` section in `docker-compose.yml`:
+
+```yaml
+devices:
+  - /dev/ttyUSB0:/dev/ttyUSB0
+```
+
+### Viewing logs
+
+```bash
+docker compose logs -f
+```
+
 ## Derived sensors (helpers) in Home Assistant
 
 If we are interested in some additional info derived from the heat

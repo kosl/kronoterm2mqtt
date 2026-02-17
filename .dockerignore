@@ -1,0 +1,12 @@
+.venv-app/
+.git/
+*.egg-info
+__pycache__
+dist/
+coverage.*
+*.log
+etera-uart-bridge/.github/
+etera-uart-bridge/pcb/
+etera-uart-bridge/images/
+etera-uart-bridge/pio-eub-firmware/
+.github/
