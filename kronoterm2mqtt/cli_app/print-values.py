@@ -58,7 +58,7 @@ def probe_usb_ports(verbosity: TyroVerbosityArgType, max_port: int = 10, port_te
 
 def print_parameter_values(client, parameters, verbosity):
     for parameter in parameters:
-        print(f'{parameter["name"]:>30}', end=' ')
+        print(f'{parameter["name"]:>50}', end=' ')
         address = parameter['register'] - 1  # KRONOTERM MA_numbering is one-based in documentation!
         if verbosity:
             print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
@@ -77,6 +77,96 @@ def print_parameter_values(client, parameters, verbosity):
     print('\n')
 
 
+def print_binary_sensor_values(client, parameters, verbosity):
+    for parameter in parameters:
+        print(f'{parameter["name"]:>50}', end=' ')
+        address = parameter['register'] - 1
+        bit = parameter.get('bit')
+        if verbosity:
+            bit_info = f' bit:{bit}' if bit is not None else ''
+            print(f'(Register dec: {address:02} hex: {address:04x}{bit_info})', end=' ')
+        response = client.read_holding_registers(address=address, count=1, device_id=MODBUS_SLAVE_ID)
+        if isinstance(response, (ExceptionResponse, ModbusIOException)):
+            print('Error:', response)
+        else:
+            assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
+            raw_value = response.registers[0]
+            if bit is not None:
+                value = bool(raw_value & (1 << bit))
+            else:
+                value = bool(raw_value)
+            state = '[green]ON[/green]' if value else '[red]OFF[/red]'
+            print(f'{state} [dim](raw: {raw_value})[/dim]')
+    print('\n')
+
+
+def print_enum_sensor_values(client, parameters, verbosity):
+    for parameter in parameters:
+        print(f'{parameter["name"]:>50}', end=' ')
+        address = parameter['register'] - 1
+        if verbosity:
+            print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
+        response = client.read_holding_registers(address=address, count=1, device_id=MODBUS_SLAVE_ID)
+        if isinstance(response, (ExceptionResponse, ModbusIOException)):
+            print('Error:', response)
+        else:
+            assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
+            raw_value = response.registers[0]
+            options = parameter['options'][0] if isinstance(parameter['options'], list) else parameter['options']
+            display_value = None
+            for index, key in enumerate(options['keys']):
+                if key == raw_value:
+                    display_value = options['values'][index]
+                    break
+            if display_value is not None:
+                print(f'[green]{display_value}[/green] [dim](raw: {raw_value})[/dim]')
+            else:
+                print(f'[yellow]unknown[/yellow] [dim](raw: {raw_value})[/dim]')
+    print('\n')
+
+
+def print_switch_values(client, parameters, verbosity):
+    for parameter in parameters:
+        print(f'{parameter["name"]:>50}', end=' ')
+        address = parameter['register'] - 1
+        if verbosity:
+            print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
+        response = client.read_holding_registers(address=address, count=1, device_id=MODBUS_SLAVE_ID)
+        if isinstance(response, (ExceptionResponse, ModbusIOException)):
+            print('Error:', response)
+        else:
+            assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
+            raw_value = response.registers[0]
+            state = '[green]ON[/green]' if raw_value else '[red]OFF[/red]'
+            print(f'{state} [dim](raw: {raw_value})[/dim]')
+    print('\n')
+
+
+def print_select_values(client, parameters, verbosity):
+    for parameter in parameters:
+        print(f'{parameter["name"]:>50}', end=' ')
+        address = parameter['register'] - 1
+        if verbosity:
+            print(f'(Register dec: {address:02} hex: {address:04x})', end=' ')
+        response = client.read_holding_registers(address=address, count=1, device_id=MODBUS_SLAVE_ID)
+        if isinstance(response, (ExceptionResponse, ModbusIOException)):
+            print('Error:', response)
+        else:
+            assert isinstance(response, ReadHoldingRegistersResponse), f'{response=}'
+            raw_value = response.registers[0]
+            options = parameter['options'][0] if isinstance(parameter['options'], list) else parameter['options']
+            display_value = None
+            for index, key in enumerate(options['keys']):
+                if key == raw_value:
+                    display_value = options['values'][index]
+                    break
+            if display_value is not None:
+                print(f'[green]{display_value}[/green] [dim](raw: {raw_value})[/dim]')
+            else:
+                print(f'[yellow]unknown[/yellow] [dim](raw: {raw_value})[/dim]')
+    print('\n')
+
+
 @app.command
 def print_values(verbosity: TyroVerbosityArgType):
     """
@@ -90,11 +180,27 @@ def print_values(verbosity: TyroVerbosityArgType):
 
     client = get_modbus_client(heat_pump, definitions, verbosity)
 
+    print('[bold]--- Sensors ---[/bold]')
     parameters = definitions['sensor']
     if verbosity > 1:
         pprint(parameters)
-
     print_parameter_values(client, parameters, verbosity)
+
+    if 'binary_sensor' in definitions:
+        print('[bold]--- Binary Sensors ---[/bold]')
+        print_binary_sensor_values(client, definitions['binary_sensor'], verbosity)
+
+    if 'enum_sensor' in definitions:
+        print('[bold]--- Enum Sensors ---[/bold]')
+        print_enum_sensor_values(client, definitions['enum_sensor'], verbosity)
+
+    if 'switch' in definitions:
+        print('[bold]--- Switches ---[/bold]')
+        print_switch_values(client, definitions['switch'], verbosity)
+
+    if 'select' in definitions:
+        print('[bold]--- Selects ---[/bold]')
+        print_select_values(client, definitions['select'], verbosity)
 
 
 @app.command
