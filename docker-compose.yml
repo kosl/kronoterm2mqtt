@@ -1,0 +1,15 @@
+services:
+  kronoterm2mqtt:
+    build: .
+    container_name: kronoterm2mqtt
+    restart: unless-stopped
+    # Serial devices for Modbus communication
+    # devices:
+      # - /dev/ttyUSB0:/dev/ttyUSB0
+      # Uncomment if using the custom ETERA expander module:
+      # - /dev/ttyUSB1:/dev/ttyUSB1
+    volumes:
+      # Persist configuration across container restarts
+      - ./config:/root/.config/kronoterm2mqtt
+      # Optional: mount TLS certificates (if using MQTT TLS)
+      - ./config/certs:/certs:ro

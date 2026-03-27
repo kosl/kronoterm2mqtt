@@ -11,6 +11,22 @@ stopbits = 1
 
 # https://developers.home-assistant.io/docs/core/entity/sensor
 
+# ============================================================
+# Statusi - system temperature correction
+# ============================================================
+
+[[sensor]]
+register = 2014
+name = "System temperature correction"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 1
+
+# ============================================================
+# Sanitarna voda (DHW)
+# ============================================================
+
 [[sensor]]
 register = 2023
 name = "Desired DHW temperature"
@@ -28,6 +44,62 @@ unit_of_measurement = "°C"
 scale = 0.1
 
 [[sensor]]
+register = 2030
+name = "DHW ECO offset"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2031
+name = "DHW comfort offset"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+# ============================================================
+# Zalogovnik (Buffer tank)
+# ============================================================
+
+[[sensor]]
+register = 2032
+name = "Desired buffer temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2034
+name = "Current desired buffer temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2040
+name = "Buffer ECO offset"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2041
+name = "Buffer comfort offset"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+# ============================================================
+# 1. krog (Loop 1)
+# ============================================================
+
+[[sensor]]
 register = 2047
 name = "Loop 1 temperature offset in ECO mode"
 device_class = "temperature"
@@ -36,28 +108,280 @@ unit_of_measurement = "°C"
 scale = 0.1
 
 [[sensor]]
-register = 2090
-name = "Operating hours compressor heating"
-device_class = "duration"
-state_class = "total_increasing"
-unit_of_measurement = "h"
-scale = 1
+register = 2048
+name = "Loop 1 temperature offset in comfort mode"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
 
 [[sensor]]
-register = 2091
-name = "Operating hours compressor heating DHW"
-device_class = "duration"
-state_class = "total_increasing"
-unit_of_measurement = "h"
-scale = 1
+register = 2128
+name = "Loop 1 current desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
 
 [[sensor]]
-register = 2095
-name = "Operating hours additional source 1"
-device_class = "duration"
-state_class = "total_increasing"
-unit_of_measurement = "h"
-scale = 1
+register = 2130
+name = "Loop 1 temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2160
+name = "Loop 1 thermostat temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2187
+name = "Loop 1 desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2191
+name = "Loop 1 current desired temperature room"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+# ============================================================
+# 2. krog (Loop 2)
+# ============================================================
+
+[[sensor]]
+register = 2049
+name = "Loop 2 desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2051
+name = "Loop 2 current desired temperature room"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2057
+name = "Loop 2 temperature offset in ECO mode"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2058
+name = "Loop 2 temperature offset in comfort mode"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2110
+name = "Loop 2 temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2161
+name = "Loop 2 thermostat temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2188
+name = "Loop 2 current desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+# ============================================================
+# 3. krog (Loop 3)
+# ============================================================
+
+[[sensor]]
+register = 2059
+name = "Loop 3 desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2061
+name = "Loop 3 current desired temperature room"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2067
+name = "Loop 3 temperature offset in ECO mode"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2068
+name = "Loop 3 temperature offset in comfort mode"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2111
+name = "Loop 3 temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2162
+name = "Loop 3 thermostat temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2189
+name = "Loop 3 current desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+# ============================================================
+# 4. krog (Loop 4)
+# ============================================================
+
+[[sensor]]
+register = 2069
+name = "Loop 4 desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2071
+name = "Loop 4 current desired temperature room"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2077
+name = "Loop 4 temperature offset in ECO mode"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2078
+name = "Loop 4 temperature offset in comfort mode"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2112
+name = "Loop 4 temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2163
+name = "Loop 4 thermostat temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+register = 2190
+name = "Loop 4 current desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+# ============================================================
+# Bazen (Pool)
+# ============================================================
+
+[[sensor_disabled]]
+register = 2079
+name = "Pool desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor_disabled]]
+register = 2080
+name = "Pool current desired temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor_disabled]]
+register = 2086
+name = "Pool ECO offset"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor_disabled]]
+register = 2087
+name = "Pool comfort offset"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor_disabled]]
+register = 2109
+name = "Pool temperature"
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+# ============================================================
+# Ostale temperature (Other temperatures)
+# ============================================================
 
 [[sensor]]
 register = 2101
@@ -116,12 +440,108 @@ unit_of_measurement = "°C"
 scale = 0.1
 
 [[sensor_disabled]]
-register = 2109
-name = "Pool temperature"
+register = 2108
+name = "Passive cooling temperature"
 device_class = "temperature"
 state_class = "measurement"
 unit_of_measurement = "°C"
 scale = 0.1
+
+# ============================================================
+# Obratovalne ure (Operating hours)
+# ============================================================
+
+[[sensor]]
+register = 2089
+name = "Operating hours compressor cooling"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2090
+name = "Operating hours compressor heating"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2091
+name = "Operating hours compressor heating DHW"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2092
+name = "Operating minutes compressor daily"
+device_class = "duration"
+state_class = "measurement"
+unit_of_measurement = "min"
+scale = 1
+
+[[sensor]]
+register = 2093
+name = "Operating hours main circulation pump"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2094
+name = "Operating hours DHW circulation pump"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2095
+name = "Operating hours additional source 1"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2096
+name = "Operating hours external additional source"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2097
+name = "Operating hours alternative source"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2098
+name = "Operating hours heat source"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+[[sensor]]
+register = 2099
+name = "Operating hours passive cooling"
+device_class = "duration"
+state_class = "total_increasing"
+unit_of_measurement = "h"
+scale = 1
+
+# ============================================================
+# Tlaki in moč (Pressure, power, efficiency)
+# ============================================================
 
 [[sensor]]
 register = 2129
@@ -139,23 +559,6 @@ state_class = "measurement"
 unit_of_measurement = "W"
 scale = 1.0
 
-
-[[sensor]]
-register = 2130
-name = "Loop 1 temperature"
-device_class = "temperature"
-state_class = "measurement"
-unit_of_measurement = "°C"
-scale = 0.1
-
-[[sensor]]
-register = 2110
-name = "Loop 2 temperature"
-device_class = "temperature"
-state_class = "measurement"
-unit_of_measurement = "°C"
-scale = 0.1
-
 [[sensor_disabled]]
 register = 2150
 name = "Heat pump controller version"
@@ -165,29 +568,12 @@ unit_of_measurement = ""
 scale = 0.001
 
 [[sensor_disabled]]
-register = 2160
-name = "Loop 1 thermostat temperature"
-device_class = "temperature"
-state_class = "measurement"
-unit_of_measurement = "°C"
-scale = 0.1
-
-[[sensor]]
-register = 2161
-name = "Loop 2 thermostat temperature"
-device_class = "temperature"
-state_class = "measurement"
-unit_of_measurement = "°C"
-scale = 0.1
-
-[[sensor_disabled]]
 register = 2325
 name = "Setting of the pressure of the heating system"
 device_class = "pressure"
 state_class = "measurement"
 unit_of_measurement = "bar"
 scale = 0.1
-
 
 [[sensor]]
 register = 2326
@@ -221,7 +607,6 @@ state_class = "measurement"
 unit_of_measurement = "bar"
 scale = 0.1
 
-
 [[sensor_disabled]]
 register = 2371
 name = "COP"
@@ -239,6 +624,11 @@ unit_of_measurement = ""
 scale = 0.01
 
 
+# ============================================================
+# Enum senzorji (Enum sensors)
+# ============================================================
+
+# Statusi
 [[enum_sensor]]
 register = 2001
 name = "Working function"
@@ -261,26 +651,106 @@ keys = [0, 1, 2]
 values = ["cooling", "heating", "heating and cooling off"]
 
 [[enum_sensor]]
+register = 2008
+name = "Operating program"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4]
+values = ["normal", "ECO", "comfort", "screed drying"]
+
+# Sanitarna voda
+[[enum_sensor]]
+register = 2027
+name = "DHW operation status on schedule"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3]
+values = ["off", "normal", "ECO", "comfort"]
+
+# Zalogovnik
+[[enum_sensor]]
+register = 2033
+name = "Buffer regulation status"
+[[enum_sensor.options]]
+keys = [0, 1]
+values = ["constant temperature", "weather compensated"]
+
+[[enum_sensor]]
+register = 2037
+name = "Buffer operation status on schedule"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3]
+values = ["off", "normal", "ECO", "comfort"]
+
+# 1. krog
+[[enum_sensor]]
 register = 2044
 name = "Loop 1 operation status on schedule"
 [[enum_sensor.options]]
 keys = [0, 1, 2, 3]
 values = ["off", "normal", "ECO", "COM"]
 
+# 2. krog
+[[enum_sensor]]
+register = 2050
+name = "Loop 2 regulation status"
+[[enum_sensor.options]]
+keys = [0, 1]
+values = ["constant temperature", "weather compensated"]
+
+[[enum_sensor]]
+register = 2054
+name = "Loop 2 operation status on schedule"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3]
+values = ["off", "normal", "ECO", "COM"]
+
+# 3. krog
+[[enum_sensor]]
+register = 2060
+name = "Loop 3 regulation status"
+[[enum_sensor.options]]
+keys = [0, 1]
+values = ["constant temperature", "weather compensated"]
+
+[[enum_sensor]]
+register = 2064
+name = "Loop 3 operation status on schedule"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3]
+values = ["off", "normal", "ECO", "COM"]
+
+# 4. krog
+[[enum_sensor]]
+register = 2070
+name = "Loop 4 regulation status"
+[[enum_sensor.options]]
+keys = [0, 1]
+values = ["constant temperature", "weather compensated"]
+
+[[enum_sensor]]
+register = 2074
+name = "Loop 4 operation status on schedule"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 3]
+values = ["off", "normal", "ECO", "COM"]
+
+# Bazen
+[[enum_sensor_disabled]]
+register = 2083
+name = "Pool operation status on schedule"
+[[enum_sensor_disabled.options]]
+keys = [0, 1, 2, 3]
+values = ["off", "normal", "ECO", "comfort"]
+
+
+# ============================================================
+# Binary senzorji (Binary sensors)
+# ============================================================
+
+# Statusi
 [[binary_sensor]]
 register = 2000
 name = "System operation"
 device_class = ""
-
-[[binary_sensor]]
-register = 2045
-name = "Loop 1 circulation pump status"
-device_class = "running"
-
-[[binary_sensor]]
-register = 2055
-name = "Loop 2 circulation pump status"
-device_class = "running"
 
 [[binary_sensor]]
 register = 2002
@@ -295,6 +765,37 @@ device_class = "running"
 bit = 4
 
 [[binary_sensor]]
+register = 2003
+name = "Reserve source status"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2004
+name = "Alternative source status"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2005
+name = "Passive cooling status"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2009
+name = "Service required"
+device_class = "problem"
+
+[[binary_sensor]]
+register = 2010
+name = "Forced DHW heating"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2011
+name = "Defrosting"
+device_class = "running"
+
+# Sanitarna voda
+[[binary_sensor]]
 register = 2028
 name = "DHW circulation pump"
 device_class = "running"
@@ -306,9 +807,81 @@ name = "Circulation Pump for DHW tank"
 device_class = "running"
 bit = 1
 
+# Zalogovnik
+[[binary_sensor]]
+register = 2038
+name = "Main circulation pump"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2039
+name = "Remote disconnect status"
+device_class = "power"
+
+# 1. krog
+[[binary_sensor]]
+register = 2045
+name = "Loop 1 circulation pump status"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2046
+name = "Loop 1 thermostat status"
+device_class = ""
+bit = 0
+
+# 2. krog
+[[binary_sensor]]
+register = 2055
+name = "Loop 2 circulation pump status"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2056
+name = "Loop 2 thermostat status"
+device_class = ""
+
+# 3. krog
+[[binary_sensor]]
+register = 2065
+name = "Loop 3 circulation pump status"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2066
+name = "Loop 3 thermostat status"
+device_class = ""
+
+# 4. krog
+[[binary_sensor]]
+register = 2075
+name = "Loop 4 circulation pump status"
+device_class = "running"
+
+[[binary_sensor]]
+register = 2076
+name = "Loop 4 thermostat status"
+device_class = ""
+
+# Bazen
+[[binary_sensor_disabled]]
+register = 2084
+name = "Pool circulation pump"
+device_class = "running"
+
+[[binary_sensor_disabled]]
+register = 2085
+name = "Pool thermostat status"
+device_class = ""
+
+
+# ============================================================
+# Stikala (Switches)
+# ============================================================
+
 [[switch]]
-register = 2328
-name = "Circulation of sanitary water"
+register = 2012
+name = "System power"
 
 [[switch]]
 register = 2015
@@ -318,10 +891,95 @@ name = "Fast DHW heating"
 register = 2016
 name = "Additional Source"
 
+[[switch]]
+register = 2018
+name = "Reserve source"
+
+[[switch_disabled]]
+register = 2019
+name = "Defrosting"
+
+[[switch_disabled]]
+register = 2020
+name = "Pool heating"
+
+[[switch]]
+register = 2328
+name = "Circulation of sanitary water"
+
+
+# ============================================================
+# Izbirniki (Selects)
+# ============================================================
+
+[[select]]
+register = 2013
+name = "Operating program selection"
+default_option = "auto"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["auto", "ECO", "comfort"]
+
+[[select]]
+register = 2017
+name = "Regime selection"
+default_option = "auto"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["auto", "summer", "winter"]
+
 [[select]]
 register = 2026
 name = "Domestic Hot Water Operation"
 default_option = "On"
 [[select.options]]
+keys = [0, 1, 2]
+values = ["Off", "On", "Scheduled"]
+
+[[select]]
+register = 2035
+name = "Buffer operation"
+default_option = "On"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["Off", "On", "Scheduled"]
+
+[[select]]
+register = 2042
+name = "Loop 1 operation"
+default_option = "On"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["Off", "On", "Scheduled"]
+
+[[select]]
+register = 2052
+name = "Loop 2 operation"
+default_option = "On"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["Off", "On", "Scheduled"]
+
+[[select]]
+register = 2062
+name = "Loop 3 operation"
+default_option = "On"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["Off", "On", "Scheduled"]
+
+[[select]]
+register = 2072
+name = "Loop 4 operation"
+default_option = "On"
+[[select.options]]
+keys = [0, 1, 2]
+values = ["Off", "On", "Scheduled"]
+
+[[select_disabled]]
+register = 2081
+name = "Pool operation"
+default_option = "On"
+[[select_disabled.options]]
 keys = [0, 1, 2]
 values = ["Off", "On", "Scheduled"]

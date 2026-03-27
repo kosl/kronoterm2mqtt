@@ -96,6 +96,122 @@ views:
               - sensor.heat_pump_working_function
             show_names: false
             hours_to_show: 1
+      - type: vertical-stack
+        cards:
+          - type: custom:apexcharts-card
+            graph_span: 12h
+            apex_config:
+              legend:
+                show: true
+            header:
+              show: true
+              title: 1. krog
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.heat_pump_loop_1_thermostat_temperature
+                name: Temperatura
+                stroke_width: 1
+                color: red
+              - entity: sensor.heat_pump_loop_1_current_desired_temperature_room
+                name: Željena
+                stroke_width: 2
+                color: darkred
+          - type: entities
+            entities:
+              - entity: binary_sensor.heat_pump_loop_1_circulation_pump_status
+                name: Obtočna črpalka
+              - entity: sensor.heat_pump_loop_1_operation_status_on_schedule
+                name: Status po urniku
+              - entity: sensor.heat_pump_loop_1_thermostat_temperature
+                name: Termostat
+      - type: vertical-stack
+        cards:
+          - type: custom:apexcharts-card
+            graph_span: 12h
+            apex_config:
+              legend:
+                show: true
+            header:
+              show: true
+              title: 2. krog
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.heat_pump_loop_2_thermostat_temperature
+                name: Temperatura
+                stroke_width: 1
+                color: red
+              - entity: sensor.heat_pump_loop_2_current_desired_temperature_room
+                name: Željena
+                stroke_width: 2
+                color: darkred
+          - type: entities
+            entities:
+              - entity: binary_sensor.heat_pump_loop_2_circulation_pump_status
+                name: Obtočna črpalka
+              - entity: sensor.heat_pump_loop_2_operation_status_on_schedule
+                name: Status po urniku
+              - entity: sensor.heat_pump_loop_2_thermostat_temperature
+                name: Termostat
+      - type: vertical-stack
+        cards:
+          - type: custom:apexcharts-card
+            graph_span: 12h
+            apex_config:
+              legend:
+                show: true
+            header:
+              show: true
+              title: 3. krog
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.heat_pump_loop_3_thermostat_temperature
+                name: Temperatura
+                stroke_width: 1
+                color: red
+              - entity: sensor.heat_pump_loop_3_current_desired_temperature_room
+                name: Željena
+                stroke_width: 2
+                color: darkred
+          - type: entities
+            entities:
+              - entity: binary_sensor.heat_pump_loop_3_circulation_pump_status
+                name: Obtočna črpalka
+              - entity: sensor.heat_pump_loop_3_operation_status_on_schedule
+                name: Status po urniku
+              - entity: sensor.heat_pump_loop_3_thermostat_temperature
+                name: Termostat
+      - type: vertical-stack
+        cards:
+          - type: custom:apexcharts-card
+            graph_span: 12h
+            apex_config:
+              legend:
+                show: true
+            header:
+              show: true
+              title: 4. krog
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.heat_pump_loop_4_thermostat_temperature
+                name: Temperatura
+                stroke_width: 1
+                color: red
+              - entity: sensor.heat_pump_loop_4_current_desired_temperature_room
+                name: Željena
+                stroke_width: 2
+                color: darkred
+          - type: entities
+            entities:
+              - entity: binary_sensor.heat_pump_loop_4_circulation_pump_status
+                name: Obtočna črpalka
+              - entity: sensor.heat_pump_loop_4_operation_status_on_schedule
+                name: Status po urniku
+              - entity: sensor.heat_pump_loop_4_thermostat_temperature
+                name: Termostat
       - type: entities
         entities:
           - entity: sensor.heat_pump_operating_hours_compressor_heating
@@ -130,12 +246,6 @@ views:
                 name: Izstop
                 stroke_width: 1
                 color: lightblue
-              - entity: sensor.heat_pump_source_temperature_difference
-                name: Razlika
-                stroke_width: 1
-                color: green
-                show:
-                  in_chart: false
             graph_span: 1h
           - type: history-graph
             entities:

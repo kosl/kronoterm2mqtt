@@ -22,6 +22,23 @@ logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
+class MqttTlsSettings:
+    """
+    TLS/SSL settings for MQTT connection.
+
+    Set 'enabled' to true to use TLS.
+    Provide 'ca_certs' path for server certificate verification.
+    Provide 'certfile' and 'keyfile' for mutual TLS (client certificate auth).
+    """
+
+    enabled: bool = False
+    ca_certs: str = ''  # Path to CA certificate file
+    certfile: str = ''  # Path to PEM-encoded client certificate
+    keyfile: str = ''  # Path to PEM-encoded client private key
+    insecure: bool = False  # If true, skip hostname verification
+
+
+@dataclasses.dataclass
 class HeatPump:
     """
     The "definitions_name" is the prefix of "kronoterm2mqtt/definitions/*.toml" files!
@@ -152,6 +169,9 @@ class UserSettings:
 
     # Information about the MQTT server:
     mqtt: dataclasses = dataclasses.field(default_factory=MqttSettings)
+
+    # TLS settings for MQTT connection:
+    mqtt_tls: dataclasses = dataclasses.field(default_factory=MqttTlsSettings)
 
     systemd: dataclasses = dataclasses.field(default_factory=SystemdServiceInfo)
 

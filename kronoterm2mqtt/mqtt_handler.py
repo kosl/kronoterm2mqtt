@@ -9,7 +9,7 @@ from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.switch import Switch
 from ha_services.mqtt4homeassistant.device import BaseMqttDevice, MqttDevice
-from ha_services.mqtt4homeassistant.mqtt import get_connected_client
+from kronoterm2mqtt.mqtt_connection import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
 from pymodbus.exceptions import ModbusIOException
@@ -33,7 +33,7 @@ class KronotermMqttHandler:
         self.verbosity = verbosity
         self.heat_pump = self.user_settings.heat_pump
         self.device_name = self.heat_pump.device_name
-        self.mqtt_client = get_connected_client(settings=user_settings.mqtt, verbosity=verbosity)
+        self.mqtt_client = get_connected_client(user_settings=user_settings, verbosity=verbosity)
         self.mqtt_client.loop_start()
         self.modbus_client = None
         self.expander: Optional[ExpanderMqttHandler] = (
