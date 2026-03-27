@@ -8,7 +8,7 @@ try:
     client.connect()
     rr = client.read_holding_registers(2100, count=10, slave=20)
     print(
-        'KRONOTERM Temperatures:', ['{:.1f}\N{DEGREE SIGN}C'.format((t - (t >> 15 << 16)) / 10) for t in rr.registers]
+        'KRONOTERM Temperatures:', [f'{(t - (t >> 15 << 16)) / 10:.1f}\N{DEGREE SIGN}C' for t in rr.registers]
     )
 except pymodbus.ModbusException as exc:
     print(f'Received ModbusException({exc}) from library')

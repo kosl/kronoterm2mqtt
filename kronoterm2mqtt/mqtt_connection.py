@@ -1,8 +1,8 @@
 import logging
 import ssl
 
-import paho.mqtt.client as mqtt
 from ha_services.mqtt4homeassistant.mqtt import get_connected_client as _upstream_get_connected_client
+import paho.mqtt.client as mqtt
 
 from kronoterm2mqtt.user_settings import MqttTlsSettings, UserSettings
 
@@ -25,12 +25,11 @@ def get_connected_client(user_settings: UserSettings, verbosity: int, timeout: i
 
     # TLS is enabled - we need to set up TLS before connect(),
     # so we replicate the connection logic with TLS inserted.
-    from ha_services.mqtt4homeassistant.mqtt import OnConnectCallback, get_client_id
-
     import socket
 
     from bx_py_utils.anonymize import anonymize
     from cli_base.cli_tools.rich_utils import human_error
+    from ha_services.mqtt4homeassistant.mqtt import OnConnectCallback, get_client_id
     from rich import print
 
     client_id = get_client_id()

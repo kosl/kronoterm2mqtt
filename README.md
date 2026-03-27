@@ -441,6 +441,11 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+  * 2026-02-17 - Extend print-values to show all entity types
+  * 2026-02-17 - Fix dashboard to show room temperatures instead of loop water temperatures
+  * 2026-02-17 - Map all Modbus registers from TT3000 BMS documentation
+  * 2026-02-17 - Add Docker support and MQTT TLS authentication
+  * 2026-02-05 - Update environment
   * 2026-01-24 - Add switch for intertank pump
   * 2026-01-23 - More TODO notes
   * 2026-01-22 - Add motor duration for testing and TODO

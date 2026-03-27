@@ -45,14 +45,14 @@ def probe_usb_ports(verbosity: TyroVerbosityArgType, max_port: int = 10, port_te
     heat_pump: HeatPump = systemd_settings.heat_pump
     definitions = heat_pump.get_definitions(verbosity)
 
-    for port_number in range(0, max_port):
+    for port_number in range(max_port):
         port = port_template.format(i=port_number)
         print(f'Probe port: {port}...')
 
         heat_pump.port = port
         try:
             probe_one_port(heat_pump, definitions, verbosity)
-        except Exception as err:
+        except Exception as err:   # noqa: BLE001
             print(f'ERROR: {err}')
 
 

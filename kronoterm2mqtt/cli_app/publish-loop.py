@@ -1,12 +1,13 @@
 import asyncio
 from asyncio.exceptions import CancelledError
 import logging
+import sys
 import time
 
 from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.tyro_commands import TyroVerbosityArgType
 from ha_services.exceptions import InvalidStateValue
-from rich import print  # noqa
+from rich import print
 
 from kronoterm2mqtt.cli_app import app
 from kronoterm2mqtt.mqtt_connection import get_connected_client
@@ -48,10 +49,10 @@ def publish_loop(verbosity: TyroVerbosityArgType):
         except KeyboardInterrupt:
             raise
         except (InvalidStateValue, CancelledError) as e:
-            logging.error(f'Kronoterm2MQTT loop failed. USB problem? {e}. Restating in 5 seconds ...')
+            logger.error(f'Kronoterm2MQTT loop failed. USB problem? {e}. Restating in 5 seconds ...')
             time.sleep(5)
         except Exception as e:
-            print(f'Error: {e}', type(e))
-            logger.exception(f'Unhandled Exception: {e} {type(e)}')
-            exit(1)
+            print(f'Error: {e}', type(e), file=sys.stderr)
+            logger.exception('Unhandled Exception in publish loop')
+            sys.exit(1)
 

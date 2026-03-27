@@ -15,7 +15,7 @@ from kronoterm2mqtt.constants import BASE_PATH
 try:
     import tomllib  # New in Python 3.11
 except ImportError:
-    import tomli as tomllib  # noqa:F401
+    import tomli as tomllib
 
 
 logger = logging.getLogger(__name__)

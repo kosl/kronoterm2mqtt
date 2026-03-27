@@ -5,7 +5,7 @@ import sys
 from cli_base.cli_tools import git_history
 from cli_base.cli_tools.verbosity import setup_logging
 from cli_base.tyro_commands import TyroVerbosityArgType
-from rich import print  # noqa
+from rich import print
 
 from kronoterm2mqtt.cli_dev import app
 

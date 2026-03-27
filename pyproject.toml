@@ -10,7 +10,6 @@ authors = [
 requires-python = ">=3.11, <4"
 dependencies = [
     "ha-services >= 2.10.0",  # https://github.com/jedie/ha-services
-    "psutil < 7.2.0", # as per ha-services problem
     "cli-base-utilities>=0.17.0",  # https://github.com/jedie/cli-base-utilities
     "pymodbus[serial] >= 3.10.0",  # https://github.com/pymodbus-dev/pymodbus/
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
@@ -20,6 +19,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "freezegun",  # https://github.com/spulec/freezegun
     "manageprojects",  # https://github.com/jedie/manageprojects
     "urllib3", # for bx_py_utils.test_utils.deny_requests.deny_any_real_request() in tests
     "uv",  # https://github.com/astral-sh/uv
@@ -45,6 +45,13 @@ Source = "https://github.com/kosl/kronoterm2mqtt"
 kronoterm2mqtt_app = "kronoterm2mqtt.__main__:main"
 kronoterm2mqtt_dev = "kronoterm2mqtt.cli_dev:main"
 
+[tool.bx_py_utils.doc_write]
+docstring_prefix = 'DocWrite:'
+macro_prefix = 'DocWriteMacro:'
+output_base_path = './docs/'
+search_paths = ['./kronoterm2mqtt/']
+delete_obsolete_files = true
+
 [build-system]
 requires =  ["hatchling"]
 build-backend = "hatchling.build"
@@ -56,10 +63,9 @@ packages = ["kronoterm2mqtt"]
 path = "kronoterm2mqtt/__init__.py"
 
 [tool.cli_base.pip_audit]
-requirements=["requirements.dev.txt"]
 strict=true
 require_hashes=true
-ignore-vuln=["GHSA-2c2j-9gv5-cj73", "GHSA-4xh5-x5gv-qwph", "GHSA-7f5h-v6xp-fcq8"] # starlette 0.46
+ignore-vuln=["GHSA-2c2j-9gv5-cj73", "GHSA-4xh5-x5gv-qwph", "GHSA-7f5h-v6xp-fcq8", "CVE-2026-4539"] # starlette 0.46
 
 [tool.cli_base]
 version_module_name = "kronoterm2mqtt"  # Used by "update-readme-history" git hook
@@ -80,6 +86,8 @@ extend-select = [
 ignore = [
     "E402", # https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/
     "E731", # https://docs.astral.sh/ruff/rules/lambda-assignment/
+    "C408", # Unnecesary list(), dict(),
+    "N999", # Invalid module name
 ]
 
 [tool.ruff.lint.isort]

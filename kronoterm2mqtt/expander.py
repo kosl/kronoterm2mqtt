@@ -3,7 +3,6 @@ from enum import Enum
 import logging
 import sys
 import time
-from typing import List
 
 from ha_services.exceptions import InvalidStateValue
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
@@ -24,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 async def etera_reset_handler():
     print('Custom ETERA expander just reset...', flush=True, file=sys.stderr)
-    logging.error('Custom ETERA expander just reset...')
+    logger.error('Custom ETERA expander just reset...')
 
 
 async def etera_message_handler(message: bytes):
@@ -32,7 +31,7 @@ async def etera_message_handler(message: bytes):
         print(message.decode(), flush=True)
     except UnicodeDecodeError:
         print(message, flush=True)
-    # logging.info(message.decode())
+    # logger.info(message.decode())
 
 
 class ExpanderMqttHandler:
@@ -43,13 +42,13 @@ class ExpanderMqttHandler:
         self.user_settings = user_settings
         self.verbosity = verbosity
         self.mqtt_device: MqttDevice | None = None
-        self.sensors: List[Sensor] = list()  # loop[0:4], collector, solar tank up/down, DHW, DHW circulation
-        self.relays: List[BinarySensor] = list()
+        self.sensors: list[Sensor] = list()  # loop[0:4], collector, solar tank up/down, DHW, DHW circulation
+        self.relays: list[BinarySensor] = list()
         self.switch_intertank: Switch = None
-        self.loop_states: List[Select] = list()  # Loop names from sensors
-        self.mixing_valve_sensors: List[Sensor] = list()  # Position sensors in percentage
-        self.mixing_valve_timer: List[float] = list()  # Measuring time from last move
-        self.expedited_heating_timer: List[float] = list()  # Measuring time from start of expedited heating
+        self.loop_states: list[Select] = list()  # Loop names from sensors
+        self.mixing_valve_sensors: list[Sensor] = list()  # Position sensors in percentage
+        self.mixing_valve_timer: list[float] = list()  # Measuring time from last move
+        self.expedited_heating_timer: list[float] = list()  # Measuring time from start of expedited heating
         self.last_working_function: int = 5  # Heat pump in 5=Standby
 
     class WorkingMode(Enum):
@@ -161,8 +160,7 @@ class ExpanderMqttHandler:
             )
             position = self.mixing_valve_sensors[heating_loop_number].state
             position -= duration / 120.0 * 100
-            if position < 0:
-                position = 0
+            position = max(position, 0)
             self.mixing_valve_sensors[heating_loop_number].set_state(position)
             self.mixing_valve_sensors[heating_loop_number].publish(self.mqtt_client)
         except IndexError as e:
@@ -177,8 +175,7 @@ class ExpanderMqttHandler:
             )
             position = self.mixing_valve_sensors[heating_loop_number].state
             position += duration / 120.0 * 100
-            if position > 100:
-                position = 100
+            position = min(position, 100)
             self.mixing_valve_sensors[heating_loop_number].set_state(position)
             self.mixing_valve_sensors[heating_loop_number].publish(self.mqtt_client)
         except EteraUartBridge.DeviceException as e:
@@ -203,9 +200,7 @@ class ExpanderMqttHandler:
             # Reset expedited heating timer
             self.expedited_heating_timer[loop_number] = None
 
-            if new_state_e == self.WorkingMode.OFF.value:
-                pass
-            elif new_state_e == self.WorkingMode.ON.value:
+            if new_state_e == self.WorkingMode.OFF.value or new_state_e == self.WorkingMode.ON.value:
                 pass
             elif new_state_e == self.WorkingMode.EXPEDITED.value:
                 self.expedited_heating_timer[loop_number] = time.monotonic()
@@ -280,11 +275,11 @@ class ExpanderMqttHandler:
         try:
             # Heating loop state
             for i, select in enumerate(self.loop_states):
-                if self.expedited_heating_timer[i] is not None:
-                    if time.monotonic() - self.expedited_heating_timer[i] > 5 * 3600:
-                        select.set_state(self.WorkingMode.OFF.value)
-                        self.expedited_heating_timer[i] = None
-                        print(f'Expedited heating for {select.name} is over!')
+                if self.expedited_heating_timer[i] is not None \
+                   and time.monotonic() - self.expedited_heating_timer[i] > 5 * 3600:
+                    select.set_state(self.WorkingMode.OFF.value)
+                    self.expedited_heating_timer[i] = None
+                    print(f'Expedited heating for {select.name} is over!')
 
             temperatures = await self.etera.get_temperatures()
             ids = settings.loop_sensors + settings.solar_sensors
@@ -393,16 +388,14 @@ class ExpanderMqttHandler:
                                     move_duration = (
                                         loop_temperature - target_loop_temperature
                                     ) * 3.0  # 3 seconds for 1K
-                                    if move_duration > 12:
-                                        move_duration = 12  # limit move
+                                    move_duration = min(move_duration, 12)  # limit move
                                     self.taskgroup.create_task(self.mixing_valve_motor_close(heat_loop, move_duration))
 
                                 else:  # open the mixing valve since target_loop_temperature > loop_temperature
                                     move_duration = (
                                         target_loop_temperature - loop_temperature
                                     ) * 3.0  # 3 seconds for 1K
-                                    if move_duration > 10:
-                                        move_duration = 10  # limit move
+                                    move_duration = min(move_duration, 10)  # limit move
                                     self.taskgroup.create_task(self.mixing_valve_motor_open(heat_loop, move_duration))
                                 if self.verbosity > 1:
                                     underfloor_temp_correction = target_loop_temperature - temp_at_zero

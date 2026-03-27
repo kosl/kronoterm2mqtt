@@ -4,12 +4,12 @@ import unittest.util
 
 from bx_py_utils.test_utils.deny_requests import deny_any_real_request
 from cli_base.cli_tools.verbosity import MAX_LOG_LEVEL, setup_logging
-from rich import print  # noqa
+from rich import print
 from typeguard import install_import_hook
 
 
 # Check type annotations via typeguard in all tests:
-install_import_hook(packages=('kronoterm2mqtt',))
+install_import_hook(packages=('cli_base',))
 
 
 def pre_configure_tests() -> None:
@@ -17,7 +17,7 @@ def pre_configure_tests() -> None:
 
     # Hacky way to display more "assert"-Context in failing tests:
     _MIN_MAX_DIFF = unittest.util._MAX_LENGTH - unittest.util._MIN_DIFF_LEN
-    unittest.util._MAX_LENGTH = int(os.environ.get('UNITTEST_MAX_LENGTH', 300))
+    unittest.util._MAX_LENGTH = int(os.environ.get('UNITTEST_MAX_LENGTH', "2000"))
     unittest.util._MIN_DIFF_LEN = unittest.util._MAX_LENGTH - _MIN_MAX_DIFF
 
     # Deny any request via docket/urllib3 because tests they should mock all requests:

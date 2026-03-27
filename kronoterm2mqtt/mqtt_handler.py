@@ -2,25 +2,25 @@ import asyncio
 from decimal import Decimal
 import itertools
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from ha_services.mqtt4homeassistant.components.binary_sensor import BinarySensor
 from ha_services.mqtt4homeassistant.components.select import Select
 from ha_services.mqtt4homeassistant.components.sensor import Sensor
 from ha_services.mqtt4homeassistant.components.switch import Switch
 from ha_services.mqtt4homeassistant.device import BaseMqttDevice, MqttDevice
-from kronoterm2mqtt.mqtt_connection import get_connected_client
 from ha_services.mqtt4homeassistant.utilities.string_utils import slugify
 from paho.mqtt.client import Client
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.pdu import ExceptionResponse
 from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
-from rich import print  # noqa
+from rich import print
 
 import kronoterm2mqtt
 from kronoterm2mqtt.api import get_modbus_client
 from kronoterm2mqtt.constants import DEFAULT_DEVICE_MANUFACTURER, MODBUS_SLAVE_ID
 from kronoterm2mqtt.expander import ExpanderMqttHandler
+from kronoterm2mqtt.mqtt_connection import get_connected_client
 from kronoterm2mqtt.user_settings import UserSettings
 
 
@@ -36,19 +36,19 @@ class KronotermMqttHandler:
         self.mqtt_client = get_connected_client(user_settings=user_settings, verbosity=verbosity)
         self.mqtt_client.loop_start()
         self.modbus_client = None
-        self.expander: Optional[ExpanderMqttHandler] = (
+        self.expander: ExpanderMqttHandler | None = (
             ExpanderMqttHandler(self.mqtt_client, user_settings, verbosity)
             if self.user_settings.custom_expander.module_enabled
             else None
         )
-        self.main_device: Optional[MqttDevice] = None
-        self.sensors: Dict[int, Tuple[Sensor, Decimal]] = dict()
-        self.binary_sensors: Dict[int, Dict[int, BinarySensor]] = dict()
-        self.enum_sensors: Dict[int, Tuple[Sensor, Dict[str, List[Any]]]] = dict()
-        self.address_ranges: List[Tuple[int, int]] = list()
-        self.registers: Dict[int] = dict()
-        self.switches: Dict[int, Switch] = dict()
-        self.selects: Dict[int, Tuple[Select, Dict[str, List[Any]]]] = dict()
+        self.main_device: MqttDevice | None = None
+        self.sensors: dict[int, tuple[Sensor, Decimal]] = dict()
+        self.binary_sensors: dict[int, dict[int, BinarySensor]] = dict()
+        self.enum_sensors: dict[int, tuple[Sensor, dict[str, list[Any]]]] = dict()
+        self.address_ranges: list[tuple[int, int]] = list()
+        self.registers: dict[int] = dict()
+        self.switches: dict[int, Switch] = dict()
+        self.selects: dict[int, tuple[Select, dict[str, list[Any]]]] = dict()
 
     def __enter__(self):
         """Enter the context manager."""
@@ -248,8 +248,8 @@ class KronotermMqttHandler:
         See https://stackoverflow.com/questions/4628333
         """
         for _, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
-            b = list(b)  # noqa
-            yield b[0][1], b[-1][1]  # noqa
+            b = list(b)
+            yield b[0][1], b[-1][1]
 
     def read_heat_pump_register_blocks(self):
         """In order to minimize Modbus communication the register
