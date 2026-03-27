@@ -551,13 +551,6 @@ state_class = "measurement"
 unit_of_measurement = "W"
 scale = 1.0
 
-[[sensor]]
-register = 2329
-name = "Current heating power"
-device_class = "power"
-state_class = "measurement"
-unit_of_measurement = "W"
-scale = 1.0
 
 [[sensor_disabled]]
 register = 2150
@@ -566,6 +559,39 @@ device_class = ""
 state_class = "measurement"
 unit_of_measurement = ""
 scale = 0.001
+
+
+[[sensor]]
+name = "Loop 1 heat curve lower point"
+register = 2309
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+name = "Loop 1 heat curve upper point"
+register = 2314
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+name = "Loop 2 heat curve lower point"
+register = 2310
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
+
+[[sensor]]
+name = "Loop 2 heat curve upper point"
+register = 2315
+device_class = "temperature"
+state_class = "measurement"
+unit_of_measurement = "°C"
+scale = 0.1
 
 [[sensor_disabled]]
 register = 2325
@@ -590,6 +616,15 @@ device_class = "battery" # instead of power_factor for nicer show
 state_class = "measurement"
 unit_of_measurement = "%"
 scale = 1
+
+[[sensor]]
+register = 2329
+name = "Current heating power"
+device_class = "power"
+state_class = "measurement"
+unit_of_measurement = "W"
+scale = 1.0
+
 
 [[sensor_disabled]]
 register = 2347
@@ -740,6 +775,299 @@ name = "Pool operation status on schedule"
 [[enum_sensor_disabled.options]]
 keys = [0, 1, 2, 3]
 values = ["off", "normal", "ECO", "comfort"]
+
+
+# Errors should be binary sensors but to preserve space they might be enum
+[[enum_sensor]]
+register = 2114
+name = "Error register 2114 - Errors 1"
+[[enum_sensor.options]]
+keys = [0, 8, 128, 256, 512, 2048]
+values = [
+	"No error",
+	"High pressure",
+	"Low pressure",
+	"CP phase control",
+	"No water flow",
+	"Alarm household water"]
+
+[[enum_sensor]]
+register = 2115
+name = "Error register 2115 - Errors 2"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 32, 256, 1024, 4096, 8192, 16384, 32768]
+values = [
+	"No error",
+	"Failure module 1",
+	"Failure module 2",
+	"Communication failure - outdoor unit",
+	"Max. number of defrosting",
+	"Heat source temperature outside the operating range",
+	"Reset of module 1",
+	"Reset of module 2",
+	"Reset of module 3",
+	"Reset of module 4"]
+
+[[enum_sensor]]
+register = 2116
+name = "Error register 2116"
+[[enum_sensor.options]]
+keys = [0, 4, 8]
+values = [
+	"No error",
+	"Temp. sensor fault - consider inlet (T28)",
+	"Temp. sensor fault - consider inlet (T27)"]
+
+[[enum_sensor]]
+register = 2118
+name = "Error register 2118"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
+values = [
+	"No error",
+	"DC PEAK (IPM FAULT)",
+	"Max CT",
+	"DC Link Voltage is Low or High",
+	"High/Low Pressure switch activated",
+	"PSC Fault",
+	"DC Link voltage is high",
+	"High current in compressor phases",
+	"Temperature at discharge pipe is too high",
+	"Low pressure",
+	"Problem in CT sensor",
+	"Problem in discharge-pipe temperature sensor",
+	"Problem in external temperature sesnor",
+	"Problem in intermediate evaporator temperature sensor",
+	"Problem in suction-pipe sesnor"]
+
+[[enum_sensor]]
+register = 2119
+name = "Error register 2119"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
+values = [
+	"No error",
+	"Problem in evaporator input sensor",
+	"Nominal high voltage",
+	"No communication between inverter PCB and main PCB",
+	"No communication between inverter PI485 and PCB",
+	"Phase sequence incorrect",
+	"Internal and external unit communication malfunction",
+	"EEPROM malfunction",
+	"Too high temperature at condenser input",
+	"Temperature at discharge pipe is too high",
+	"Too low evaporation temperature",
+	"Problem in discharge-pipe temperature sensor",
+	"Fan malfunction",
+	"Too high input current",
+	"Too high pressure ratio",
+	"No model set",
+	"Error in the external unit"]
+
+[[enum_sensor]]
+register = 2126
+name = "Error register 2126"
+[[enum_sensor.options]]
+keys = [0, 2, 4, 8, 256, 512, 1024, 2048]
+values = [
+	"No error",
+	"Communication failure with cascade module 2",
+	"Communication failure with cascade module 3",
+	"Communication failure with cascade module 4",
+	"Failure on cascade module 1",
+	"Failure on cascade module 2",
+	"Failure on cascade module 3",
+	"Failure on cascade module 4"]
+
+[[enum_sensor]]
+register = 2127
+name = "Error register 2127"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4]
+values = [
+	"No error",
+	"Pressure sensor fault - heating source (T31)",
+	"No flow - heat source",
+	"No flow - ground water"]
+
+[[enum_sensor]]
+register = 2186
+name = "Error register 2186"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4, 8]
+values = [
+	"No error",
+	"Heating loop thermostat failure 1",
+	"Heating loop thermostat failure 2",
+	"Heating loop thermostat failure 3",
+	"Heating loop thermostat failure 4"]
+
+[[enum_sensor]]
+register = 2331
+name = "Error register 2331 - SEC Mono 1 SW alarm 2"
+[[enum_sensor.options]]
+keys = [0, 1, 2]
+values = [
+	"No error",
+	"4-way valve",
+	"High discharge zone (warning)"]
+
+[[enum_sensor]]
+register = 2332
+name = "Error register 2332 - SEC Mono 1 HW alarm 1"
+[[enum_sensor.options]]
+keys = [0, 1, 8, 16, 64, 128, 256, 512, 2048, 4096, 16384]
+values = [
+	"No error",
+	"Main valve (EEV)",
+    "Pressure sensor fault - low pressure (T23)",
+    "Pressure sensor fault - high pressure (T22)",
+    "Temp. sensor fault - suction pipe compressor (T19)",
+    "Temp. sensor fault - liquid pipe - heating (T20)",
+    "Temp. sensor fault - discharge (T18)",
+    "Temp. sensor fault - liquid pipe - cooling (T21)",
+    "Temp. sensor fault - outdoor, heat pump (T17)",
+    "Temp. sensor fault - outlet HP (T15)",
+    "VSS communication"
+	]
+
+[[enum_sensor]]
+register = 2333
+name = "Error register 2333 - SEC Mono 1 HW alarm 2"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4, 8, 16, 32, 64]
+values = ["No error",
+    "High pressure switch",
+    "VSS locked",
+    "EEPROM failure",
+    "Communication timeout to system controller",
+    "Compressor alarm (VSS1...VSS5)",
+    "Drive configuration alarm",
+    "SEC compressor package configuration alarm"]
+
+[[enum_sensor]]
+register = 2334
+name = "Error register 2334 - SEC Mono VSS alarm 1"
+[[enum_sensor.options]]
+keys = [0,1, 2, 4, 8, 16, 32, 64]
+values = [
+	"No error",
+	"Compressor U current sensor fault",
+	"Compressor V current sensor fault",
+	"Compressor W current sensor fault",
+	"PFC current sensor fault",
+	"IPM temperature sensor fault",
+	"PFC temperature sensor fault",
+	"DLT sensor fault"]
+
+[[enum_sensor]]
+register = 2335
+name = "Error register 2335 - SEC Mono VSS alarm 2"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+values = [
+	"No error",
+    "Communication lost fault",
+    "EEPROM failure",
+    "AC over current fault",
+    "AC over voltage fault",
+    "AC under voltage fault",
+    "DC over voltage fault",
+    "DC under voltage fault",
+    "High pressure fault",
+    "Input loss of phase fault",
+    "IPM over heat fault",
+    "IGBT over heat fault",
+    "Compressor code fault"]
+
+[[enum_sensor]]
+register = 2336
+name = "Error register 2336 - SEC Mono VSS alarm 3"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4, 8, 16, 32, 64, 256, 512, 2048, 4096, 8192]
+values = [
+	"No error",
+	"Compressor HW over current",
+    "Compressor U phase over current",
+    "Compressor V phase over current",
+	"Compressor W phase over current",
+	"Compressor loss of phase",
+	"Compressor lost rotor",
+	"Compressor startup failure",
+	"Compressor over load",
+	"Compressor DLT over temperature",
+	"Compressor IMP desat. Protection",
+	"Compressor lost rotor 2",
+	"Compressor lost rotor 3"]
+
+[[enum_sensor]]
+register = 2337
+name = "Error register 2337 - SEC Mono VSS alarm 4"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4]
+values = [
+	"No error",
+	"PFC HW over current",
+	"PFC SW over current",
+	"PFC over voltage"]
+
+[[enum_sensor]]
+register = 2338
+name = "Error register 2338 - SEC Mono VSS alarm 5"
+[[enum_sensor.options]]
+keys = [0, 64, 1024]
+values = [
+	"No error",
+	"A/D fault",
+	"Wrong addressing"]
+
+[[enum_sensor]]
+register = 2339
+name = "Error register 2339 - Alarms aditional 1"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
+values = [
+	"No error",
+	"Temp. sensor fault - DHW (T1)",
+	"Temp. sensor fault - outdoor heating system (T2)",
+	"Temp. sensor fault - 1. loop (T3)",
+	"Temp. sensor fault - 2. loop (T4)",
+	"Temp. sensor fault - 3. loop (T5)",
+	"Temp. sensor fault - 4. loop (T6)",
+	"Temp. sensor fault - pool (T7)",
+	"Temp. sensor fault - solar/biomass (T8)",
+	"Temp. sensor fault - buffer tank 1 (T9)",
+	"Temp. sensor fault - buffer tank 2 (T10)",
+	"Temp. sensor fault - source inlet (T11)",
+	"Temp. sensor fault - source outlet (T12)",
+	"Temp. sensor fault - outlet HP (T15)",
+	"Temp. sensor fault - inlet HP (T16)",
+	"Temp. sensor fault - outlet after electrical heater (T13)",
+	"Temp. sensor fault - inlet indoor unit (T14)"]
+
+[[enum_sensor]]
+register = 2340
+name = "Error register 2340 - Alarms aditional 2"
+[[enum_sensor.options]]
+keys = [0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
+values = [
+	"No error",
+	"Temp. sensor fault - outdoor, heat pump (T17)",
+	"Temp. sensor fault - discharge (T18)",
+	"Temp. sensor fault - suction pipe compressor (T19)",
+	"Temp. sensor fault - liquid pipe - heating (T20)",
+	"Temp. sensor fault - liquid pipe - cooling (T21)",
+	"Temp. sensor fault - high pressure (T22)",
+	"Temp. sensor fault - low pressure (T23)",
+	"Temp. sensor fault - heating system (T25)",
+	"Flow sensor fault - heating system (T26)",
+	"SD card fault",
+	"4-way valve x times/day",
+	"Low superheat x times/day",
+	"High superheat x times/day",
+	"Envelope Tc high x tiems/day",
+	"Envelope Te low x times/day"]
+
 
 
 # ============================================================
@@ -902,6 +1230,14 @@ name = "Defrosting"
 [[switch_disabled]]
 register = 2020
 name = "Pool heating"
+
+[[switch]]
+register = 2320
+name = "Loop 1 adaptive curve"
+
+[[switch]]
+register = 2321
+name = "Loop 2 adaptive curve"
 
 [[switch]]
 register = 2328
