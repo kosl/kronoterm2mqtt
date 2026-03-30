@@ -13,13 +13,13 @@ WORKDIR /app
 COPY uv.lock pyproject.toml cli.py README.md ./
 
 # Copy submodule for pyetera_uart_bridge
-COPY etera-uart-bridge/pyetera-uart-bridge/pyetera-uart-bridge/ \
-     etera-uart-bridge/pyetera-uart-bridge/pyetera-uart-bridge/
+COPY etera-uart-bridge/pyetera-uart-bridge/pyetera_uart_bridge/ \
+     etera-uart-bridge/pyetera-uart-bridge/pyetera_uart_bridge/
 
 # Copy source code and recreate the symlink that points to the submodule
 COPY kronoterm2mqtt/ kronoterm2mqtt/
 RUN rm -rf kronoterm2mqtt/pyetera_uart_bridge && \
-    ln -s ../etera-uart-bridge/pyetera-uart-bridge/pyetera-uart-bridge \
+    ln -s ../etera-uart-bridge/pyetera-uart-bridge/pyetera_uart_bridge \
           kronoterm2mqtt/pyetera_uart_bridge
 
 # Bootstrap: create venv and install dependencies

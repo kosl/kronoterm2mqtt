@@ -87,7 +87,6 @@ ignore = [
     "E402", # https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/
     "E731", # https://docs.astral.sh/ruff/rules/lambda-assignment/
     "C408", # Unnecesary list(), dict(),
-    "N999", # Invalid module name
 ]
 
 [tool.ruff.lint.isort]
