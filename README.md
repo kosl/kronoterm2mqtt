@@ -440,7 +440,8 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...main)
+* [v0.1.17](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...v0.1.17)
+  * 2026-03-27 - Add Error registers
   * 2026-03-27 - Fix tests
   * 2026-03-27 - Update environment
   * 2026-02-17 - Extend print-values to show all entity types

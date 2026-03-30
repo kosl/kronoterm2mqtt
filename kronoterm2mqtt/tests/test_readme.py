@@ -1,5 +1,6 @@
 from bx_py_utils.auto_doc import assert_readme_block
 from bx_py_utils.path import assert_is_file
+from cli_base.cli_tools.test_utils.assertion import assert_in
 from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRich, invoke
 from manageprojects.tests.base import BaseTestCase
 
@@ -25,11 +26,12 @@ class ReadmeTestCase(BaseTestCase):
     def test_main_help(self):
         with NoColorEnvRich():
             stdout = invoke(cli_bin=PACKAGE_ROOT / 'cli.py', args=['--help'], strip_line_prefix='usage: ')
-        self.assert_in_content(
-            got=stdout,
+        self.assert_in(
+            content=stdout,
             parts=(
                 'usage: ./cli.py [-h]',
                 ' publish-loop ',
+                ' version ',
                 constants.CLI_EPILOG,
             ),
         )
@@ -38,8 +40,8 @@ class ReadmeTestCase(BaseTestCase):
     def test_dev_help(self):
         with NoColorEnvRich():
             stdout = invoke(cli_bin=PACKAGE_ROOT / 'dev-cli.py', args=['--help'], strip_line_prefix='usage: ')
-        self.assert_in_content(
-            got=stdout,
+        self.assert_in(
+            content=stdout,
             parts=(
                 'usage: ./dev-cli.py [-h]',
                 ' coverage ',
