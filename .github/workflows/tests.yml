@@ -12,11 +12,12 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.13", "3.12", "3.11"]
+        python-version: ["3.14", "3.13", "3.12", "3.11"]
+      os: [ubuntu-latest] # TODO: macos-latest, windows-latest
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       run: |
@@ -26,12 +27,18 @@ jobs:
         git checkout $GITHUB_SHA || (git fetch && git checkout $GITHUB_SHA)
 
     - name: 'Set up Python ${{ matrix.python-version }}'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@main
       # https://github.com/marketplace/actions/setup-python
       with:
         python-version: '${{ matrix.python-version }}'
         cache: 'pip' # caching pip dependencies
         cache-dependency-path: '**/requirements.*.txt'
+
+    - name: Install uv and set the Python version
+      # https://docs.astral.sh/uv/guides/integration/github/#multiple-python-versions
+      uses: astral-sh/setup-uv@main
+      with:
+        python-version: ${{ matrix.python-version }}
 
     - name: 'Bootstrap app venv'
       # The first CLI call will create the .venv
@@ -66,6 +73,7 @@ jobs:
       uses: codecov/codecov-action@v4
       # https://github.com/marketplace/actions/codecov
       with:
+        # https://docs.codecov.com/docs/codecov-tokens#example-github-actions--official-codecov-action
+        token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: false
         verbose: true
-
