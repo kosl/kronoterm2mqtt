@@ -26,7 +26,7 @@ class ReadmeTestCase(BaseTestCase):
     def test_main_help(self):
         with NoColorEnvRich():
             stdout = invoke(cli_bin=PACKAGE_ROOT / 'cli.py', args=['--help'], strip_line_prefix='usage: ')
-        self.assert_in(
+        assert_in(
             content=stdout,
             parts=(
                 'usage: ./cli.py [-h]',
@@ -40,7 +40,7 @@ class ReadmeTestCase(BaseTestCase):
     def test_dev_help(self):
         with NoColorEnvRich():
             stdout = invoke(cli_bin=PACKAGE_ROOT / 'dev-cli.py', args=['--help'], strip_line_prefix='usage: ')
-        self.assert_in(
+        assert_in(
             content=stdout,
             parts=(
                 'usage: ./dev-cli.py [-h]',
