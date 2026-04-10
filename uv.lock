@@ -277,40 +277,17 @@ wheels = [
 name = "cli-base-utilities"
 version = "0.28.0"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version < '3.12'",
-]
 dependencies = [
-    { name = "bx-py-utils", marker = "python_full_version < '3.12'" },
-    { name = "packaging", marker = "python_full_version < '3.12'" },
-    { name = "python-dateutil", marker = "python_full_version < '3.12'" },
-    { name = "rich", marker = "python_full_version < '3.12'" },
-    { name = "tomlkit", marker = "python_full_version < '3.12'" },
-    { name = "tyro", marker = "python_full_version < '3.12'" },
+    { name = "bx-py-utils" },
+    { name = "packaging" },
+    { name = "python-dateutil" },
+    { name = "rich" },
+    { name = "tomlkit" },
+    { name = "tyro" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/98/69/d3806eda8889b59deb9ff77bebde9cb70913b895fe4b032542ce7245102f/cli_base_utilities-0.28.0.tar.gz", hash = "sha256:78488f7ef69ea06d14be7828a5608be1e51dc6f7695a14f28744c20201d7328b", size = 145523, upload-time = "2026-02-19T16:38:29.762Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6d/19/7036cd5022c40740bfd343610dd5f3c59900cdd6dccbee8f6a11d770313c/cli_base_utilities-0.28.0-py3-none-any.whl", hash = "sha256:87f14b78287d4ae035f0a7c1abbcb88c4bed7455b6b9a135718b2662e46fdee2", size = 94986, upload-time = "2026-02-19T16:38:27.384Z" },
-]
-
-[[package]]
-name = "cli-base-utilities"
-version = "0.29.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12'",
-]
-dependencies = [
-    { name = "bx-py-utils", marker = "python_full_version >= '3.12'" },
-    { name = "packaging", marker = "python_full_version >= '3.12'" },
-    { name = "python-dateutil", marker = "python_full_version >= '3.12'" },
-    { name = "rich", marker = "python_full_version >= '3.12'" },
-    { name = "tomlkit", marker = "python_full_version >= '3.12'" },
-    { name = "tyro", marker = "python_full_version >= '3.12'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/11/64/c8da92778121fc5555a50f4b23b536ee6aacdb6f4594255696d89820c3b8/cli_base_utilities-0.29.1.tar.gz", hash = "sha256:33913dac71b4fa37df431d65787f070d0b118f4ab0b561af7a3969fe27bea8dc", size = 155603, upload-time = "2026-04-09T15:54:49.557Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1a/85/bd3141eab36d172857a4c065c621e01275f9a335228aa546c316a7108404/cli_base_utilities-0.29.1-py3-none-any.whl", hash = "sha256:26fa559a4127631b7abc159720a3c9758bf154cf71e8a913270f37eae096cecf", size = 107074, upload-time = "2026-04-09T15:54:48.013Z" },
 ]
 
 [[package]]
@@ -632,8 +609,7 @@ name = "ha-services"
 version = "2.15.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cli-base-utilities", version = "0.28.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
-    { name = "cli-base-utilities", version = "0.29.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "cli-base-utilities" },
     { name = "frozendict" },
     { name = "msgspec" },
     { name = "paho-mqtt" },
@@ -793,8 +769,7 @@ name = "kronoterm2mqtt"
 source = { editable = "." }
 dependencies = [
     { name = "bx-py-utils" },
-    { name = "cli-base-utilities", version = "0.28.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
-    { name = "cli-base-utilities", version = "0.29.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "cli-base-utilities" },
     { name = "ha-services" },
     { name = "pymodbus", extra = ["serial"] },
     { name = "rich" },
@@ -825,7 +800,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "bx-py-utils" },
-    { name = "cli-base-utilities", specifier = ">=0.17.0" },
+    { name = "cli-base-utilities", specifier = ">=0.17.0,<=0.28.0" },
     { name = "ha-services", specifier = ">=2.10.0" },
     { name = "pymodbus", extras = ["serial"], specifier = ">=3.10.0" },
     { name = "rich" },
@@ -945,7 +920,7 @@ resolution-markers = [
     "python_full_version < '3.12'",
 ]
 dependencies = [
-    { name = "cli-base-utilities", version = "0.28.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "cli-base-utilities", marker = "python_full_version < '3.12'" },
     { name = "codespell", marker = "python_full_version < '3.12'" },
     { name = "cookiecutter", marker = "python_full_version < '3.12'" },
     { name = "editorconfig", marker = "python_full_version < '3.12'" },
@@ -968,7 +943,7 @@ resolution-markers = [
     "python_full_version >= '3.12'",
 ]
 dependencies = [
-    { name = "cli-base-utilities", version = "0.29.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "cli-base-utilities", marker = "python_full_version >= '3.12'" },
     { name = "codespell", marker = "python_full_version >= '3.12'" },
     { name = "cookiecutter", marker = "python_full_version >= '3.12'" },
     { name = "editorconfig", marker = "python_full_version >= '3.12'" },
