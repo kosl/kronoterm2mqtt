@@ -275,7 +275,7 @@ wheels = [
 
 [[package]]
 name = "cli-base-utilities"
-version = "0.28.0"
+version = "0.27.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bx-py-utils" },
@@ -285,9 +285,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "tyro" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/98/69/d3806eda8889b59deb9ff77bebde9cb70913b895fe4b032542ce7245102f/cli_base_utilities-0.28.0.tar.gz", hash = "sha256:78488f7ef69ea06d14be7828a5608be1e51dc6f7695a14f28744c20201d7328b", size = 145523, upload-time = "2026-02-19T16:38:29.762Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/74/69c54f8aeab1e242332ff5dd9495ca8c0530c535cf95fc8c44a85ea19064/cli_base_utilities-0.27.4.tar.gz", hash = "sha256:d145486432ede6666c255b6b6de2b1402aa9b532ed0764a18e0c433f84fa2b12", size = 144911, upload-time = "2026-02-16T13:39:21.075Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6d/19/7036cd5022c40740bfd343610dd5f3c59900cdd6dccbee8f6a11d770313c/cli_base_utilities-0.28.0-py3-none-any.whl", hash = "sha256:87f14b78287d4ae035f0a7c1abbcb88c4bed7455b6b9a135718b2662e46fdee2", size = 94986, upload-time = "2026-02-19T16:38:27.384Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/18/8f4618cc2636c92ac0234340d075ed17c31d63fa73f7bca619a2714eb383/cli_base_utilities-0.27.4-py3-none-any.whl", hash = "sha256:f7fffac67cf876c07431a07cfd91a2dd4e6f7a5e3515900fdf7df9b5e8f12845", size = 94258, upload-time = "2026-02-16T13:39:19.18Z" },
 ]
 
 [[package]]
@@ -800,7 +800,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "bx-py-utils" },
-    { name = "cli-base-utilities", specifier = ">=0.17.0,<=0.28.0" },
+    { name = "cli-base-utilities", specifier = ">=0.17.0,<=0.27.4" },
     { name = "ha-services", specifier = ">=2.10.0" },
     { name = "pymodbus", extras = ["serial"], specifier = ">=3.10.0" },
     { name = "rich" },
