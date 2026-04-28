@@ -440,6 +440,10 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.17...main)
+  * 2026-04-10 - Limit CLI  base utilities version to support Python 3.11 at least
+  * 2026-04-10 - Limit base utilities version to support Python 3.11 at least
+  * 2026-04-10 - Upgrade for vulnerabilities
 * [v0.1.17](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.16...v0.1.17)
   * 2026-03-30 - Change pyetera CamelCase to underscore
   * 2026-03-30 - Update github tests - indent
@@ -484,6 +488,9 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 * [v0.1.15](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.14...v0.1.15)
   * 2025-09-26 - Fix enum validation and release new package
   * 2025-09-26 - Fix Invalid: device_class='enum' !
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.1.14](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.13...v0.1.14)
   * 2025-09-26 - Release 0.1.14
   * 2025-09-26 - Cleanup of the MQTT global device ids and components for running within a loop
@@ -494,9 +501,6 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
   * 2025-09-25 - Upgrade to ha-services with Sensor.value -> Sensor.state change
   * 2025-09-25 - 0.1.13 release
   * 2025-09-24 - Add ADAPT images
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.1.13](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.12...v0.1.13)
   * 2025-09-24 - Fix indent
   * 2025-09-24 - Add Modbus/TCP client with WiFi module
