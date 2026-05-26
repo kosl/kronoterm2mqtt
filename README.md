@@ -441,6 +441,8 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.17...main)
+  * 2026-05-26 - Fix missing error handlers in dev CLI
+  * 2026-04-28 - Update envirionment
   * 2026-04-10 - Limit CLI  base utilities version to support Python 3.11 at least
   * 2026-04-10 - Limit base utilities version to support Python 3.11 at least
   * 2026-04-10 - Upgrade for vulnerabilities

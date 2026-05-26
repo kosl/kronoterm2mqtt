@@ -65,7 +65,8 @@ path = "kronoterm2mqtt/__init__.py"
 [tool.cli_base.pip_audit]
 strict=true
 require_hashes=true
-ignore-vuln=[]
+ignore-vuln=["PYSEC-2026-161", # starlette 0.52.1
+]
 
 [tool.cli_base]
 version_module_name = "kronoterm2mqtt"  # Used by "update-readme-history" git hook

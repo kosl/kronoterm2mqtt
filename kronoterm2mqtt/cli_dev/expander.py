@@ -7,7 +7,6 @@ from rich import print as rprint  # noqa
 from kronoterm2mqtt.cli_dev import app
 from kronoterm2mqtt.pyetera_uart_bridge import EteraUartBridge
 from kronoterm2mqtt.user_settings import UserSettings, get_user_settings
-from kronoterm2mqtt.expander import etera_reset_handler, etera_message_handler
 
 
 # import logging
