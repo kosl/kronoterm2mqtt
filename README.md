@@ -441,6 +441,7 @@ usage: ./dev-cli.py [-h] {coverage,expander-loop,expander-motors,expander-relay,
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/kosl/kronoterm2mqtt/compare/v0.1.17...main)
+  * 2026-06-09 - Fix tests
   * 2026-05-26 - Add fixed pyetera
   * 2026-05-26 - Update environment and fix expander devel
   * 2026-05-26 - Fix missing error handlers in dev CLI
